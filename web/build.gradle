@@ -1,0 +1,57 @@
+apply plugin: 'war'
+def tomcat = '/home/user/Documents/apache-tomcat-8.5.66/'
+war {
+    archiveBaseName="gift-cert-sys"
+}
+task setAsTomcatWebApp(type: Copy, dependsOn: build) {
+    from war.archivePath
+    into "${tomcat}/webapps"
+}
+
+dependencies {
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:30.0-jre'
+
+    // https://mvnrepository.com/artifact/javax.servlet.jsp/jsp-api
+    compileOnly group: 'javax.servlet.jsp', name: 'jsp-api', version: '2.2.1-b03'
+
+    // https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl
+    implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
+
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.3'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.3'
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-webmvc
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.7'
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-web
+    implementation group: 'org.springframework', name: 'spring-web', version: '5.3.7'
+
+    // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: '2.2'
+    api project(':model')
+    api project(':service')
+}
+
+
+
+tasks.named('test') {
+    // Use junit platform for unit tests.
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}

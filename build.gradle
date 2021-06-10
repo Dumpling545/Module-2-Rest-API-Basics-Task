@@ -1,0 +1,38 @@
+
+subprojects {
+    group = 'com.epam.esm'
+    apply plugin: 'java-library'
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.0-M1'
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.0-M1'
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.0-M1'
+        // https://mvnrepository.com/artifact/org.springframework/spring-context
+        implementation group: 'org.springframework', name: 'spring-context', version: '5.3.7'
+
+        // https://mvnrepository.com/artifact/org.springframework/spring-context-support
+        implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.7'
+
+
+        // https://mvnrepository.com/artifact/org.springframework/spring-core
+        implementation group: 'org.springframework', name: 'spring-core', version: '5.3.7'
+        // https://mvnrepository.com/artifact/org.springframework/spring-beans
+        implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.7'
+
+
+
+        // https://mvnrepository.com/artifact/org.springframework/spring-test
+        testImplementation group: 'org.springframework', name: 'spring-test', version: '5.3.7'
+
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
