@@ -13,6 +13,6 @@ import java.io.Serializable;
 public class Filter {
 	String namePart;
 	String descriptionPart;
-	Integer tagId;
+	String tagName;
 	SortOption sortBy;
 }
