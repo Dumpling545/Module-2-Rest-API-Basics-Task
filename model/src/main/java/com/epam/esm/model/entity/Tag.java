@@ -4,8 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Entity object encapsulating information about Tag. Used for Service Layer <->
- * Repository layer communication
+ * Entity object encapsulating information about Tag. Used for Service Layer <-> Repository layer communication
  */
 public class Tag implements Serializable {
 	@Serial
@@ -67,9 +66,6 @@ public class Tag implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Tag{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
+		return "Tag{" + "id=" + id + ", name='" + name + '\'' + '}';
 	}
 }

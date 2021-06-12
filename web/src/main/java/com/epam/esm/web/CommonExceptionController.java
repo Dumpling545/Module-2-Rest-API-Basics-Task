@@ -58,65 +58,47 @@ public class CommonExceptionController extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(ServiceException.class)
-	public ResponseEntity<Error> handleException(ServiceException ex,
-	                                             HandlerMethod handlerMethod)
-	{
+	public ResponseEntity<Error> handleException(ServiceException ex, HandlerMethod handlerMethod) {
 		int postfix = resolvePostfix(handlerMethod);
-		return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR,
-				SERVICE_MSG, postfix);
+		return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR, SERVICE_MSG, postfix);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Error> handleException(Exception ex,
-	                                             HandlerMethod handlerMethod)
-	{
+	public ResponseEntity<Error> handleException(Exception ex, HandlerMethod handlerMethod) {
 		int postfix = resolvePostfix(handlerMethod);
-		return helper.handle(HttpStatus.BAD_REQUEST,
-				OTHER_MSG, postfix);
+		return helper.handle(HttpStatus.BAD_REQUEST, OTHER_MSG, postfix);
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-			HttpRequestMethodNotSupportedException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request)
-	{
-		return helper.noPostfixHandle(status,
-				OTHER_MSG);
+	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+	                                                                     HttpHeaders headers, HttpStatus status,
+	                                                                     WebRequest request) {
+		return helper.noPostfixHandle(status, OTHER_MSG);
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleMissingPathVariable(
-			MissingPathVariableException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request)
-	{
-		return helper.noPostfixHandle(status,
-				OTHER_MSG);
+	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
+	                                                           HttpStatus status, WebRequest request) {
+		return helper.noPostfixHandle(status, OTHER_MSG);
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleMissingServletRequestParameter(
-			MissingServletRequestParameterException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request)
-	{
-		return helper.noPostfixHandle(status,
-				OTHER_MSG);
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+	                                                                      HttpHeaders headers, HttpStatus status,
+	                                                                      WebRequest request) {
+		return helper.noPostfixHandle(status, OTHER_MSG);
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleTypeMismatch(
-			TypeMismatchException ex, HttpHeaders headers, HttpStatus status,
-			WebRequest request)
-	{
-		return helper.noPostfixHandle(status,
-				OTHER_MSG);
+	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
+	                                                    HttpStatus status, WebRequest request) {
+		return helper.noPostfixHandle(status, OTHER_MSG);
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(
-			HttpMessageNotReadableException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request)
-	{
-		return helper.noPostfixHandle(status,
-				JSON_MSG);
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+	                                                              HttpHeaders headers, HttpStatus status,
+	                                                              WebRequest request) {
+		return helper.noPostfixHandle(status, JSON_MSG);
 	}
 }

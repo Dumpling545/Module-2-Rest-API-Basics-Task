@@ -3,8 +3,8 @@ package com.epam.esm.service.exception;
 import java.io.Serial;
 
 /**
- * Base exception for Service level. All exceptions not covered by its sublasses
- * should be wrapped in Service exception before rethrowing on Web layer.
+ * Base exception for Service level. All exceptions not covered by its sublasses should be wrapped in Service exception
+ * before rethrowing on Web layer.
  */
 public class ServiceException extends RuntimeException {
 

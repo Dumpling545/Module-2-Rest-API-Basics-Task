@@ -4,17 +4,14 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Entity object encapsulating information about Gift Certificate filters. Used
- * for Service Layer <-> Repository layer communication
+ * Entity object encapsulating information about Gift Certificate filters. Used for Service Layer <-> Repository layer
+ * communication
  */
 public class Filter implements Serializable {
 
 	public enum SortOption {
-		NAME_ASC("ORDER BY name ASC"),
-		NAME_DESC("ORDER BY name DESC"),
-		CREATE_DATE_ASC("ORDER BY create_date ASC"),
-		CREATE_DATE_DESC("ORDER BY create_date DESC"),
-		LAST_UPDATE_DATE_ASC("ORDER BY last_update_date ASC"),
+		NAME_ASC("ORDER BY name ASC"), NAME_DESC("ORDER BY name DESC"), CREATE_DATE_ASC("ORDER BY create_date ASC"),
+		CREATE_DATE_DESC("ORDER BY create_date DESC"), LAST_UPDATE_DATE_ASC("ORDER BY last_update_date ASC"),
 		LAST_UPDATE_DATE_DESC("ORDER BY last_update_date DESC");
 		private String sql;
 
@@ -38,9 +35,7 @@ public class Filter implements Serializable {
 	public Filter() {
 	}
 
-	public Filter(String namePart, String descriptionPart, int tagId,
-	              SortOption sortBy)
-	{
+	public Filter(String namePart, String descriptionPart, int tagId, SortOption sortBy) {
 		this.namePart = namePart;
 		this.descriptionPart = descriptionPart;
 		this.tagId = tagId;

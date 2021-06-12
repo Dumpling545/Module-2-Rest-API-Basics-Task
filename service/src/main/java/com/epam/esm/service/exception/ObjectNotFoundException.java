@@ -3,8 +3,7 @@ package com.epam.esm.service.exception;
 import java.io.Serial;
 
 /**
- * Abstract exception. Its non-abstract subclasses will be thrown if object with
- * provided id does not exists
+ * Abstract exception. Its non-abstract subclasses will be thrown if object with provided id does not exists
  */
 public abstract class ObjectNotFoundException extends ServiceException {
 	@Serial

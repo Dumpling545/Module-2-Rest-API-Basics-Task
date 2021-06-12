@@ -5,10 +5,8 @@ import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.exception.ServiceException;
 
 public interface TagValidator {
-	void validateTag(TagDTO tag) throws
-			ServiceException;
+	void validateTag(TagDTO tag) throws ServiceException;
 
-	void validateTagName(String tagName)
-			throws ServiceException;
+	void validateTagName(String tagName) throws ServiceException;
 
 }

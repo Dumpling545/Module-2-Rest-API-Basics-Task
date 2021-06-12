@@ -29,9 +29,7 @@ public class TagValidatorImplTest {
 		minNameLength = Integer.parseInt(rb.getString("tag.minNameLength"));
 	}
 
-	private void assertStringParamsEquals(InvalidStringLengthException ex,
-	                                      String name)
-	{
+	private void assertStringParamsEquals(InvalidStringLengthException ex, String name) {
 		assertEquals(ex.getLength(), (name == null) ? 0 : name.length());
 		assertEquals(ex.getMinLength(), minNameLength);
 		assertEquals(ex.getMaxLength(), maxNameLength);
@@ -40,10 +38,8 @@ public class TagValidatorImplTest {
 
 	private Stream<String> validTagNames() {
 		int avg = (minNameLength + maxNameLength) / 2;
-		return Stream
-				.of(RandomStringUtils.randomAlphabetic(avg),
-						RandomStringUtils.randomAlphabetic(minNameLength),
-						RandomStringUtils.randomAlphabetic(maxNameLength));
+		return Stream.of(RandomStringUtils.randomAlphabetic(avg), RandomStringUtils.randomAlphabetic(minNameLength),
+				RandomStringUtils.randomAlphabetic(maxNameLength));
 	}
 
 	@ParameterizedTest
@@ -60,26 +56,23 @@ public class TagValidatorImplTest {
 	}
 
 	private Stream<String> invalidTagNames() {
-		return Stream
-				.of(null, "",
-						RandomStringUtils.randomAlphabetic(minNameLength - 1),
-						RandomStringUtils.randomAlphabetic(maxNameLength + 1));
+		return Stream.of(null, "", RandomStringUtils.randomAlphabetic(minNameLength - 1),
+				RandomStringUtils.randomAlphabetic(maxNameLength + 1));
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidTagNames")
 	void invalidTagTest(String name) {
 		TagDTO tag = new TagDTO(name);
-		InvalidTagNameException ex = assertThrows(InvalidTagNameException.class,
-				() -> tagValidator.validateTag(tag));
+		InvalidTagNameException ex = assertThrows(InvalidTagNameException.class, () -> tagValidator.validateTag(tag));
 		assertStringParamsEquals(ex, name);
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidTagNames")
 	void invalidTagNameTest(String name) {
-		InvalidTagNameException ex = assertThrows(InvalidTagNameException.class,
-				() -> tagValidator.validateTagName(name));
+		InvalidTagNameException ex =
+				assertThrows(InvalidTagNameException.class, () -> tagValidator.validateTagName(name));
 		assertStringParamsEquals(ex, name);
 	}
 }

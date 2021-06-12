@@ -60,15 +60,13 @@ public class TagRepositoryTest {
 
 	@Test
 	public void getTagByIdPositiveTest() {
-		Optional<Tag> optional =
-				tagRepository.getTagById(3);
+		Optional<Tag> optional = tagRepository.getTagById(3);
 		assertFalse(optional.isEmpty());
 	}
 
 	@Test
 	public void getTagByIdNegativeTest() {
-		Optional<Tag> optional =
-				tagRepository.getTagById(-1);
+		Optional<Tag> optional = tagRepository.getTagById(-1);
 		assertTrue(optional.isEmpty());
 	}
 
@@ -85,8 +83,7 @@ public class TagRepositoryTest {
 	@Test
 	public void createTagAlreadyExistsTest() {
 		Tag tag = new Tag("tag4");
-		assertThrows(DuplicateKeyException.class,
-				() -> tagRepository.createTag(tag));
+		assertThrows(DuplicateKeyException.class, () -> tagRepository.createTag(tag));
 	}
 
 	@Test

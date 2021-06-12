@@ -5,8 +5,7 @@ import com.epam.esm.model.entity.Tag;
 import java.io.Serial;
 
 /**
- * DTO object encapsulating information about Tag. Used for Web Layer <->
- * Service layer communication
+ * DTO object encapsulating information about Tag. Used for Web Layer <-> Service layer communication
  */
 public class TagDTO extends Tag {
 	@Serial

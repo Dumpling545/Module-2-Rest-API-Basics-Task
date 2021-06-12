@@ -47,14 +47,10 @@ public class GiftCertificateValidatorImplTest {
 	public void initValidator() {
 		ResourceBundle rb = ResourceBundle.getBundle("validation");
 		giftCertificateValidator = new GiftCertificateValidatorImpl(rb);
-		minNameLength =
-				Integer.parseInt(rb.getString("cert.minNameLength"));
-		maxNameLength =
-				Integer.parseInt(rb.getString("cert.maxNameLength"));
-		minDescLength =
-				Integer.parseInt(rb.getString("cert.minDescLength"));
-		maxDescLength =
-				Integer.parseInt(rb.getString("cert.maxDescLength"));
+		minNameLength = Integer.parseInt(rb.getString("cert.minNameLength"));
+		maxNameLength = Integer.parseInt(rb.getString("cert.maxNameLength"));
+		minDescLength = Integer.parseInt(rb.getString("cert.minDescLength"));
+		maxDescLength = Integer.parseInt(rb.getString("cert.maxDescLength"));
 		minDuration = Integer.parseInt(rb.getString("cert.minDuration"));
 		maxDuration = Integer.parseInt(rb.getString("cert.maxDuration"));
 		minPrice = Double.parseDouble(rb.getString("cert.minPrice"));
@@ -72,9 +68,7 @@ public class GiftCertificateValidatorImplTest {
 	}
 
 
-	private void assertStringParamsEquals(InvalidStringLengthException ex,
-	                                      String name)
-	{
+	private void assertStringParamsEquals(InvalidStringLengthException ex, String name) {
 		assertEquals(ex.getLength(), (name == null) ? 0 : name.length());
 		assertEquals(ex.getMinLength(), minNameLength);
 		assertEquals(ex.getMaxLength(), maxNameLength);
@@ -82,162 +76,93 @@ public class GiftCertificateValidatorImplTest {
 
 	private Stream<Arguments> positiveTestSource() {
 		List<Arguments> tests = new ArrayList<>();
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, minName, avgDesc, avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, maxName, avgDesc, avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, minDesc, avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, maxDesc, avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc, minPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc, maxPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice,
-						minDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice,
-						maxDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, null, avgDesc, avgPrice,
-						avgDuration,
-						null, null, null), true));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, null, avgPrice,
-						avgDuration,
-						null, null, null), true));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc,
-						GiftCertificateDTO.DEFAULT_PRICE,
-						avgDuration,
-						null, null, null), true));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice,
-						GiftCertificateDTO.DEFAULT_DURATION,
-						null, null, null), true));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, minName, avgDesc, avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, maxName, avgDesc, avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, minDesc, avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, maxDesc, avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, minPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, maxPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice, minDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice, maxDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, null, avgDesc, avgPrice, avgDuration, null, null, null), true));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, null, avgPrice, avgDuration, null, null, null), true));
+		tests.add(arguments(
+				new GiftCertificateDTO(-1, avgName, avgDesc, GiftCertificateDTO.DEFAULT_PRICE, avgDuration, null, null,
+						null), true));
+		tests.add(arguments(
+				new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice, GiftCertificateDTO.DEFAULT_DURATION, null, null,
+						null), true));
 		return tests.stream();
 	}
 
 	private Stream<Arguments> invalidNameTestSource() {
 		List<Arguments> tests = new ArrayList<>();
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, minName.substring(1),
-						avgDesc,
-						avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, maxName + " ", avgDesc,
-						avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, null, avgDesc, avgPrice,
-						avgDuration,
-						null, null, null), false));
+		tests.add(arguments(
+				new GiftCertificateDTO(-1, minName.substring(1), avgDesc, avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, maxName + " ", avgDesc, avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, null, avgDesc, avgPrice, avgDuration, null, null, null), false));
 		return tests.stream();
 	}
 
 	private Stream<Arguments> invalidDescriptionTestSource() {
 		List<Arguments> tests = new ArrayList<>();
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName,
-						minDesc.substring(1),
-						avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, maxDesc + " ",
-						avgPrice,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, null, avgPrice,
-						avgDuration,
-						null, null, null), false));
+		tests.add(arguments(
+				new GiftCertificateDTO(-1, avgName, minDesc.substring(1), avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, maxDesc + " ", avgPrice, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, null, avgPrice, avgDuration, null, null, null), false));
 		return tests.stream();
 	}
 
 	private Stream<Arguments> invalidDurationTestSource() {
 		List<Arguments> tests = new ArrayList<>();
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc,
-						avgPrice,
-						minDuration - 1,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc,
-						avgPrice,
-						maxDuration + 1,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc,
-						avgPrice,
-						GiftCertificateDTO.DEFAULT_DURATION,
-						null, null, null), false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice, minDuration - 1, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice, maxDuration + 1, null, null, null),
+				false));
+		tests.add(arguments(
+				new GiftCertificateDTO(-1, avgName, avgDesc, avgPrice, GiftCertificateDTO.DEFAULT_DURATION, null, null,
+						null), false));
 		return tests.stream();
 	}
 
 	private Stream<Arguments> invalidPriceTestSource() {
 		List<Arguments> tests = new ArrayList<>();
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc,
-						minPrice - 0.1,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc,
-						maxPrice + 0.1,
-						avgDuration,
-						null, null, null), false));
-		tests.add(
-				arguments(new GiftCertificateDTO(-1, avgName, avgDesc,
-						GiftCertificateDTO.DEFAULT_PRICE,
-						avgDuration,
-						null, null, null), false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, minPrice - 0.1, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(new GiftCertificateDTO(-1, avgName, avgDesc, maxPrice + 0.1, avgDuration, null, null, null),
+				false));
+		tests.add(arguments(
+				new GiftCertificateDTO(-1, avgName, avgDesc, GiftCertificateDTO.DEFAULT_PRICE, avgDuration, null, null,
+						null), false));
 		return tests.stream();
 	}
 
 
 	@ParameterizedTest
 	@MethodSource("positiveTestSource")
-	public void validCertTest(GiftCertificateDTO cert, boolean ignoreMissing)
-			throws Exception
-	{
-		assertDoesNotThrow(() -> giftCertificateValidator
-				.validateCertificate(cert, ignoreMissing));
+	public void validCertTest(GiftCertificateDTO cert, boolean ignoreMissing) throws Exception {
+		assertDoesNotThrow(() -> giftCertificateValidator.validateCertificate(cert, ignoreMissing));
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidNameTestSource")
-	public void invalidNameCertTest(GiftCertificateDTO cert,
-	                                boolean ignoreMissing)
-			throws Exception
-	{
-		InvalidCertificateNameException ex =
-				assertThrows(InvalidCertificateNameException.class,
-						() -> giftCertificateValidator
-								.validateCertificate(cert, ignoreMissing));
+	public void invalidNameCertTest(GiftCertificateDTO cert, boolean ignoreMissing) throws Exception {
+		InvalidCertificateNameException ex = assertThrows(InvalidCertificateNameException.class,
+				() -> giftCertificateValidator.validateCertificate(cert, ignoreMissing));
 		int length = (cert.getName() == null) ? 0 : cert.getName().length();
 		assertEquals(ex.getLength(), length);
 		assertEquals(ex.getMinLength(), minNameLength);
@@ -246,16 +171,10 @@ public class GiftCertificateValidatorImplTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidDescriptionTestSource")
-	public void invalidDescriptionCertTest(GiftCertificateDTO cert,
-	                                       boolean ignoreMissing)
-			throws Exception
-	{
-		InvalidCertificateDescriptionException ex =
-				assertThrows(InvalidCertificateDescriptionException.class,
-						() -> giftCertificateValidator
-								.validateCertificate(cert, ignoreMissing));
-		int length = (cert.getDescription() == null) ? 0 :
-				cert.getDescription().length();
+	public void invalidDescriptionCertTest(GiftCertificateDTO cert, boolean ignoreMissing) throws Exception {
+		InvalidCertificateDescriptionException ex = assertThrows(InvalidCertificateDescriptionException.class,
+				() -> giftCertificateValidator.validateCertificate(cert, ignoreMissing));
+		int length = (cert.getDescription() == null) ? 0 : cert.getDescription().length();
 		assertEquals(ex.getLength(), length);
 		assertEquals(ex.getMinLength(), minDescLength);
 		assertEquals(ex.getMaxLength(), maxDescLength);
@@ -263,14 +182,9 @@ public class GiftCertificateValidatorImplTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidDurationTestSource")
-	public void invalidDurationCertTest(GiftCertificateDTO cert,
-	                                    boolean ignoreMissing)
-			throws Exception
-	{
-		InvalidCertificateDurationException ex =
-				assertThrows(InvalidCertificateDurationException.class,
-						() -> giftCertificateValidator
-								.validateCertificate(cert, ignoreMissing));
+	public void invalidDurationCertTest(GiftCertificateDTO cert, boolean ignoreMissing) throws Exception {
+		InvalidCertificateDurationException ex = assertThrows(InvalidCertificateDurationException.class,
+				() -> giftCertificateValidator.validateCertificate(cert, ignoreMissing));
 		assertEquals(ex.getDuration(), cert.getDuration());
 		assertEquals(ex.getMinDuration(), minDuration);
 		assertEquals(ex.getMaxDuration(), maxDuration);
@@ -278,14 +192,9 @@ public class GiftCertificateValidatorImplTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidPriceTestSource")
-	public void invalidPriceCertTest(GiftCertificateDTO cert,
-	                                 boolean ignoreMissing)
-			throws Exception
-	{
-		InvalidCertificatePriceException ex =
-				assertThrows(InvalidCertificatePriceException.class,
-						() -> giftCertificateValidator
-								.validateCertificate(cert, ignoreMissing));
+	public void invalidPriceCertTest(GiftCertificateDTO cert, boolean ignoreMissing) throws Exception {
+		InvalidCertificatePriceException ex = assertThrows(InvalidCertificatePriceException.class,
+				() -> giftCertificateValidator.validateCertificate(cert, ignoreMissing));
 		assertEquals(ex.getPrice(), cert.getPrice());
 		assertEquals(ex.getMinPrice(), minPrice);
 		assertEquals(ex.getMaxPrice(), maxPrice);

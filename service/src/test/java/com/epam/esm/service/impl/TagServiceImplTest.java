@@ -28,8 +28,7 @@ public class TagServiceImplTest {
 		TagValidator tagValidator = Mockito.mock(TagValidator.class);
 		TagDTO tag = new TagDTO("correctName");
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.doAnswer(invocation ->
-		{
+		Mockito.doAnswer(invocation -> {
 			((Tag) invocation.getArgument(0)).setId(newDatabaseId);
 			return null;
 		}).when(tagRepository).createTag(Mockito.eq(tag));
@@ -43,17 +42,14 @@ public class TagServiceImplTest {
 		int newDatabaseId = 1;
 		TagValidator tagValidator = Mockito.mock(TagValidator.class);
 		TagDTO tag = new TagDTO("invalidName");
-		Mockito.doThrow(InvalidTagNameException.class).when(tagValidator)
-				.validateTag(Mockito.eq(tag));
+		Mockito.doThrow(InvalidTagNameException.class).when(tagValidator).validateTag(Mockito.eq(tag));
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.doAnswer(invocation ->
-		{
+		Mockito.doAnswer(invocation -> {
 			((Tag) invocation.getArgument(0)).setId(newDatabaseId);
 			return null;
 		}).when(tagRepository).createTag(Mockito.eq(tag));
 		TagService tagService = new TagServiceImpl(tagRepository, tagValidator);
-		assertThrows(InvalidTagNameException.class,
-				() -> tagService.createTag(tag));
+		assertThrows(InvalidTagNameException.class, () -> tagService.createTag(tag));
 	}
 
 	@Test
@@ -66,8 +62,7 @@ public class TagServiceImplTest {
 		Mockito.doThrow(DuplicateKeyException.class).when(tagRepository)
 				.createTag(Mockito.argThat(t -> t.getName().equals(duplicate)));
 		TagService tagService = new TagServiceImpl(tagRepository, tagValidator);
-		assertThrows(TagAlreadyExistsException.class,
-				() -> tagService.createTag(tag));
+		assertThrows(TagAlreadyExistsException.class, () -> tagService.createTag(tag));
 	}
 
 	@Test
@@ -76,8 +71,7 @@ public class TagServiceImplTest {
 		TagValidator tagValidator = Mockito.mock(TagValidator.class);
 		Tag tag = new Tag(id, "correctName");
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.when(tagRepository.getTagById(Mockito.eq(id))).thenReturn(
-				Optional.of(tag));
+		Mockito.when(tagRepository.getTagById(Mockito.eq(id))).thenReturn(Optional.of(tag));
 		TagService tagService = new TagServiceImpl(tagRepository, tagValidator);
 		assertDoesNotThrow(() -> {
 			TagDTO res = tagService.getTag(id);
@@ -92,11 +86,9 @@ public class TagServiceImplTest {
 		TagValidator tagValidator = Mockito.mock(TagValidator.class);
 		Tag tag = new Tag(id, "correctName");
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.when(tagRepository.getTagById(Mockito.eq(id))).thenReturn(
-				Optional.empty());
+		Mockito.when(tagRepository.getTagById(Mockito.eq(id))).thenReturn(Optional.empty());
 		TagService tagService = new TagServiceImpl(tagRepository, tagValidator);
-		TagNotFoundException ex = assertThrows(TagNotFoundException.class,
-				() -> tagService.getTag(id));
+		TagNotFoundException ex = assertThrows(TagNotFoundException.class, () -> tagService.getTag(id));
 		assertEquals(ex.getId(), id);
 	}
 
@@ -117,11 +109,9 @@ public class TagServiceImplTest {
 		TagValidator tagValidator = Mockito.mock(TagValidator.class);
 		Tag tag = new Tag(id, "correctName");
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.when(tagRepository.deleteTag(Mockito.eq(id))).thenReturn(
-				false);
+		Mockito.when(tagRepository.deleteTag(Mockito.eq(id))).thenReturn(false);
 		TagService tagService = new TagServiceImpl(tagRepository, tagValidator);
-		TagNotFoundException ex = assertThrows(TagNotFoundException.class,
-				() -> tagService.deleteTag(id));
+		TagNotFoundException ex = assertThrows(TagNotFoundException.class, () -> tagService.deleteTag(id));
 		assertEquals(ex.getId(), id);
 	}
 

@@ -40,28 +40,19 @@ public class TagExceptionController {
 	}
 
 	@ExceptionHandler(TagNotFoundException.class)
-	public ResponseEntity<Error> handleException(
-			TagNotFoundException ex)
-	{
-		return helper.handle(HttpStatus.NOT_FOUND,
-				TAG_NOT_FOUND_MSG, TAG_POSTFIX, ex.getId());
+	public ResponseEntity<Error> handleException(TagNotFoundException ex) {
+		return helper.handle(HttpStatus.NOT_FOUND, TAG_NOT_FOUND_MSG, TAG_POSTFIX, ex.getId());
 	}
 
 	@ExceptionHandler(InvalidTagNameException.class)
-	public ResponseEntity<Error> handleException(
-			InvalidTagNameException ex)
-	{
-		return helper.handle(HttpStatus.BAD_REQUEST,
-				TAG_INVALID_NAME_MSG, TAG_POSTFIX, ex.getLength(),
-				ex.getMinLength(),
-				ex.getMaxLength());
+	public ResponseEntity<Error> handleException(InvalidTagNameException ex) {
+		return helper
+				.handle(HttpStatus.BAD_REQUEST, TAG_INVALID_NAME_MSG, TAG_POSTFIX, ex.getLength(), ex.getMinLength(),
+						ex.getMaxLength());
 	}
 
 	@ExceptionHandler(TagAlreadyExistsException.class)
-	public ResponseEntity<Error> handleException(
-			TagAlreadyExistsException ex)
-	{
-		return helper.handle(HttpStatus.CONFLICT,
-				TAG_ALREADY_EXISTS_MSG, TAG_POSTFIX, ex.getTagName());
+	public ResponseEntity<Error> handleException(TagAlreadyExistsException ex) {
+		return helper.handle(HttpStatus.CONFLICT, TAG_ALREADY_EXISTS_MSG, TAG_POSTFIX, ex.getTagName());
 	}
 }

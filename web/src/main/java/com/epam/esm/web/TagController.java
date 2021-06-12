@@ -22,8 +22,7 @@ public class TagController {
 	}
 
 	@GetMapping("/{id}")
-	public TagDTO getTag(@PathVariable("id") int id)
-	{
+	public TagDTO getTag(@PathVariable("id") int id) {
 		return tagService.getTag(id);
 	}
 
@@ -34,16 +33,14 @@ public class TagController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public TagDTO createTag(@RequestBody TagDTO tagDTO)
-	{
+	public TagDTO createTag(@RequestBody TagDTO tagDTO) {
 		tagService.createTag(tagDTO);
 		return tagDTO;
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping(value = "/{id}")
-	public void deleteTag(@PathVariable("id") int id)
-	{
+	public void deleteTag(@PathVariable("id") int id) {
 		tagService.deleteTag(id);
 	}
 }

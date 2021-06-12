@@ -11,8 +11,7 @@ import java.util.Optional;
  */
 public interface TagRepository {
 	/**
-	 * Creates new tag in database. Property {@link Tag#getId()} will be changed
-	 * during  execution
+	 * Creates new tag in database. Property {@link Tag#getId()} will be changed during  execution
 	 *
 	 * @param tag
 	 * 		object containing name for new tag, id field is ignored
@@ -24,8 +23,8 @@ public interface TagRepository {
 	 *
 	 * @param id
 	 * 		id of tag to be retrieved
-	 * @return {@link Optional} of tag containing corresponding tag object, if
-	 * tag with such id exists in database; empty {@link Optional} otherwise
+	 * @return {@link Optional} of tag containing corresponding tag object, if tag with such id exists in database;
+	 * empty {@link Optional} otherwise
 	 */
 	Optional<Tag> getTagById(int id);
 
@@ -34,8 +33,8 @@ public interface TagRepository {
 	 *
 	 * @param tagName
 	 * 		name of tag to be retrieved
-	 * @return {@link Optional} of tag containing corresponding tag object, if
-	 * tag with such name exists in database; empty {@link Optional} otherwise
+	 * @return {@link Optional} of tag containing corresponding tag object, if tag with such name exists in database;
+	 * empty {@link Optional} otherwise
 	 */
 	Optional<Tag> getTagByName(String tagName);
 
@@ -51,8 +50,7 @@ public interface TagRepository {
 	 *
 	 * @param certificateId
 	 * 		id of gift certificate
-	 * @return {@link List} with all Tag objects associated with given gift
-	 * certificate id from database
+	 * @return {@link List} with all Tag objects associated with given gift certificate id from database
 	 */
 	List<Tag> getTagsByCertificate(int certificateId);
 
@@ -61,8 +59,8 @@ public interface TagRepository {
 	 *
 	 * @param id
 	 * 		id of tag to be deleted
-	 * @return true if tag with given id successfully deleted; false if tag with
-	 * such id does not exist in database by the time of method invocation
+	 * @return true if tag with given id successfully deleted; false if tag with such id does not exist in database by
+	 * the time of method invocation
 	 */
 	boolean deleteTag(int id);
 

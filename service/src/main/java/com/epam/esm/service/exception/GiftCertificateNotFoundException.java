@@ -3,8 +3,7 @@ package com.epam.esm.service.exception;
 import java.io.Serial;
 
 /**
- * Exception that will be thrown if Gift Certificate with provided id does not
- * exist
+ * Exception that will be thrown if Gift Certificate with provided id does not exist
  */
 public class GiftCertificateNotFoundException extends ObjectNotFoundException {
 	@Serial

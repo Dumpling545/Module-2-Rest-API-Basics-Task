@@ -17,10 +17,8 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = {"com.epam.esm.db"})
 public class DBConfig {
-	private static final String PRODUCTION_DB_PROPERTIES =
-			"/hikari-production.properties";
-	private static final String DEVELOPMENT_DB_PROPERTIES =
-			"/hikari-development.properties";
+	private static final String PRODUCTION_DB_PROPERTIES = "/hikari-production.properties";
+	private static final String DEVELOPMENT_DB_PROPERTIES = "/hikari-development.properties";
 
 	@Bean
 	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -46,12 +44,9 @@ public class DBConfig {
 	@Profile("test")
 	@Bean
 	public DataSource embeddedDataSource() {
-		return new EmbeddedDatabaseBuilder()
-				.setType(EmbeddedDatabaseType.H2)
-				.addScript("classpath:postgresql-compatibility.sql")
-				.addScript("classpath:schema.sql")
-				.addScript("classpath:test-data.sql")
-				.build();
+		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
+				.addScript("classpath:postgresql-compatibility.sql").addScript("classpath:schema.sql")
+				.addScript("classpath:test-data.sql").build();
 	}
 }
 

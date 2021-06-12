@@ -36,30 +36,20 @@ public class GiftCertificateValidatorImpl implements GiftCertificateValidator {
 	}
 
 	public GiftCertificateValidatorImpl(ResourceBundle bounds) {
-		MIN_NAME_LENGTH =
-				Integer.parseInt(bounds.getString(MIN_NAME_LENGTH_KEY));
-		MAX_NAME_LENGTH =
-				Integer.parseInt(bounds.getString(MAX_NAME_LENGTH_KEY));
-		MIN_DESC_LENGTH =
-				Integer.parseInt(bounds.getString(MIN_DESC_LENGTH_KEY));
-		MAX_DESC_LENGTH =
-				Integer.parseInt(bounds.getString(MAX_DESC_LENGTH_KEY));
+		MIN_NAME_LENGTH = Integer.parseInt(bounds.getString(MIN_NAME_LENGTH_KEY));
+		MAX_NAME_LENGTH = Integer.parseInt(bounds.getString(MAX_NAME_LENGTH_KEY));
+		MIN_DESC_LENGTH = Integer.parseInt(bounds.getString(MIN_DESC_LENGTH_KEY));
+		MAX_DESC_LENGTH = Integer.parseInt(bounds.getString(MAX_DESC_LENGTH_KEY));
 		MIN_DURATION = Integer.parseInt(bounds.getString(MIN_DURATION_KEY));
 		MAX_DURATION = Integer.parseInt(bounds.getString(MAX_DURATION_KEY));
 		MIN_PRICE = Double.parseDouble(bounds.getString(MIN_PRICE_KEY));
 		MAX_PRICE = Double.parseDouble(bounds.getString(MAX_PRICE_KEY));
 	}
 
-	private static <T extends Comparable<T>> void outOfRangeCheck(T value,
-	                                                              T min,
-	                                                              T max,
-	                                                              List<T> ignoredValues,
+	private static <T extends Comparable<T>> void outOfRangeCheck(T value, T min, T max, List<T> ignoredValues,
 	                                                              Supplier<ServiceException> exceptionSupplier)
-			throws ServiceException
-	{
-		if (ignoredValues.stream()
-				.anyMatch(v -> v.compareTo(value) == 0))
-		{
+			throws ServiceException {
+		if (ignoredValues.stream().anyMatch(v -> v.compareTo(value) == 0)) {
 			return;
 		}
 		int valMinComp = value.compareTo(min);
@@ -74,9 +64,7 @@ public class GiftCertificateValidatorImpl implements GiftCertificateValidator {
 	}
 
 	@Override
-	public void validateCertificate(GiftCertificateDTO certificate,
-	                                boolean ignoreMissing)
-	{
+	public void validateCertificate(GiftCertificateDTO certificate, boolean ignoreMissing) {
 		List<Integer> ignoredDurations = Collections.EMPTY_LIST;
 		List<Double> ignoredPrices = Collections.EMPTY_LIST;
 		if (ignoreMissing) {
@@ -84,41 +72,25 @@ public class GiftCertificateValidatorImpl implements GiftCertificateValidator {
 			ignoredPrices = IGNORED_PRICES;
 		}
 		if (certificate.getName() == null && !ignoreMissing) {
-			throw new InvalidCertificateNameException(0, MIN_NAME_LENGTH,
-					MAX_NAME_LENGTH);
+			throw new InvalidCertificateNameException(0, MIN_NAME_LENGTH, MAX_NAME_LENGTH);
 		}
 		if (certificate.getDescription() == null && !ignoreMissing) {
-			throw new InvalidCertificateDescriptionException(0, MIN_DESC_LENGTH,
-					MAX_DESC_LENGTH);
+			throw new InvalidCertificateDescriptionException(0, MIN_DESC_LENGTH, MAX_DESC_LENGTH);
 		}
 		if (certificate.getName() != null) {
 			int length = certificate.getName().length();
-			outOfRangeCheck(length, MIN_NAME_LENGTH, MAX_NAME_LENGTH,
-					Collections.EMPTY_LIST, () ->
-							new InvalidCertificateNameException(length,
-									MIN_NAME_LENGTH, MAX_NAME_LENGTH)
-			);
+			outOfRangeCheck(length, MIN_NAME_LENGTH, MAX_NAME_LENGTH, Collections.EMPTY_LIST,
+					() -> new InvalidCertificateNameException(length, MIN_NAME_LENGTH, MAX_NAME_LENGTH));
 		}
 		if (certificate.getDescription() != null) {
 			int length = certificate.getDescription().length();
-			outOfRangeCheck(length, MIN_DESC_LENGTH, MAX_DESC_LENGTH,
-					Collections.EMPTY_LIST, () ->
-							new InvalidCertificateDescriptionException(length,
-									MIN_DESC_LENGTH, MAX_DESC_LENGTH)
-			);
+			outOfRangeCheck(length, MIN_DESC_LENGTH, MAX_DESC_LENGTH, Collections.EMPTY_LIST,
+					() -> new InvalidCertificateDescriptionException(length, MIN_DESC_LENGTH, MAX_DESC_LENGTH));
 		}
-		outOfRangeCheck(certificate.getDuration(), MIN_DURATION, MAX_DURATION,
-				ignoredDurations, () ->
-						new InvalidCertificateDurationException(
-								certificate.getDuration(),
-								MIN_DURATION, MAX_DURATION)
-		);
-		outOfRangeCheck(certificate.getPrice(), MIN_PRICE, MAX_PRICE,
-				ignoredPrices, () ->
-						new InvalidCertificatePriceException(
-								certificate.getPrice(),
-								MIN_PRICE, MAX_PRICE)
-		);
+		outOfRangeCheck(certificate.getDuration(), MIN_DURATION, MAX_DURATION, ignoredDurations,
+				() -> new InvalidCertificateDurationException(certificate.getDuration(), MIN_DURATION, MAX_DURATION));
+		outOfRangeCheck(certificate.getPrice(), MIN_PRICE, MAX_PRICE, ignoredPrices,
+				() -> new InvalidCertificatePriceException(certificate.getPrice(), MIN_PRICE, MAX_PRICE));
 	}
 
 

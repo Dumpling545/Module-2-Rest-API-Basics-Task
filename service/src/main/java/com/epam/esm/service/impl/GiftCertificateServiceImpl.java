@@ -36,65 +36,45 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	private final static double epsilon = 0.000001d;
 
 	@Autowired
-	public GiftCertificateServiceImpl(TagRepository tagRepository,
-	                                  GiftCertificateRepository giftCertificateRepository,
-	                                  TagValidator tagValidator,
-	                                  GiftCertificateValidator giftCertificateValidator)
-	{
+	public GiftCertificateServiceImpl(TagRepository tagRepository, GiftCertificateRepository giftCertificateRepository,
+	                                  TagValidator tagValidator, GiftCertificateValidator giftCertificateValidator) {
 		this.tagRepository = tagRepository;
 		this.giftCertificateRepository = giftCertificateRepository;
 		this.tagValidator = tagValidator;
 		this.giftCertificateValidator = giftCertificateValidator;
 	}
 
-	private List<Tag> createAndAddNonPresentTags(int certificateId,
-	                                             List<String> inputNames)
-	{
+	private List<Tag> createAndAddNonPresentTags(int certificateId, List<String> inputNames) {
 		List<Tag> all = tagRepository.getAllTags();
-		List<Tag> existingTags =
-				all.stream().filter(t -> inputNames.contains(t.getName()))
-						.collect(Collectors.toCollection(ArrayList::new));
-		List<String> existingTagNames =
-				existingTags.stream().map(Tag::getName)
-						.toList();
-		List<Tag> newTags = inputNames.stream()
-				.filter(s -> !existingTagNames.contains(s)).map(Tag::new)
-				.toList();
+		List<Tag> existingTags = all.stream().filter(t -> inputNames.contains(t.getName()))
+				.collect(Collectors.toCollection(ArrayList::new));
+		List<String> existingTagNames = existingTags.stream().map(Tag::getName).toList();
+		List<Tag> newTags = inputNames.stream().filter(s -> !existingTagNames.contains(s)).map(Tag::new).toList();
 		newTags.forEach(tag -> tagRepository.createTag(tag));
 		existingTags.addAll(newTags);
-		existingTags.forEach(tag -> giftCertificateRepository
-				.addTag(certificateId, tag.getId()));
+		existingTags.forEach(tag -> giftCertificateRepository.addTag(certificateId, tag.getId()));
 		return existingTags;
 	}
 
 	@Transactional(isolation = Isolation.SERIALIZABLE)
-	public GiftCertificateOutputDTO createCertificate(GiftCertificateDTO dto)
-			throws ServiceException
-	{
+	public GiftCertificateOutputDTO createCertificate(GiftCertificateDTO dto) throws ServiceException {
 		giftCertificateValidator.validateCertificate(dto, false);
 		dto.getTags().forEach(s -> tagValidator.validateTagName(s));
 		giftCertificateRepository.createCertificate(dto);
 		List<Tag> tags = createAndAddNonPresentTags(dto.getId(), dto.getTags());
 		List<TagDTO> tagDTOs = tags.stream().map(TagDTO::new).toList();
-		GiftCertificateOutputDTO outputDTO =
-				new GiftCertificateOutputDTO(dto, tagDTOs);
+		GiftCertificateOutputDTO outputDTO = new GiftCertificateOutputDTO(dto, tagDTOs);
 		return outputDTO;
 	}
 
 	@Override
-	public GiftCertificateOutputDTO getCertificate(int id)
-			throws ServiceException
-	{
-		List<TagDTO> tags =
-				tagRepository.getTagsByCertificate(id).stream().map(TagDTO::new)
-						.toList();
-		Optional<GiftCertificate> optional =
-				giftCertificateRepository.getCertificateById(id);
+	public GiftCertificateOutputDTO getCertificate(int id) throws ServiceException {
+		List<TagDTO> tags = tagRepository.getTagsByCertificate(id).stream().map(TagDTO::new).toList();
+		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(id);
 		if (optional.isEmpty()) {
 			throw new GiftCertificateNotFoundException(id);
 		}
-		GiftCertificateOutputDTO dto =
-				new GiftCertificateOutputDTO(optional.get(), tags);
+		GiftCertificateOutputDTO dto = new GiftCertificateOutputDTO(optional.get(), tags);
 		return dto;
 	}
 
@@ -108,51 +88,36 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		if (merged.getDuration() != GiftCertificateDTO.DEFAULT_DURATION) {
 			base.setDuration(merged.getDuration());
 		}
-		if (Math.abs(merged.getPrice() - GiftCertificateDTO.DEFAULT_PRICE) >
-				epsilon)
-		{
+		if (Math.abs(merged.getPrice() - GiftCertificateDTO.DEFAULT_PRICE) > epsilon) {
 			base.setPrice(merged.getPrice());
 		}
 	}
 
 	@Transactional(isolation = Isolation.SERIALIZABLE)
-	public GiftCertificateOutputDTO updateCertificate(GiftCertificateDTO dto)
-			throws ServiceException
-	{
-		Optional<GiftCertificate> optionalGiftCertificate =
-				giftCertificateRepository.getCertificateById(dto.getId());
+	public GiftCertificateOutputDTO updateCertificate(GiftCertificateDTO dto) throws ServiceException {
+		Optional<GiftCertificate> optionalGiftCertificate = giftCertificateRepository.getCertificateById(dto.getId());
 		if (optionalGiftCertificate.isPresent()) {
 			giftCertificateValidator.validateCertificate(dto, true);
 			dto.getTags().forEach(s -> tagValidator.validateTagName(s));
-			List<Tag> currentTagsOnCertificate =
-					tagRepository.getTagsByCertificate(dto.getId());
+			List<Tag> currentTagsOnCertificate = tagRepository.getTagsByCertificate(dto.getId());
 			Map<Integer, String> currentTagsOnCertificateMap =
-					currentTagsOnCertificate.stream().collect(
-							Collectors.toMap(Tag::getId, Tag::getName));
-			List<String> nonPresentTagNames = dto.getTags().stream()
-					.filter(s -> !currentTagsOnCertificateMap.containsValue(s))
-					.toList();
-			List<Tag> addedTags =
-					createAndAddNonPresentTags(dto.getId(), nonPresentTagNames);
+					currentTagsOnCertificate.stream().collect(Collectors.toMap(Tag::getId, Tag::getName));
+			List<String> nonPresentTagNames =
+					dto.getTags().stream().filter(s -> !currentTagsOnCertificateMap.containsValue(s)).toList();
+			List<Tag> addedTags = createAndAddNonPresentTags(dto.getId(), nonPresentTagNames);
 			List<Integer> obsoleteTagIds =
-					currentTagsOnCertificateMap.entrySet().stream()
-							.filter(e -> !dto.getTags().contains(e.getValue()))
+					currentTagsOnCertificateMap.entrySet().stream().filter(e -> !dto.getTags().contains(e.getValue()))
 							.map(Map.Entry::getKey).toList();
-			obsoleteTagIds.forEach(
-					id -> giftCertificateRepository.removeTag(dto.getId(), id));
+			obsoleteTagIds.forEach(id -> giftCertificateRepository.removeTag(dto.getId(), id));
 			GiftCertificate giftCertificate = optionalGiftCertificate.get();
 			merge(giftCertificate, dto);
 			giftCertificateRepository.updateCertificate(giftCertificate);
 			List<TagDTO> currentTagDTOs =
-					currentTagsOnCertificate.stream().map(TagDTO::new)
-							.collect(Collectors.toCollection(ArrayList::new));
-			List<TagDTO> addedTagDTOs =
-					addedTags.stream().map(TagDTO::new).toList();
+					currentTagsOnCertificate.stream().map(TagDTO::new).collect(Collectors.toCollection(ArrayList::new));
+			List<TagDTO> addedTagDTOs = addedTags.stream().map(TagDTO::new).toList();
 			currentTagDTOs.addAll(addedTagDTOs);
 			currentTagDTOs.removeIf(t -> obsoleteTagIds.contains(t.getId()));
-			GiftCertificateOutputDTO outputDTO =
-					new GiftCertificateOutputDTO(giftCertificate,
-							currentTagDTOs);
+			GiftCertificateOutputDTO outputDTO = new GiftCertificateOutputDTO(giftCertificate, currentTagDTOs);
 			return outputDTO;
 		} else {
 			throw new GiftCertificateNotFoundException(dto.getId());
@@ -167,13 +132,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	}
 
 	@Override
-	public List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter)
-			throws ServiceException
-	{
+	public List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter) throws ServiceException {
 		if (filter.getTagName() != null) {
 			tagValidator.validateTagName(filter.getTagName());
-			Optional<Tag> tagOptional =
-					tagRepository.getTagByName(filter.getTagName());
+			Optional<Tag> tagOptional = tagRepository.getTagByName(filter.getTagName());
 			if (tagOptional.isEmpty()) {
 				return Collections.EMPTY_LIST;
 			}
@@ -181,13 +143,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		} else {
 			filter.setTagId(NO_TAG_SPECIFIED);
 		}
-		List<GiftCertificate> certs =
-				giftCertificateRepository.getCertificatesByFilter(filter);
+		List<GiftCertificate> certs = giftCertificateRepository.getCertificatesByFilter(filter);
 		List<GiftCertificateOutputDTO> outputDTOList = new ArrayList<>();
 		for (GiftCertificate c : certs) {
-			List<TagDTO> tags =
-					tagRepository.getTagsByCertificate(c.getId()).stream()
-							.map(TagDTO::new).toList();
+			List<TagDTO> tags = tagRepository.getTagsByCertificate(c.getId()).stream().map(TagDTO::new).toList();
 			outputDTOList.add(new GiftCertificateOutputDTO(c, tags));
 		}
 		return outputDTOList;

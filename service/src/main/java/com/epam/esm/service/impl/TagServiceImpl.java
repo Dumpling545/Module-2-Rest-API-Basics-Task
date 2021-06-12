@@ -22,9 +22,7 @@ public class TagServiceImpl implements TagService {
 	private TagValidator tagValidator;
 
 	@Autowired
-	public TagServiceImpl(TagRepository tagRepository,
-	                      TagValidator tagValidator)
-	{
+	public TagServiceImpl(TagRepository tagRepository, TagValidator tagValidator) {
 		this.tagRepository = tagRepository;
 		this.tagValidator = tagValidator;
 	}
@@ -60,7 +58,6 @@ public class TagServiceImpl implements TagService {
 	@Override
 	public List<TagDTO> getAllTags() throws ServiceException {
 		List<Tag> tagList = tagRepository.getAllTags();
-		return tagList.stream().map(t -> new TagDTO(t.getId(), t.getName()))
-				.toList();
+		return tagList.stream().map(t -> new TagDTO(t.getId(), t.getName())).toList();
 	}
 }

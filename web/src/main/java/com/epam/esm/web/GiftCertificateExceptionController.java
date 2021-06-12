@@ -46,50 +46,34 @@ public class GiftCertificateExceptionController {
 	}
 
 	@ExceptionHandler(GiftCertificateNotFoundException.class)
-	public ResponseEntity<Error> handleException(
-			GiftCertificateNotFoundException ex)
-	{
-		return helper.handle(HttpStatus.NOT_FOUND,
-				CERT_NOT_FOUND_MSG, CERT_POSTFIX, ex.getId());
+	public ResponseEntity<Error> handleException(GiftCertificateNotFoundException ex) {
+		return helper.handle(HttpStatus.NOT_FOUND, CERT_NOT_FOUND_MSG, CERT_POSTFIX, ex.getId());
 	}
 
 	@ExceptionHandler(InvalidCertificateNameException.class)
-	public ResponseEntity<Error> handleException(
-			InvalidCertificateNameException ex)
-	{
-		return helper.handle(HttpStatus.BAD_REQUEST,
-				CERT_INVALID_NAME_MSG, CERT_POSTFIX, ex.getLength(),
-				ex.getMinLength(),
-				ex.getMaxLength());
+	public ResponseEntity<Error> handleException(InvalidCertificateNameException ex) {
+		return helper
+				.handle(HttpStatus.BAD_REQUEST, CERT_INVALID_NAME_MSG, CERT_POSTFIX, ex.getLength(), ex.getMinLength(),
+						ex.getMaxLength());
 	}
 
 	@ExceptionHandler(InvalidCertificateDescriptionException.class)
-	public ResponseEntity<Error> handleException(
-			InvalidCertificateDescriptionException ex)
-	{
-		return helper.handle(HttpStatus.BAD_REQUEST,
-				CERT_INVALID_DESC_MSG, CERT_POSTFIX, ex.getLength(),
-				ex.getMinLength(),
-				ex.getMaxLength());
+	public ResponseEntity<Error> handleException(InvalidCertificateDescriptionException ex) {
+		return helper
+				.handle(HttpStatus.BAD_REQUEST, CERT_INVALID_DESC_MSG, CERT_POSTFIX, ex.getLength(), ex.getMinLength(),
+						ex.getMaxLength());
 	}
 
 	@ExceptionHandler(InvalidCertificateDurationException.class)
-	public ResponseEntity<Error> handleException(
-			InvalidCertificateDurationException ex)
-	{
-		return helper.handle(HttpStatus.BAD_REQUEST,
-				CERT_INVALID_DURATION_MSG, CERT_POSTFIX, ex.getDuration(),
-				ex.getMinDuration(),
-				ex.getMaxDuration());
+	public ResponseEntity<Error> handleException(InvalidCertificateDurationException ex) {
+		return helper.handle(HttpStatus.BAD_REQUEST, CERT_INVALID_DURATION_MSG, CERT_POSTFIX, ex.getDuration(),
+				ex.getMinDuration(), ex.getMaxDuration());
 	}
 
 	@ExceptionHandler(InvalidCertificatePriceException.class)
-	public ResponseEntity<Error> handleException(
-			InvalidCertificatePriceException ex)
-	{
-		return helper.handle(HttpStatus.BAD_REQUEST,
-				CERT_INVALID_PRICE_MSG, CERT_POSTFIX, ex.getPrice(),
-				ex.getMinPrice(),
-				ex.getMaxPrice());
+	public ResponseEntity<Error> handleException(InvalidCertificatePriceException ex) {
+		return helper
+				.handle(HttpStatus.BAD_REQUEST, CERT_INVALID_PRICE_MSG, CERT_POSTFIX, ex.getPrice(), ex.getMinPrice(),
+						ex.getMaxPrice());
 	}
 }

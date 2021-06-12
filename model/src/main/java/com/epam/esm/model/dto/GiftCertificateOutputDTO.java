@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * DTO object encapsulating information about Gift Certificates. Used for Web
- * Layer <- Service layer communication
+ * DTO object encapsulating information about Gift Certificates. Used for Web Layer <- Service layer communication
  */
 public class GiftCertificateOutputDTO extends GiftCertificate {
 
@@ -20,9 +19,7 @@ public class GiftCertificateOutputDTO extends GiftCertificate {
 	public GiftCertificateOutputDTO() {
 	}
 
-	public GiftCertificateOutputDTO(GiftCertificate giftCertificate,
-	                                List<TagDTO> tags)
-	{
+	public GiftCertificateOutputDTO(GiftCertificate giftCertificate, List<TagDTO> tags) {
 		setId(giftCertificate.getId());
 		setName(giftCertificate.getName());
 		setDescription(giftCertificate.getDescription());
@@ -33,15 +30,9 @@ public class GiftCertificateOutputDTO extends GiftCertificate {
 		setTags(tags);
 	}
 
-	public GiftCertificateOutputDTO(int id, String name,
-	                                String description, double price,
-	                                int duration,
-	                                LocalDateTime createDate,
-	                                LocalDateTime lastUpdateDate,
-	                                List<TagDTO> tags)
-	{
-		super(id, name, description, price, duration, createDate,
-				lastUpdateDate);
+	public GiftCertificateOutputDTO(int id, String name, String description, double price, int duration,
+	                                LocalDateTime createDate, LocalDateTime lastUpdateDate, List<TagDTO> tags) {
+		super(id, name, description, price, duration, createDate, lastUpdateDate);
 		this.tags = tags;
 	}
 
@@ -79,8 +70,6 @@ public class GiftCertificateOutputDTO extends GiftCertificate {
 
 	@Override
 	public String toString() {
-		return "GiftCertificateOutputDTO{" +
-				"tags=" + tags +
-				'}';
+		return "GiftCertificateOutputDTO{" + "tags=" + tags + '}';
 	}
 }

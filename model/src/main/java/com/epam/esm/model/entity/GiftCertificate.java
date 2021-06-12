@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Entity object encapsulating information about Gift Certificate. Used for
- * Service Layer <-> Repository layer communication
+ * Entity object encapsulating information about Gift Certificate. Used for Service Layer <-> Repository layer
+ * communication
  */
 public class GiftCertificate implements Serializable {
 	@Serial
@@ -24,11 +24,8 @@ public class GiftCertificate implements Serializable {
 	public GiftCertificate() {
 	}
 
-	public GiftCertificate(int id, String name, String description,
-	                       double price,
-	                       int duration, LocalDateTime createDate,
-	                       LocalDateTime lastUpdateDate)
-	{
+	public GiftCertificate(int id, String name, String description, double price, int duration,
+	                       LocalDateTime createDate, LocalDateTime lastUpdateDate) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -117,19 +114,13 @@ public class GiftCertificate implements Serializable {
 		if (name != null ? !name.equals(that.name) : that.name != null) {
 			return false;
 		}
-		if (description != null ? !description.equals(that.description) :
-				that.description != null)
-		{
+		if (description != null ? !description.equals(that.description) : that.description != null) {
 			return false;
 		}
-		if (createDate != null ? !createDate.equals(that.createDate) :
-				that.createDate != null)
-		{
+		if (createDate != null ? !createDate.equals(that.createDate) : that.createDate != null) {
 			return false;
 		}
-		return lastUpdateDate != null ?
-				lastUpdateDate.equals(that.lastUpdateDate) :
-				that.lastUpdateDate == null;
+		return lastUpdateDate != null ? lastUpdateDate.equals(that.lastUpdateDate) : that.lastUpdateDate == null;
 	}
 
 	@Override
@@ -138,27 +129,19 @@ public class GiftCertificate implements Serializable {
 		long temp;
 		result = id;
 		result = 31 * result + (name != null ? name.hashCode() : 0);
-		result = 31 * result +
-				(description != null ? description.hashCode() : 0);
+		result = 31 * result + (description != null ? description.hashCode() : 0);
 		temp = Double.doubleToLongBits(price);
 		result = 31 * result + (int) (temp ^ (temp >>> 32));
 		result = 31 * result + duration;
 		result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-		result = 31 * result +
-				(lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
+		result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "GiftCertificate{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", description='" + description + '\'' +
-				", price=" + price +
-				", duration=" + duration +
-				", createDate=" + createDate +
-				", lastUpdateDate=" + lastUpdateDate +
-				'}';
+		return "GiftCertificate{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' +
+				", price=" + price + ", duration=" + duration + ", createDate=" + createDate + ", lastUpdateDate=" +
+				lastUpdateDate + '}';
 	}
 }

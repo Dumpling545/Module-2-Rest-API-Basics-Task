@@ -12,9 +12,8 @@ import java.util.Optional;
  */
 public interface GiftCertificateRepository {
 	/**
-	 * Creates new certificate in database. Properties {@link
-	 * GiftCertificate#getId()}, {@link GiftCertificate#getCreateDate()} and
-	 * {@link GiftCertificate#getLastUpdateDate()} will be changed during
+	 * Creates new certificate in database. Properties {@link GiftCertificate#getId()}, {@link
+	 * GiftCertificate#getCreateDate()} and {@link GiftCertificate#getLastUpdateDate()} will be changed during
 	 * execution
 	 *
 	 * @param certificate
@@ -27,9 +26,8 @@ public interface GiftCertificateRepository {
 	 *
 	 * @param id
 	 * 		of certificate to be retrieved
-	 * @return {@link Optional} of certificate containing corresponding
-	 * certificate object, if * certificate with such id exists in database;
-	 * empty {@link Optional} otherwise
+	 * @return {@link Optional} of certificate containing corresponding certificate object, if * certificate with such
+	 * id exists in database; empty {@link Optional} otherwise
 	 */
 	Optional<GiftCertificate> getCertificateById(int id);
 
@@ -46,10 +44,9 @@ public interface GiftCertificateRepository {
 	 * Updates certificate with given {@link GiftCertificate#getId()} value
 	 *
 	 * @param certificate
-	 * 		object that used as filter through {@link GiftCertificate#getId()}
-	 * 		property and as update source through other properties (dates are
-	 * 		ignored). Property {@link GiftCertificate#getLastUpdateDate()} will be
-	 * 		changed during execution
+	 * 		object that used as filter through {@link GiftCertificate#getId()} property and as update source through other
+	 * 		properties (dates are ignored). Property {@link GiftCertificate#getLastUpdateDate()} will be changed during
+	 * 		execution
 	 */
 	void updateCertificate(GiftCertificate certificate);
 
@@ -58,9 +55,8 @@ public interface GiftCertificateRepository {
 	 *
 	 * @param id
 	 * 		id of certificate to be deleted
-	 * @return true if certificate with given id successfully deleted; false if
-	 * certificate with such id does not exist in database by the time of method
-	 * invocation
+	 * @return true if certificate with given id successfully deleted; false if certificate with such id does not exist
+	 * in database by the time of method invocation
 	 */
 	boolean deleteCertificate(int id);
 

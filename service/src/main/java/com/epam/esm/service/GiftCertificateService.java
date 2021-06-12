@@ -12,17 +12,14 @@ import java.util.List;
  */
 public interface GiftCertificateService {
 	/**
-	 * Creates certificate, corresponding tags and relationship between them in
-	 * database
+	 * Creates certificate, corresponding tags and relationship between them in database
 	 *
 	 * @param dto
 	 * 		-- DTO of certificate to be created
-	 * @return {@GiftCertificateOutputDTO} object, that contains all input
-	 * information plus id of tags associated with newly created certificate
-	 * @throws ServiceException
+	 * @return {@GiftCertificateOutputDTO} object, that contains all input information plus id of tags associated with
+	 * newly created certificate
 	 */
-	GiftCertificateOutputDTO createCertificate(GiftCertificateDTO dto)
-			throws ServiceException;
+	GiftCertificateOutputDTO createCertificate(GiftCertificateDTO dto) throws ServiceException;
 
 	/**
 	 * Retrieves certificate with associated tags from database
@@ -30,31 +27,25 @@ public interface GiftCertificateService {
 	 * @param id
 	 * 		id of certificate to be retrieved
 	 * @return dto containing certificate with associated tags
-	 * @throws ServiceException
 	 */
 	GiftCertificateOutputDTO getCertificate(int id) throws ServiceException;
 
 	/**
-	 * Updates certificate, corresponding tags and relationship between them in
-	 * database
+	 * Updates certificate, corresponding tags and relationship between them in database
 	 *
 	 * @param dto
-	 * 		-- DTO of certificate to be updated. Not null and not default fields
-	 * 		will be merged with current state of certificate and then this merged
-	 * 		object override existing certificate
-	 * @return {@GiftCertificateOutputDTO} object, that contains all input
-	 * information plus id of tags associated with updatecertificate
-	 * @throws ServiceException
+	 * 		-- DTO of certificate to be updated. Not null and not default fields will be merged with current state of
+	 * 		certificate and then this merged object override existing certificate
+	 * @return {@GiftCertificateOutputDTO} object, that contains all input information plus id of tags associated with
+	 * updatecertificate
 	 */
-	GiftCertificateOutputDTO updateCertificate(GiftCertificateDTO dto)
-			throws ServiceException;
+	GiftCertificateOutputDTO updateCertificate(GiftCertificateDTO dto) throws ServiceException;
 
 	/**
 	 * Deletes certificate with given id from database
 	 *
 	 * @param id
 	 * 		id of certificate to be deleted
-	 * @throws ServiceException
 	 */
 	void deleteCertificate(int id) throws ServiceException;
 
@@ -62,11 +53,8 @@ public interface GiftCertificateService {
 	 * Retrieves list of certificates that match given filter
 	 *
 	 * @param filter
-	 * 		object that willbe used to filter certificates. Null fields does not
-	 * 		participate in filtering
+	 * 		object that willbe used to filter certificates. Null fields does not participate in filtering
 	 * @return list of filtered certificate DTOs
-	 * @throws ServiceException
 	 */
-	List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter)
-			throws ServiceException;
+	List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter) throws ServiceException;
 }

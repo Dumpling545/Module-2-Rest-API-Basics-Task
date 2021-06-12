@@ -36,8 +36,7 @@ import java.util.ResourceBundle;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.epam.esm.web")
 public class WebConfig implements WebMvcConfigurer {
-	private final static String ERROR_MESSAGES_PROPERTIES =
-			"errorMessages";
+	private final static String ERROR_MESSAGES_PROPERTIES = "errorMessages";
 
 	@Bean
 	public ExceptionHelper exceptionHelper() {
@@ -48,8 +47,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Bean
 	public ObjectMapper objectMapper() {
-		Jackson2ObjectMapperFactoryBean bean =
-				new Jackson2ObjectMapperFactoryBean();
+		Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
 		bean.setIndentOutput(true);
 		bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		bean.setFeaturesToEnable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
@@ -60,16 +58,13 @@ public class WebConfig implements WebMvcConfigurer {
 	}
 
 	private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-		MappingJackson2HttpMessageConverter converter =
-				new MappingJackson2HttpMessageConverter();
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		converter.setObjectMapper(objectMapper());
 		return converter;
 	}
 
 	@Override
-	public void configureMessageConverters(
-			List<HttpMessageConverter<?>> converters)
-	{
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters.add(mappingJackson2HttpMessageConverter());
 	}
 }

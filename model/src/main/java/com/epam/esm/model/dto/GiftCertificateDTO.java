@@ -9,8 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * DTO object encapsulating information about Gift Certificates. Used for Web
- * Layer -> Service layer communication
+ * DTO object encapsulating information about Gift Certificates. Used for Web Layer -> Service layer communication
  */
 public class GiftCertificateDTO extends GiftCertificate {
 	private List<String> tags = Collections.EMPTY_LIST;
@@ -30,14 +29,9 @@ public class GiftCertificateDTO extends GiftCertificate {
 	public static int DEFAULT_DURATION = -1;
 	public static double DEFAULT_PRICE = -1;
 
-	public GiftCertificateDTO(int id, String name, String description,
-	                          double price,
-	                          int duration, LocalDateTime createDate,
-	                          LocalDateTime lastUpdateDate,
-	                          List<String> tags)
-	{
-		super(id, name, description, price, duration, createDate,
-				lastUpdateDate);
+	public GiftCertificateDTO(int id, String name, String description, double price, int duration,
+	                          LocalDateTime createDate, LocalDateTime lastUpdateDate, List<String> tags) {
+		super(id, name, description, price, duration, createDate, lastUpdateDate);
 		this.tags = tags;
 	}
 
@@ -77,8 +71,6 @@ public class GiftCertificateDTO extends GiftCertificate {
 	public String toString() {
 		String base = super.toString();
 		String openBody = base.substring(base.indexOf('{'), base.length() - 1);
-		return "GiftCertificateDTO" +
-				openBody + ", tags=" + tags +
-				'}';
+		return "GiftCertificateDTO" + openBody + ", tags=" + tags + '}';
 	}
 }

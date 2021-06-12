@@ -9,9 +9,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import javax.servlet.*;
 
-public class GiftCertificateWebAppInitializer extends
-		AbstractAnnotationConfigDispatcherServletInitializer
-{
+public class GiftCertificateWebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class<?>[]{DBConfig.class, ServiceConfig.class};

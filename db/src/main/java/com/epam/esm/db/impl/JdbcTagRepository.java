@@ -25,27 +25,18 @@ public class JdbcTagRepository implements TagRepository {
 	private static final String ID = "id";
 	private static final String NAME = "name";
 	//SQL Template Queries
-	private static final String GET_ALL_TAGS_SQL =
-			"SELECT id, name FROM tag";
-	private static final String GET_TAG_BY_ID_SQL =
-			GET_ALL_TAGS_SQL + " WHERE id=?";
-	private static final String GET_TAG_BY_NAME_SQL =
-			GET_ALL_TAGS_SQL + " WHERE name=?";
+	private static final String GET_ALL_TAGS_SQL = "SELECT id, name FROM tag";
+	private static final String GET_TAG_BY_ID_SQL = GET_ALL_TAGS_SQL + " WHERE id=?";
+	private static final String GET_TAG_BY_NAME_SQL = GET_ALL_TAGS_SQL + " WHERE name=?";
 	private static final String GET_TAGS_BY_CERTIFICATE_SQL =
-			GET_ALL_TAGS_SQL + " INNER JOIN " +
-					"tag_gift_certificate ON tag.id=tag_gift_certificate.tag_id " +
+			GET_ALL_TAGS_SQL + " INNER JOIN " + "tag_gift_certificate ON tag.id=tag_gift_certificate.tag_id " +
 					"WHERE gift_certificate_id=?";
-	private static final String DELETE_TAG_SQL =
-			"DELETE FROM tag WHERE id=?";
+	private static final String DELETE_TAG_SQL = "DELETE FROM tag WHERE id=?";
 
 	@Autowired
-	public JdbcTagRepository(JdbcOperations jdbcOperations,
-	                         DataSource dataSource)
-	{
+	public JdbcTagRepository(JdbcOperations jdbcOperations, DataSource dataSource) {
 		this.jdbcOperations = jdbcOperations;
-		simpleJdbcInsert =
-				new SimpleJdbcInsert(dataSource).withTableName(TAG_TABLE)
-						.usingGeneratedKeyColumns(ID);
+		simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(TAG_TABLE).usingGeneratedKeyColumns(ID);
 	}
 
 	private Tag mapTag(ResultSet rs, int row) throws SQLException {
@@ -61,14 +52,14 @@ public class JdbcTagRepository implements TagRepository {
 
 	@Override
 	public Optional<Tag> getTagById(int id) {
-		return Optional.ofNullable(DataAccessUtils.singleResult(jdbcOperations
-				.query(GET_TAG_BY_ID_SQL, this::mapTag, id)));
+		return Optional
+				.ofNullable(DataAccessUtils.singleResult(jdbcOperations.query(GET_TAG_BY_ID_SQL, this::mapTag, id)));
 	}
 
 	@Override
 	public Optional<Tag> getTagByName(String tagName) {
-		return Optional.ofNullable(DataAccessUtils.singleResult(jdbcOperations
-				.query(GET_TAG_BY_NAME_SQL, this::mapTag, tagName)));
+		return Optional.ofNullable(
+				DataAccessUtils.singleResult(jdbcOperations.query(GET_TAG_BY_NAME_SQL, this::mapTag, tagName)));
 	}
 
 	@Override
@@ -78,8 +69,7 @@ public class JdbcTagRepository implements TagRepository {
 
 	@Override
 	public List<Tag> getTagsByCertificate(int certificateId) {
-		return jdbcOperations.query(GET_TAGS_BY_CERTIFICATE_SQL, this::mapTag,
-				certificateId);
+		return jdbcOperations.query(GET_TAGS_BY_CERTIFICATE_SQL, this::mapTag, certificateId);
 	}
 
 	@Override

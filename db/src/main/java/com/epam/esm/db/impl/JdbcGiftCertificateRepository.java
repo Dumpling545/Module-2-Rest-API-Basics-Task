@@ -23,9 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Repository
-public class JdbcGiftCertificateRepository implements
-		GiftCertificateRepository
-{
+public class JdbcGiftCertificateRepository implements GiftCertificateRepository {
 	private JdbcOperations jdbcOperations;
 	private SimpleJdbcInsert simpleJdbcInsert;
 	private static final String CERTIFICATE_TABLE = "gift_certificate";
@@ -39,51 +37,35 @@ public class JdbcGiftCertificateRepository implements
 	private static final String LAST_UPDATE_DATE = "last_update_date";
 	//SQL Template Queries
 	private static final String GET_ALL_CERTIFICATES_SQL =
-			"SELECT id, name, description, duration, price, " +
-					"create_date, last_update_date FROM gift_certificate";
-	private static final String GET_CERTIFICATE_BY_ID_SQL =
-			GET_ALL_CERTIFICATES_SQL + " WHERE id=?";
+			"SELECT id, name, description, duration, price, " + "create_date, last_update_date FROM gift_certificate";
+	private static final String GET_CERTIFICATE_BY_ID_SQL = GET_ALL_CERTIFICATES_SQL + " WHERE id=?";
 	private static final String UPDATE_CERTIFICATE_SQL =
-			"UPDATE gift_certificate SET name = ?, " +
-					"description = ?, duration = ?, price = ?, " +
+			"UPDATE gift_certificate SET name = ?, " + "description = ?, duration = ?, price = ?, " +
 					"last_update_date = ? WHERE id=?";
-	private static final String DELETE_CERTIFICATE_SQL =
-			"DELETE FROM gift_certificate WHERE id=?";
-	private static final String ADD_TAG_TO_CERTIFICATE_SQL = "INSERT INTO " +
-			"tag_gift_certificate(gift_certificate_id, tag_id) VALUES (?,?)";
+	private static final String DELETE_CERTIFICATE_SQL = "DELETE FROM gift_certificate WHERE id=?";
+	private static final String ADD_TAG_TO_CERTIFICATE_SQL =
+			"INSERT INTO " + "tag_gift_certificate(gift_certificate_id, tag_id) VALUES (?,?)";
 	private static final String DELETE_TAG_FROM_CERTIFICATE_SQL =
-			"DELETE FROM tag_gift_certificate " +
-					"WHERE gift_certificate_id=? AND tag_id=?";
+			"DELETE FROM tag_gift_certificate " + "WHERE gift_certificate_id=? AND tag_id=?";
 	//Incomplete SQL Templates
-	private static final String FILTER_BY_TAG_ID_SQL_INC = " INNER JOIN " +
-			"tag_gift_certificate ON gift_certificate.id=" +
-			"tag_gift_certificate.gift_certificate_id " +
-			"WHERE tag_id=? ";
-	private static final String FILTER_BY_NAME_PART_SQL_INC =
-			" name LIKE ? ";
-	private static final String FILTER_BY_DESCRIPTION_PART_SQL_INC =
-			" description LIKE ? ";
+	private static final String FILTER_BY_TAG_ID_SQL_INC =
+			" INNER JOIN " + "tag_gift_certificate ON gift_certificate.id=" +
+					"tag_gift_certificate.gift_certificate_id " + "WHERE tag_id=? ";
+	private static final String FILTER_BY_NAME_PART_SQL_INC = " name LIKE ? ";
+	private static final String FILTER_BY_DESCRIPTION_PART_SQL_INC = " description LIKE ? ";
 	private static final String AND_SQL_INC = " AND ";
 	private static final String WHERE_SQL_INC = " WHERE ";
 
 	@Autowired
-	public JdbcGiftCertificateRepository(JdbcOperations jdbcOperations,
-	                                     DataSource dataSource)
-	{
+	public JdbcGiftCertificateRepository(JdbcOperations jdbcOperations, DataSource dataSource) {
 		this.jdbcOperations = jdbcOperations;
 		simpleJdbcInsert =
-				new SimpleJdbcInsert(dataSource)
-						.withTableName(CERTIFICATE_TABLE)
-						.usingGeneratedKeyColumns(ID);
+				new SimpleJdbcInsert(dataSource).withTableName(CERTIFICATE_TABLE).usingGeneratedKeyColumns(ID);
 	}
 
-	private GiftCertificate mapCertificate(ResultSet rs, int row)
-			throws SQLException
-	{
-		return new GiftCertificate(rs.getInt(ID),
-				rs.getString(NAME), rs.getString(DESCRIPTION),
-				rs.getDouble(PRICE), rs.getInt(DURATION),
-				rs.getTimestamp(CREATE_DATE).toLocalDateTime(),
+	private GiftCertificate mapCertificate(ResultSet rs, int row) throws SQLException {
+		return new GiftCertificate(rs.getInt(ID), rs.getString(NAME), rs.getString(DESCRIPTION), rs.getDouble(PRICE),
+				rs.getInt(DURATION), rs.getTimestamp(CREATE_DATE).toLocalDateTime(),
 				rs.getTimestamp(LAST_UPDATE_DATE).toLocalDateTime());
 	}
 
@@ -98,24 +80,22 @@ public class JdbcGiftCertificateRepository implements
 		parameters.put(DURATION, certificate.getDuration());
 		parameters.put(CREATE_DATE, timestamp);
 		parameters.put(LAST_UPDATE_DATE, timestamp);
-		certificate.setId(simpleJdbcInsert.executeAndReturnKey(parameters)
-				.intValue());
+		certificate.setId(simpleJdbcInsert.executeAndReturnKey(parameters).intValue());
 		certificate.setCreateDate(localDateTime);
 		certificate.setLastUpdateDate(localDateTime);
 	}
 
 	@Override
 	public Optional<GiftCertificate> getCertificateById(int id) {
-		return Optional.ofNullable(DataAccessUtils.singleResult(jdbcOperations
-				.query(GET_CERTIFICATE_BY_ID_SQL, this::mapCertificate, id)));
+		return Optional.ofNullable(DataAccessUtils
+				.singleResult(jdbcOperations.query(GET_CERTIFICATE_BY_ID_SQL, this::mapCertificate, id)));
 	}
 
 	@Override
 	public List<GiftCertificate> getCertificatesByFilter(Filter filter) {
 		List<Object> parameters = new ArrayList<>();
 		String sql = buildSqlFromFilter(filter, parameters);
-		return jdbcOperations
-				.query(sql, this::mapCertificate, parameters.toArray());
+		return jdbcOperations.query(sql, this::mapCertificate, parameters.toArray());
 	}
 
 	private String buildSqlFromFilter(Filter filter, List<Object> parameters) {
@@ -127,8 +107,7 @@ public class JdbcGiftCertificateRepository implements
 			joiner = AND_SQL_INC;
 		}
 		String[] substrs = {filter.getNamePart(), filter.getDescriptionPart()};
-		String[] queries = {FILTER_BY_NAME_PART_SQL_INC,
-				FILTER_BY_DESCRIPTION_PART_SQL_INC};
+		String[] queries = {FILTER_BY_NAME_PART_SQL_INC, FILTER_BY_DESCRIPTION_PART_SQL_INC};
 		for (int i = 0; i < 2; i++) {
 			if (substrs[i] != null && !substrs[i].isBlank()) {
 				sb.append(joiner).append(queries[i]);
@@ -146,9 +125,8 @@ public class JdbcGiftCertificateRepository implements
 	@Override
 	public void updateCertificate(GiftCertificate certificate) {
 		LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
-		jdbcOperations.update(UPDATE_CERTIFICATE_SQL, certificate.getName(),
-				certificate.getDescription(), certificate.getDuration(),
-				certificate.getPrice(), localDateTime, certificate.getId());
+		jdbcOperations.update(UPDATE_CERTIFICATE_SQL, certificate.getName(), certificate.getDescription(),
+				certificate.getDuration(), certificate.getPrice(), localDateTime, certificate.getId());
 		certificate.setLastUpdateDate(localDateTime);
 	}
 
@@ -164,7 +142,6 @@ public class JdbcGiftCertificateRepository implements
 
 	@Override
 	public void removeTag(int certificateId, int tagId) {
-		jdbcOperations
-				.update(DELETE_TAG_FROM_CERTIFICATE_SQL, certificateId, tagId);
+		jdbcOperations.update(DELETE_TAG_FROM_CERTIFICATE_SQL, certificateId, tagId);
 	}
 }

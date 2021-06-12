@@ -3,8 +3,7 @@ package com.epam.esm.service.exception;
 import java.io.Serial;
 
 /**
- * Exception that will be thrown if provided Gift Certificate has price not in
- * valid price range.
+ * Exception that will be thrown if provided Gift Certificate has price not in valid price range.
  */
 public class InvalidCertificatePriceException extends ServiceException {
 	@Serial
@@ -13,9 +12,7 @@ public class InvalidCertificatePriceException extends ServiceException {
 	private final double minPrice;
 	private final double maxPrice;
 
-	public InvalidCertificatePriceException(double price, double minPrice,
-	                                        double maxPrice)
-	{
+	public InvalidCertificatePriceException(double price, double minPrice, double maxPrice) {
 		this.price = price;
 		this.minPrice = minPrice;
 		this.maxPrice = maxPrice;

@@ -16,8 +16,7 @@ import java.util.ResourceBundle;
 @ComponentScan(basePackages = {"com.epam.esm.service"})
 public class ServiceConfig {
 
-	private final static String VALIDATION_PROPERTIES =
-			"validation";
+	private final static String VALIDATION_PROPERTIES = "validation";
 
 	@Bean
 	public TagValidator tagValidator() {
@@ -29,8 +28,7 @@ public class ServiceConfig {
 	@Bean
 	public GiftCertificateValidator giftCertificateValidator() {
 		ResourceBundle rb = ResourceBundle.getBundle(VALIDATION_PROPERTIES);
-		GiftCertificateValidatorImpl validator =
-				new GiftCertificateValidatorImpl(rb);
+		GiftCertificateValidatorImpl validator = new GiftCertificateValidatorImpl(rb);
 		return validator;
 	}
 }

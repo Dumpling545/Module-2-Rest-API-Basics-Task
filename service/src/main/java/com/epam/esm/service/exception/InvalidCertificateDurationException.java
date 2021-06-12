@@ -3,8 +3,7 @@ package com.epam.esm.service.exception;
 import java.io.Serial;
 
 /**
- * Exception that will be thrown if provided Gift Certificate has duration not
- * in valid duration range.
+ * Exception that will be thrown if provided Gift Certificate has duration not in valid duration range.
  */
 public class InvalidCertificateDurationException extends ServiceException {
 	@Serial
@@ -13,9 +12,7 @@ public class InvalidCertificateDurationException extends ServiceException {
 	private final int minDuration;
 	private final int maxDuration;
 
-	public InvalidCertificateDurationException(int duration, int minDuration,
-	                                           int maxDuration)
-	{
+	public InvalidCertificateDurationException(int duration, int minDuration, int maxDuration) {
 		this.duration = duration;
 		this.minDuration = minDuration;
 		this.maxDuration = maxDuration;

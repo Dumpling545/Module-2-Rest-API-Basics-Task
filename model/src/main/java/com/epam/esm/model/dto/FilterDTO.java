@@ -6,8 +6,8 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * DTO object encapsulating information about Gift Certificate filters. Used for
- * Web Layer <-> Service layer communication
+ * DTO object encapsulating information about Gift Certificate filters. Used for Web Layer <-> Service layer
+ * communication
  */
 public class FilterDTO extends Filter {
 
@@ -19,9 +19,7 @@ public class FilterDTO extends Filter {
 	public FilterDTO() {
 	}
 
-	public FilterDTO(String namePart, String descriptionPart,
-	                 SortOption sortBy, String tagName)
-	{
+	public FilterDTO(String namePart, String descriptionPart, SortOption sortBy, String tagName) {
 		super(namePart, descriptionPart, -1, sortBy);
 		this.tagName = tagName;
 	}

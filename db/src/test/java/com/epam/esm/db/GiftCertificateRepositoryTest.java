@@ -29,43 +29,35 @@ public class GiftCertificateRepositoryTest {
 	TagRepository tagRepository;
 	double epsilon = 1e-5;
 
-	private void assertCertificatesEqual(GiftCertificate c1,
-	                                     GiftCertificate c2)
-	{
+	private void assertCertificatesEqual(GiftCertificate c1, GiftCertificate c2) {
 		assertEquals(c1.getId(), c2.getId());
 		assertEquals(c1.getName(), c2.getName());
 		assertEquals(c1.getDescription(), c2.getDescription());
 		assertEquals(c1.getDuration(), c2.getDuration());
 		assertEquals(c1.getPrice(), c2.getPrice(), epsilon);
-		assertEquals(
-				c1.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY),
+		assertEquals(c1.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY),
 				c2.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY));
 		if (c1.getCreateDate() != null && c2.getCreateDate() != null) {
-			assertEquals(
-					c1.getCreateDate().get(ChronoField.MINUTE_OF_DAY),
+			assertEquals(c1.getCreateDate().get(ChronoField.MINUTE_OF_DAY),
 					c2.getCreateDate().get(ChronoField.MINUTE_OF_DAY));
 		}
 	}
 
 	@Test
 	public void createCertificatePositiveTest() {
-		GiftCertificate certificate =
-				new GiftCertificate(-1, "certificate6", "description6",
-						123.42, 6, null, null);
+		GiftCertificate certificate = new GiftCertificate(-1, "certificate6", "description6", 123.42, 6, null, null);
 		giftCertificateRepository.createCertificate(certificate);
 		assertNotEquals(certificate.getId(), -1);
 		assertNotNull(certificate.getCreateDate());
 		assertNotNull(certificate.getLastUpdateDate());
-		Optional<GiftCertificate> copy = giftCertificateRepository
-				.getCertificateById(certificate.getId());
+		Optional<GiftCertificate> copy = giftCertificateRepository.getCertificateById(certificate.getId());
 		assertFalse(copy.isEmpty());
 		assertCertificatesEqual(copy.get(), certificate);
 	}
 
 	@Test
 	public void getCertificatePositiveTest() {
-		Optional<GiftCertificate> optional =
-				giftCertificateRepository.getCertificateById(1);
+		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(1);
 		assertFalse(optional.isEmpty());
 		assertEquals(optional.get().getName(), "certificate1");
 		assertEquals(optional.get().getDescription(), "description1");
@@ -75,8 +67,7 @@ public class GiftCertificateRepositoryTest {
 
 	@Test
 	public void getCertificateNegativeTest() {
-		Optional<GiftCertificate> optional =
-				giftCertificateRepository.getCertificateById(-1);
+		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(-1);
 		assertTrue(optional.isEmpty());
 	}
 
@@ -87,11 +78,9 @@ public class GiftCertificateRepositoryTest {
 		filter.setNamePart("certif");
 		filter.setDescriptionPart("escriptio");
 		filter.setTagId(8);
-		List<GiftCertificate> giftCertificates =
-				giftCertificateRepository.getCertificatesByFilter(filter);
+		List<GiftCertificate> giftCertificates = giftCertificateRepository.getCertificatesByFilter(filter);
 		assertEquals(giftCertificates.size(), 2);
-		assertTrue(giftCertificates.get(0).getCreateDate()
-				.isAfter(giftCertificates.get(1).getCreateDate()));
+		assertTrue(giftCertificates.get(0).getCreateDate().isAfter(giftCertificates.get(1).getCreateDate()));
 		giftCertificates.removeIf(c -> c.getId() == 1);
 		giftCertificates.removeIf(c -> c.getId() == 3);
 		assertEquals(giftCertificates.size(), 0);
@@ -101,29 +90,23 @@ public class GiftCertificateRepositoryTest {
 	public void filterCertificatesNegativeTest() {
 		Filter filter = new Filter();
 		filter.setTagId(4);
-		List<GiftCertificate> giftCertificates =
-				giftCertificateRepository.getCertificatesByFilter(filter);
+		List<GiftCertificate> giftCertificates = giftCertificateRepository.getCertificatesByFilter(filter);
 		assertEquals(giftCertificates.size(), 0);
 	}
 
 	@Test
 	public void updateCertificateTest() {
 		GiftCertificate giftCertificate =
-				new GiftCertificate(1, "certificate111",
-						"description111",
-						123.42, 60,
-						null, null);
+				new GiftCertificate(1, "certificate111", "description111", 123.42, 60, null, null);
 		giftCertificateRepository.updateCertificate(giftCertificate);
-		Optional<GiftCertificate> copyAfter =
-				giftCertificateRepository.getCertificateById(1);
+		Optional<GiftCertificate> copyAfter = giftCertificateRepository.getCertificateById(1);
 		assertFalse(copyAfter.isEmpty());
 		assertCertificatesEqual(copyAfter.get(), giftCertificate);
 	}
 
 	@Test
 	public void deleteTagPositiveTest() {
-		Optional<GiftCertificate> optional =
-				giftCertificateRepository.getCertificateById(3);
+		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(3);
 		assertEquals(optional.isEmpty(), false);
 		assertNotEquals(optional.get().getId(), -1);
 		boolean deleted = giftCertificateRepository.deleteCertificate(3);
