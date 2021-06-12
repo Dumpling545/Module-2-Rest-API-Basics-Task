@@ -4,25 +4,16 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.springframework/spring-tx
-    implementation group: 'org.springframework', name: 'spring-tx', version: '5.3.7'
-
-    // https://mvnrepository.com/artifact/org.springframework/spring-aop
-    implementation group: 'org.springframework', name: 'spring-aop', version: '5.3.7'
-
-    // https://mvnrepository.com/artifact/org.aspectj/aspectjrt
-    implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.9.7.M3'
-
-    // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
-    implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.7.M3'
-    testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-
-    // https://mvnrepository.com/artifact/org.mockito/mockito-core
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.0'
-
-
-    api project(':model')
     api project(':db')
+
+    implementation group: 'org.aspectj', name: 'aspectjrt', version: aspectjVersion
+    implementation group: 'org.aspectj', name: 'aspectjweaver', version: aspectjVersion
+    implementation group: 'org.springframework', name: 'spring-aop', version: springVersion
+    implementation group: 'org.springframework', name: 'spring-tx', version: springVersion
+    implementation project(':model')
+
+    testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: apacheCommonsLangVersion
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
 }
 
 test {
