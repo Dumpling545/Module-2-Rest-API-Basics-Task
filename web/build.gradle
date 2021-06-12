@@ -1,11 +1,11 @@
 apply plugin: 'war'
 def tomcat = '/home/user/Documents/apache-tomcat-8.5.66/'
 war {
-    archiveBaseName="gift-cert-sys"
+    archiveBaseName='gift-cert-sys'
 }
 task setAsTomcatWebApp(type: Copy, dependsOn: build) {
     from war.archivePath
-    into "${tomcat}/webapps"
+    into '${tomcat}/webapps'
 }
 
 dependencies {
@@ -29,6 +29,6 @@ tasks.named('test') {
     // Use junit platform for unit tests.
     useJUnitPlatform()
     testLogging {
-        events "passed", "skipped", "failed"
+        events 'passed', 'skipped', 'failed'
     }
 }

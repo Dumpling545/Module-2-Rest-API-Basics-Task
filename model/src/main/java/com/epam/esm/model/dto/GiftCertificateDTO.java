@@ -4,7 +4,6 @@ import com.epam.esm.model.entity.GiftCertificate;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class GiftCertificateDTO extends GiftCertificate {
 	public static double DEFAULT_PRICE = -1;
 
 	public GiftCertificateDTO(int id, String name, String description, double price, int duration,
-	                          LocalDateTime createDate, LocalDateTime lastUpdateDate, List<String> tags) {
+	                                LocalDateTime createDate, LocalDateTime lastUpdateDate, List<String> tags) {
 		super(id, name, description, price, duration, createDate, lastUpdateDate);
 		this.tags = tags;
 	}
