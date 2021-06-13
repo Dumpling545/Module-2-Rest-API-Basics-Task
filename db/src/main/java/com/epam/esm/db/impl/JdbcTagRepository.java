@@ -3,8 +3,9 @@ package com.epam.esm.db.impl;
 import com.epam.esm.db.TagRepository;
 import com.epam.esm.model.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -18,63 +19,79 @@ import java.util.Optional;
 
 @Repository
 public class JdbcTagRepository implements TagRepository {
-	private static final String TAG_TABLE = "tag";
+	@Value("${tag.sql.table.name}")
+	private String tagTable;
 	//SQL Table Column Labels
-	private static final String ID = "id";
-	private static final String NAME = "name";
+	@Value("${tag.sql.column.id}")
+	private String idColumn;
+	@Value("${tag.sql.column.name}")
+	private String nameColumn;
+	@Value("${tag.sql.column.gift-certificate-id}")
+	private String giftCertificateIdColumn;
 	//SQL Template Queries
-	private static final String GET_ALL_TAGS_SQL = "SELECT id, name FROM tag";
-	private static final String GET_TAG_BY_ID_SQL = GET_ALL_TAGS_SQL + " WHERE id=?";
-	private static final String GET_TAG_BY_NAME_SQL = GET_ALL_TAGS_SQL + " WHERE name=?";
-	private static final String GET_TAGS_BY_CERTIFICATE_SQL =
-			GET_ALL_TAGS_SQL + " INNER JOIN " + "tag_gift_certificate ON tag.id=tag_gift_certificate.tag_id " +
-					"WHERE gift_certificate_id=?";
-	private static final String DELETE_TAG_SQL = "DELETE FROM tag WHERE id=?";
-	private JdbcOperations jdbcOperations;
+	@Value("${tag.sql.query.get-all}")
+	private String getAllTagsSql;
+	@Value("${tag.sql.query.get-by-id}")
+	private String getTagByIdSql;
+	@Value("${tag.sql.query.get-by-name}")
+	private String getTagByNameSql;
+	@Value("${tag.sql.query.get-by-certificate}")
+	private String getTagsByCertificateSql;
+	@Value("${tag.sql.query.delete-by-id}")
+	private String deleteTagSql;
+	
+	private NamedParameterJdbcOperations jdbcOperations;
 	private SimpleJdbcInsert simpleJdbcInsert;
 
 	@Autowired
-	public JdbcTagRepository(JdbcOperations jdbcOperations, DataSource dataSource) {
+	public JdbcTagRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource) {
 		this.jdbcOperations = jdbcOperations;
-		simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(TAG_TABLE).usingGeneratedKeyColumns(ID);
+		simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(tagTable).usingGeneratedKeyColumns(idColumn);
 	}
 
 	private Tag mapTag(ResultSet rs, int row) throws SQLException {
-		return new Tag(rs.getInt(ID), rs.getString(NAME));
+		return new Tag(rs.getInt(idColumn), rs.getString(nameColumn));
 	}
 
 	@Override
 	public void createTag(Tag tag) {
 		Map<String, Object> parameters = new HashMap<>(1);
-		parameters.put(NAME, tag.getName());
-		tag.setId(simpleJdbcInsert.executeAndReturnKey(parameters).intValue());
+		parameters.put(nameColumn, tag.getName());
+		int id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
 	}
 
 	@Override
 	public Optional<Tag> getTagById(int id) {
-		return Optional
-				.ofNullable(DataAccessUtils.singleResult(jdbcOperations.query(GET_TAG_BY_ID_SQL, this::mapTag, id)));
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(idColumn, id);
+		return Optional.ofNullable(
+				DataAccessUtils.singleResult(jdbcOperations.query(getTagByIdSql, parameters, this::mapTag)));
 	}
 
 	@Override
 	public Optional<Tag> getTagByName(String tagName) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(nameColumn, tagName);
 		return Optional.ofNullable(
-				DataAccessUtils.singleResult(jdbcOperations.query(GET_TAG_BY_NAME_SQL, this::mapTag, tagName)));
+				DataAccessUtils.singleResult(jdbcOperations.query(getTagByNameSql, parameters, this::mapTag)));
 	}
 
 	@Override
 	public List<Tag> getAllTags() {
-		return jdbcOperations.query(GET_ALL_TAGS_SQL, this::mapTag);
+		return jdbcOperations.query(getAllTagsSql, this::mapTag);
 	}
 
 	@Override
 	public List<Tag> getTagsByCertificate(int certificateId) {
-		return jdbcOperations.query(GET_TAGS_BY_CERTIFICATE_SQL, this::mapTag, certificateId);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(giftCertificateIdColumn, certificateId);
+		return jdbcOperations.query(getTagsByCertificateSql, parameters, this::mapTag);
 	}
 
 	@Override
 	public boolean deleteTag(int id) {
-
-		return jdbcOperations.update(DELETE_TAG_SQL, id) > 0;
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(idColumn, id);
+		return jdbcOperations.update(deleteTagSql, parameters) > 0;
 	}
 }
