@@ -16,8 +16,9 @@ public interface TagRepository {
 	 *
 	 * @param tag
 	 * 		object containing name for new tag, id field is ignored
+	 * @return Tag object representing newly created tag in database
 	 */
-	void createTag(Tag tag);
+	Tag createTag(Tag tag);
 
 	/**
 	 * Retrieves tag with given id

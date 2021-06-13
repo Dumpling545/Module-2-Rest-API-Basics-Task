@@ -57,10 +57,11 @@ public class JdbcTagRepository implements TagRepository {
 	}
 
 	@Override
-	public void createTag(Tag tag) {
+	public Tag createTag(Tag tag) {
 		Map<String, Object> parameters = new HashMap<>(1);
 		parameters.put(nameColumn, tag.getName());
 		int id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
+		return new Tag(id, tag.getName());
 	}
 
 	@Override
