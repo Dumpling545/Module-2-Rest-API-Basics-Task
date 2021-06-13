@@ -3,7 +3,9 @@ package com.epam.esm.service.merger.impl;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.service.merger.Merger;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GiftCertificateUpdateDtoIntoGiftCertificateMerger
 		implements Merger<GiftCertificate, GiftCertificateUpdateDTO> {
 	@Override
