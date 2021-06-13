@@ -5,6 +5,7 @@ import com.epam.esm.model.entity.Tag;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Interface for managing Tag objects in database
@@ -53,6 +54,13 @@ public interface TagRepository {
 	 * @return {@link List} with all Tag objects associated with given gift certificate id from database
 	 */
 	List<Tag> getTagsByCertificate(int certificateId);
+
+	/**
+	 * Retrieves all tags which names included in provided set
+	 * @param tagNames -- {@link Set} of tag names to retrieve
+	 * @return {@link List} of tags
+	 */
+	List<Tag> getTagsFromNameSet(Set<String> tagNames);
 
 	/**
 	 * Deletes tag with given id from database

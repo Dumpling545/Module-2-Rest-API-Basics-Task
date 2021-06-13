@@ -5,29 +5,30 @@ import com.epam.esm.model.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class JdbcTagRepository implements TagRepository {
 	@Value("${tag.sql.table.name}")
 	private String tagTable;
-	//SQL Table Column Labels
+	//SQL Table Column and Parameter Labels
 	@Value("${tag.sql.column.id}")
 	private String idColumn;
 	@Value("${tag.sql.column.name}")
 	private String nameColumn;
 	@Value("${tag.sql.column.gift-certificate-id}")
 	private String giftCertificateIdColumn;
+	@Value("${tag.sql.param-key.names}")
+	private String namesParamKey;
 	//SQL Template Queries
 	@Value("${tag.sql.query.get-all}")
 	private String getAllTagsSql;
@@ -37,9 +38,11 @@ public class JdbcTagRepository implements TagRepository {
 	private String getTagByNameSql;
 	@Value("${tag.sql.query.get-by-certificate}")
 	private String getTagsByCertificateSql;
+	@Value("${tag.sql.query.get-from-name-se}")
+	private String getTagsFromNameSet;
 	@Value("${tag.sql.query.delete-by-id}")
 	private String deleteTagSql;
-	
+
 	private NamedParameterJdbcOperations jdbcOperations;
 	private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -86,6 +89,12 @@ public class JdbcTagRepository implements TagRepository {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put(giftCertificateIdColumn, certificateId);
 		return jdbcOperations.query(getTagsByCertificateSql, parameters, this::mapTag);
+	}
+
+	@Override
+	public List<Tag> getTagsFromNameSet(Set<String> tagNames) {
+		SqlParameterSource parameters = new MapSqlParameterSource(namesParamKey, tagNames);
+		return jdbcOperations.query(getTagsFromNameSet, parameters, this::mapTag);
 	}
 
 	@Override
