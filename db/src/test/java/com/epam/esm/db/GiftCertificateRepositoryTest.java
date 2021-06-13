@@ -3,9 +3,6 @@ package com.epam.esm.db;
 import com.epam.esm.db.config.DBConfig;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.epam.esm.model.entity.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +15,11 @@ import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DBConfig.class)
+@ContextConfiguration(classes = DatabaseTestConfig.class)
 @ActiveProfiles("test")
 public class GiftCertificateRepositoryTest {
 	@Autowired

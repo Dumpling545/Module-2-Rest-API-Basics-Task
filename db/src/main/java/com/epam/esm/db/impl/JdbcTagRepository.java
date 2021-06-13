@@ -18,8 +18,6 @@ import java.util.Optional;
 
 @Repository
 public class JdbcTagRepository implements TagRepository {
-	private JdbcOperations jdbcOperations;
-	private SimpleJdbcInsert simpleJdbcInsert;
 	private static final String TAG_TABLE = "tag";
 	//SQL Table Column Labels
 	private static final String ID = "id";
@@ -32,6 +30,8 @@ public class JdbcTagRepository implements TagRepository {
 			GET_ALL_TAGS_SQL + " INNER JOIN " + "tag_gift_certificate ON tag.id=tag_gift_certificate.tag_id " +
 					"WHERE gift_certificate_id=?";
 	private static final String DELETE_TAG_SQL = "DELETE FROM tag WHERE id=?";
+	private JdbcOperations jdbcOperations;
+	private SimpleJdbcInsert simpleJdbcInsert;
 
 	@Autowired
 	public JdbcTagRepository(JdbcOperations jdbcOperations, DataSource dataSource) {

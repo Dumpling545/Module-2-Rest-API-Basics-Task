@@ -3,7 +3,6 @@ package com.epam.esm.db.impl;
 import com.epam.esm.db.GiftCertificateRepository;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
-import com.epam.esm.model.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -14,18 +13,12 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.function.LongFunction;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Repository
 public class JdbcGiftCertificateRepository implements GiftCertificateRepository {
-	private JdbcOperations jdbcOperations;
-	private SimpleJdbcInsert simpleJdbcInsert;
 	private static final String CERTIFICATE_TABLE = "gift_certificate";
 	//SQL Table Column Labels
 	private static final String ID = "id";
@@ -55,6 +48,8 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	private static final String FILTER_BY_DESCRIPTION_PART_SQL_INC = " description LIKE ? ";
 	private static final String AND_SQL_INC = " AND ";
 	private static final String WHERE_SQL_INC = " WHERE ";
+	private JdbcOperations jdbcOperations;
+	private SimpleJdbcInsert simpleJdbcInsert;
 
 	@Autowired
 	public JdbcGiftCertificateRepository(JdbcOperations jdbcOperations, DataSource dataSource) {

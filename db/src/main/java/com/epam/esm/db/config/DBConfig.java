@@ -41,14 +41,6 @@ public class DBConfig {
 		HikariDataSource dataSource = new HikariDataSource(config);
 		return dataSource;
 	}
-
-	@Profile("test")
-	@Bean
-	public DataSource embeddedDataSource() {
-		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
-				.addScript("classpath:postgresql-compatibility.sql").addScript("classpath:schema.sql")
-				.addScript("classpath:test-data.sql").build();
-	}
 }
 
 
