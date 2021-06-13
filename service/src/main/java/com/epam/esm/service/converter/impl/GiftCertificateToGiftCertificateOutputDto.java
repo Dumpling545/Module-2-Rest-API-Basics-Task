@@ -3,9 +3,11 @@ package com.epam.esm.service.converter.impl;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.service.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 
+@Component
 public class GiftCertificateToGiftCertificateOutputDto implements Converter<GiftCertificate, GiftCertificateOutputDTO> {
 
 	@Override

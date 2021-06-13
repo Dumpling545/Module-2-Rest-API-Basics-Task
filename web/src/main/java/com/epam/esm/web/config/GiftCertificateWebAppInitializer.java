@@ -2,12 +2,10 @@ package com.epam.esm.web.config;
 
 import com.epam.esm.db.config.DBConfig;
 import com.epam.esm.service.config.ServiceConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
 
 public class GiftCertificateWebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 	@Override

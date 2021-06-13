@@ -1,49 +1,66 @@
 package com.epam.esm.service.validator.impl;
 
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
-import com.epam.esm.service.exception.InvalidCertificateNameException;
+import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GiftCertificateUpdateDtoValidatorImpl implements Validator<GiftCertificateUpdateDTO> {
-	@Value("${cert.minNameLength}")
+	@Value("${cert.name.length.min}")
 	private int minNameLength;
-	@Value("${cert.maxNameLength}")
+	@Value("${cert.name.length.max}")
 	private int maxNameLength;
-	@Value("${cert.minDescLength}")
+	@Value("${cert.desc.length.min}")
 	private int minDescLength;
-	@Value("${cert.maxDescLength}")
+	@Value("${cert.desc.length.max}")
 	private int maxDescLength;
-	@Value("${cert.minDuration}")
+	@Value("${cert.duration.min}")
 	private int minDuration;
-	@Value("${cert.maxDuration}")
+	@Value("${cert.duration.max}")
 	private int maxDuration;
-	@Value("${cert.minPrice}")
+	@Value("${cert.price.min}")
 	private double minPrice;
-	@Value("${cert.maxPrice}")
+	@Value("${cert.price.max}")
 	private double maxPrice;
+
+	@Value("${cert.exception.id.null}")
+	private String nullIdMessage;
+	@Value("${cert.exception.name.out-of-bounds}")
+	private String outOfBoundsNameTemplate;
+	@Value("${cert.exception.desc.out-of-bounds}")
+	private String outOfBoundsDescTemplate;
+	@Value("${cert.exception.duration.out-of-bounds}")
+	private String outOfBoundsDurationTemplate;
+	@Value("${cert.exception.price.out-of-bounds}")
+	private String outOfBoundsPriceTemplate;
 
 	@Override
 	public void validate(GiftCertificateUpdateDTO target) {
-		if(target.getId() == null){
-			throw new InvalidCertificateNameException(0, minNameLength, maxNameLength);
+		if (target.getId() == null) {
+			throw new InvalidCertificateException(nullIdMessage, InvalidCertificateException.Reason.INVALID_ID);
 		}
 		if (target.getName() != null &&
 				(target.getName().length() < minNameLength || target.getName().length() > maxNameLength)) {
-			throw new InvalidCertificateNameException(0, minNameLength, maxNameLength);
+			String message =
+					String.format(outOfBoundsNameTemplate, target.getName().length(), minNameLength, maxNameLength);
+			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_NAME);
 		}
 		if (target.getDescription() != null && (target.getDescription().length() < minDescLength ||
 				target.getDescription().length() > maxDescLength)) {
-			throw new InvalidCertificateNameException(0, minNameLength, maxNameLength);
+			String message = String.format(outOfBoundsDescTemplate, target.getDescription().length(), minDescLength,
+					maxDescLength);
+			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_DESCRIPTION);
 		}
 		if (target.getDuration() != null &&
 				(target.getDuration() < minDuration || target.getDuration() > maxDuration)) {
-			throw new InvalidCertificateNameException(0, minNameLength, maxNameLength);
+			String message = String.format(outOfBoundsDurationTemplate, target.getDuration(), minDuration, maxDuration);
+			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_DURATION);
 		}
 		if (target.getPrice() != null && (target.getPrice() < minPrice || target.getPrice() > maxPrice)) {
-			throw new InvalidCertificateNameException(0, minNameLength, maxNameLength);
+			throw new InvalidCertificateException(outOfBoundsPriceTemplate,
+					InvalidCertificateException.Reason.INVALID_PRICE);
 		}
 	}
 }

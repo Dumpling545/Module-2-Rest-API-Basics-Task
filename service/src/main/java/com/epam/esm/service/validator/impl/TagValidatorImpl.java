@@ -1,32 +1,33 @@
 package com.epam.esm.service.validator.impl;
 
 import com.epam.esm.model.dto.TagDTO;
-import com.epam.esm.model.entity.Tag;
-import com.epam.esm.service.exception.InvalidTagNameException;
-import com.epam.esm.service.exception.ServiceException;
-import com.epam.esm.service.validator.TagValidator;
+import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ResourceBundle;
 @Component
 public class TagValidatorImpl implements Validator<TagDTO> {
 
-	@Value("${tag.minNameLength}")
+	@Value("${tag.name.length.min}")
 	private int minNameLength;
-	@Value("${tag.maxNameLength}")
+	@Value("${tag.name.length.max}")
 	private int maxNameLength;
+	@Value("${tag.exception.name.null}")
+	private String nullNameMessage;
+	@Value("${tag.exception.name.out-of-bounds}")
+	private String outOfBoundsNameTemplate;
 
 
 	@Override
 	public void validate(TagDTO target) {
 		String tagName = target.getName();
-		if(target == null){
-			throw new InvalidTagNameException(0, minNameLength, maxNameLength);
+		if (target == null) {
+			throw new InvalidTagException(nullNameMessage, InvalidTagException.Reason.INVALID_NAME);
 		}
 		if (tagName.length() < minNameLength || tagName.length() > maxNameLength) {
-			throw new InvalidTagNameException(tagName.length(), minNameLength, maxNameLength);
+			String message = String.format(outOfBoundsNameTemplate, tagName.length(), minNameLength, maxNameLength);
+			throw new InvalidTagException(message, InvalidTagException.Reason.INVALID_NAME);
 		}
 	}
 }
