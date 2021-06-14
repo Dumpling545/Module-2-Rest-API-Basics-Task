@@ -37,10 +37,8 @@ public interface GiftCertificateService {
 	 * @param dto
 	 * 		-- DTO of certificate to be updated. Not null and not default fields will be merged with current state of
 	 * 		certificate and then this merged object override existing certificate
-	 * @return {@GiftCertificateOutputDTO} object, that contains all input information plus id of tags associated with
-	 * updatecertificate
 	 */
-	GiftCertificateOutputDTO updateCertificate(GiftCertificateUpdateDTO dto);
+	void updateCertificate(GiftCertificateUpdateDTO dto);
 
 	/**
 	 * Deletes certificate with given id from database

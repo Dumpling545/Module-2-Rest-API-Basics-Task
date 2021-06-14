@@ -4,7 +4,6 @@ import com.epam.esm.db.GiftCertificateRepository;
 import com.epam.esm.model.dto.*;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.converter.Converter;
@@ -12,6 +11,7 @@ import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.merger.Merger;
 import com.epam.esm.service.validator.Validator;
+import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -35,6 +37,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
 	@Value("${cert.exception.not-found}")
 	private String notFoundExceptionTemplate;
+
+	private static final int DEFAULT_ID = -1;
 
 	@Autowired
 	public GiftCertificateServiceImpl(TagService tagService, GiftCertificateRepository giftCertificateRepository,
@@ -54,36 +58,64 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		this.certToOutputDtoConverter = certToOutputDtoConverter;
 	}
 
+	private Set<TagDTO> createTagsFromNameSet(Set<String> tagNames) {
+		Set<TagDTO> newlyCreatedTagDTOs = new HashSet<>();
+		for (String tagName : tagNames) {
+			TagDTO input = new TagDTO(DEFAULT_ID, tagName);
+			TagDTO output = tagService.createTag(input);
+			newlyCreatedTagDTOs.add(output);
+		}
+		return newlyCreatedTagDTOs;
+	}
 
-	private List<Tag> createAndAddNonPresentTags(int certificateId, List<String> inputNames) {
-		/*
-		List<Tag> all = tagRepository.getAllTags();
-		List<Tag> existingTags = all.stream().filter(t -> inputNames.contains(t.getName()))
-				.collect(Collectors.toCollection(ArrayList::new));
-		List<String> existingTagNames = existingTags.stream().map(Tag::getName).toList();
-		List<Tag> newTags = inputNames.stream().filter(s -> !existingTagNames.contains(s)).map(Tag::new).toList();
-		newTags.forEach(tag -> tagRepository.createTag(tag));
-		existingTags.addAll(newTags);
-		existingTags.forEach(tag -> giftCertificateRepository.addTag(certificateId, tag.getId()));
-		return existingTags;*/
-		return null;
+	private InvalidCertificateException createNotFoundException(int id) {
+		String identifier = "id=" + id;
+		String message = String.format(notFoundExceptionTemplate, identifier);
+		return new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND);
+	}
+
+	private GiftCertificateOutputDTO createAndAddTagsToCertificate(Set<String> tagNames,
+	                                                               Supplier<GiftCertificate> certSupplier) {
+		//get tags that are already exists in database
+		Set<TagDTO> existingTagDTOs = tagService.getTagsFromNameSet(tagNames);
+		Set<String> existingTagNames = existingTagDTOs.stream().map(t -> t.getName()).collect(Collectors.toSet());
+		//get tag names that are not in database yet
+		Set<String> newTagNames = SetUtils.difference(tagNames, existingTagNames);
+		//create new tags and form Set from them
+		Set<TagDTO> newlyCreatedTagDTOs = createTagsFromNameSet(newTagNames);
+		//create Set from both sets
+		Set<TagDTO> tagDTOs = new HashSet<>(existingTagDTOs);
+		tagDTOs.addAll(newlyCreatedTagDTOs);
+		//convert certificate to entity & create it
+		GiftCertificate cert = certSupplier.get();
+		//add tags to certificate
+		for (TagDTO tagDTO : tagDTOs) {
+			giftCertificateRepository.addTag(cert.getId(), tagDTO.getId());
+		}
+		//convert certificate entity to dto
+		GiftCertificateOutputDTO outputDTO = certToOutputDtoConverter.convert(cert);
+		//add tagDTOs
+		outputDTO.getTags().addAll(tagDTOs);
+		return outputDTO;
 	}
 
 	@Transactional
-	public GiftCertificateOutputDTO createCertificate(GiftCertificateCreateDTO dto) throws ServiceException {
-		/*
-		giftCertificateValidator.validateCertificate(dto, false);
-		dto.getTags().forEach(s -> tagValidator.validateTagName(s));
-		giftCertificateRepository.createCertificate(dto);
-		List<Tag> tags = createAndAddNonPresentTags(dto.getId(), dto.getTags());
-		List<TagDTO> tagDTOs = tags.stream().map(TagDTO::new).toList();
-		GiftCertificateOutputDTO outputDTO = new GiftCertificateOutputDTO(dto, tagDTOs);
-		return outputDTO; */
-		return null;
+	public GiftCertificateOutputDTO createCertificate(GiftCertificateCreateDTO dto) {
+		certCreateValidator.validate(dto);
+		GiftCertificateOutputDTO outputDTO;
+		try {
+			GiftCertificate input = createDtoToCertConverter.convert(dto);
+			//Create and Add certificates, provided certificate creator
+			outputDTO = createAndAddTagsToCertificate(dto.getTagNames(),
+					() -> giftCertificateRepository.createCertificate(input));
+		} catch (DataAccessException ex) {
+			throw new ServiceException(ex);
+		}
+		return outputDTO;
 	}
 
 	@Override
-	public GiftCertificateOutputDTO getCertificate(int id) throws ServiceException {
+	public GiftCertificateOutputDTO getCertificate(int id) {
 		Set<TagDTO> tags = tagService.getTagsByCertificate(id);
 		Optional<GiftCertificate> optionalCert = Optional.empty();
 		try {
@@ -91,51 +123,50 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		GiftCertificateOutputDTO dto = optionalCert.map(certToOutputDtoConverter::convert).orElseThrow(() -> {
-			String identifier = "id=" + id;
-			String message = String.format(notFoundExceptionTemplate, identifier);
-			return new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND);
-		});
+		GiftCertificateOutputDTO dto =
+				optionalCert.map(certToOutputDtoConverter::convert).orElseThrow(() -> createNotFoundException(id));
 		dto.getTags().addAll(tags);
 		return dto;
 	}
 
 	@Transactional
-	public GiftCertificateOutputDTO updateCertificate(GiftCertificateUpdateDTO dto) throws ServiceException {
-		/*
-		Optional<GiftCertificate> optionalGiftCertificate = giftCertificateRepository.getCertificateById(dto.getId());
-		if (optionalGiftCertificate.isPresent()) {
-			giftCertificateValidator.validateCertificate(dto, true);
-			dto.getTags().forEach(s -> tagValidator.validateTagName(s));
-			List<Tag> currentTagsOnCertificate = tagRepository.getTagsByCertificate(dto.getId());
-			Map<Integer, String> currentTagsOnCertificateMap =
-					currentTagsOnCertificate.stream().collect(Collectors.toMap(Tag::getId, Tag::getName));
-			List<String> nonPresentTagNames =
-					dto.getTags().stream().filter(s -> !currentTagsOnCertificateMap.containsValue(s)).toList();
-			List<Tag> addedTags = createAndAddNonPresentTags(dto.getId(), nonPresentTagNames);
-			List<Integer> obsoleteTagIds =
-					currentTagsOnCertificateMap.entrySet().stream().filter(e -> !dto.getTags().contains(e.getValue()))
-							.map(Map.Entry::getKey).toList();
-			obsoleteTagIds.forEach(id -> giftCertificateRepository.removeTag(dto.getId(), id));
-			GiftCertificate giftCertificate = optionalGiftCertificate.get();
-			merge(giftCertificate, dto);
-			giftCertificateRepository.updateCertificate(giftCertificate);
-			List<TagDTO> currentTagDTOs =
-					currentTagsOnCertificate.stream().map(TagDTO::new).collect(Collectors.toCollection(ArrayList::new));
-			List<TagDTO> addedTagDTOs = addedTags.stream().map(TagDTO::new).toList();
-			currentTagDTOs.addAll(addedTagDTOs);
-			currentTagDTOs.removeIf(t -> obsoleteTagIds.contains(t.getId()));
-			GiftCertificateOutputDTO outputDTO = new GiftCertificateOutputDTO(giftCertificate, currentTagDTOs);
-			return outputDTO;
-		} else {
-			throw new GiftCertificateNotFoundException(dto.getId());
+	public void updateCertificate(GiftCertificateUpdateDTO dto) {
+		certUpdateValidator.validate(dto);
+		try {
+			//retrieve existing certificate
+			Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(dto.getId());
+			//throw exception, if certificate not exists
+			GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(dto.getId()));
+			//get all tags, currently associated to provided certificate
+			Set<TagDTO> currentTagsOfCertificate = tagService.getTagsByCertificate(cert.getId());
+			//collect map from previous set with tag names as keys, and tag ids as values
+			Map<String, Integer> mapCurrentTagNamesToIds =
+					currentTagsOfCertificate.stream().collect(Collectors.toMap(t -> t.getName(), t -> t.getId()));
+			//get tag names needed to be added to certificate
+			Set<String> tagNamesToAdd = SetUtils.difference(dto.getTagNames(), mapCurrentTagNamesToIds.keySet());
+			//add tags
+			createAndAddTagsToCertificate(tagNamesToAdd, () -> cert);
+			//get tags names needed to be removed from certificate
+			Set<String> tagNamesToRemove = SetUtils.difference(mapCurrentTagNamesToIds.keySet(), dto.getTagNames());
+			//remove tags
+			for (String tagName : tagNamesToRemove) {
+				int tagId = mapCurrentTagNamesToIds.get(tagName);
+				giftCertificateRepository.removeTag(cert.getId(), tagId);
+			}
+			//merge updated dto and current certificate into new certificate
+			GiftCertificate updatedCert = updateDtoIntoCertMerger.merge(cert, dto);
+			//update only if there are any difference between old and new version
+			//if not updated then cert is not presented in database --> throw exception
+			if (!updatedCert.equals(cert) && !giftCertificateRepository.updateCertificate(updatedCert)) {
+				throw createNotFoundException(cert.getId());
+			}
+		} catch (DataAccessException ex) {
+			throw new ServiceException(ex);
 		}
-		 */
-		return null;
 	}
 
 	@Override
-	public void deleteCertificate(int id) throws ServiceException {
+	public void deleteCertificate(int id) {
 		boolean deleted = false;
 		try {
 			deleted = giftCertificateRepository.deleteCertificate(id);
@@ -143,14 +174,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 			throw new ServiceException(ex);
 		}
 		if (!deleted) {
-			String identifier = "id=" + id;
-			String message = String.format(notFoundExceptionTemplate, identifier);
-			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND);
+			throw createNotFoundException(id);
 		}
 	}
 
 	@Override
-	public List<GiftCertificateOutputDTO> getCertificates(FilterDTO filterDto) throws ServiceException {
+	public List<GiftCertificateOutputDTO> getCertificates(FilterDTO filterDto) {
 		Filter filter = dtoToFilterConverter.convert(filterDto);
 		List<GiftCertificateOutputDTO> outputDTOList = new ArrayList<>();
 		try {
