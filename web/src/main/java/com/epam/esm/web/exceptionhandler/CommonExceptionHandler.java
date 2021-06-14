@@ -1,7 +1,8 @@
-package com.epam.esm.web;
+package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.model.dto.Error;
 import com.epam.esm.service.exception.ServiceException;
+import com.epam.esm.web.TagController;
 import com.epam.esm.web.helper.ExceptionHelper;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.ResourceBundle;
 
 @Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
-public class CommonExceptionController extends ResponseEntityExceptionHandler {
+public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	private final String CERT_POSTFIX_KEY = "cert.postfix";
 	private final int CERT_POSTFIX;
 	private final String TAG_POSTFIX_KEY = "tag.postfix";
@@ -38,7 +39,7 @@ public class CommonExceptionController extends ResponseEntityExceptionHandler {
 	private ExceptionHelper helper;
 
 	@Autowired
-	public CommonExceptionController(ExceptionHelper helper) {
+	public CommonExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;
 		ResourceBundle rb = helper.getErrorMessagesBundle();
 		TAG_POSTFIX = Integer.parseInt(rb.getString(TAG_POSTFIX_KEY));

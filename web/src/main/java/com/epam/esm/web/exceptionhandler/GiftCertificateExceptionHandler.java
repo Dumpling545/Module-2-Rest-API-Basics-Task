@@ -1,15 +1,12 @@
-package com.epam.esm.web;
+package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.model.dto.Error;
-import com.epam.esm.service.exception.*;
 import com.epam.esm.web.helper.ExceptionHelper;
-import com.fasterxml.jackson.core.JacksonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,7 +14,7 @@ import java.util.ResourceBundle;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
-public class GiftCertificateExceptionController {
+public class GiftCertificateExceptionHandler {
 	private final String CERT_NOT_FOUND_KEY = "cert.notFound";
 	private final String CERT_NOT_FOUND_MSG;
 	private final String CERT_INVALID_NAME_KEY = "cert.invalidName";
@@ -34,7 +31,7 @@ public class GiftCertificateExceptionController {
 	private ExceptionHelper helper;
 
 	@Autowired
-	public GiftCertificateExceptionController(ExceptionHelper helper) {
+	public GiftCertificateExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;
 		ResourceBundle rb = helper.getErrorMessagesBundle();
 		CERT_NOT_FOUND_MSG = rb.getString(CERT_NOT_FOUND_KEY);

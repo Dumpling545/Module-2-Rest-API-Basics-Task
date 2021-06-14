@@ -1,16 +1,12 @@
-package com.epam.esm.web;
+package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.model.dto.Error;
-import com.epam.esm.service.exception.*;
 import com.epam.esm.web.helper.ExceptionHelper;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,7 +14,7 @@ import java.util.ResourceBundle;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
-public class TagExceptionController {
+public class TagExceptionHandler {
 	private final String TAG_NOT_FOUND_KEY = "tag.notFound";
 	private final String TAG_NOT_FOUND_MSG;
 	private final String TAG_ALREADY_EXISTS_KEY = "tag.alreadyExists";
@@ -30,7 +26,7 @@ public class TagExceptionController {
 	private ExceptionHelper helper;
 
 	@Autowired
-	public TagExceptionController(ExceptionHelper helper) {
+	public TagExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;
 		ResourceBundle rb = helper.getErrorMessagesBundle();
 		TAG_NOT_FOUND_MSG = rb.getString(TAG_NOT_FOUND_KEY);

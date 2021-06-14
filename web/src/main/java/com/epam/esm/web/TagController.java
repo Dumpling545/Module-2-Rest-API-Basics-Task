@@ -2,11 +2,8 @@ package com.epam.esm.web;
 
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.service.TagService;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.epam.esm.web;
 
-import com.epam.esm.model.dto.*;
+import com.epam.esm.model.dto.FilterDTO;
+import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
