@@ -1,7 +1,6 @@
 package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.model.dto.Error;
-import com.epam.esm.web.helper.ExceptionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

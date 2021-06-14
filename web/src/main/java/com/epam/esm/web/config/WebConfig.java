@@ -1,13 +1,14 @@
 package com.epam.esm.web.config;
 
 
-import com.epam.esm.web.helper.ExceptionHelper;
+import com.epam.esm.web.exceptionhandler.ExceptionHelper;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,16 +21,8 @@ import java.util.ResourceBundle;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.epam.esm.web")
+@PropertySource("classpath:error-messages.properties")
 public class WebConfig implements WebMvcConfigurer {
-	private final static String ERROR_MESSAGES_PROPERTIES = "errorMessages";
-
-	@Bean
-	public ExceptionHelper exceptionHelper() {
-		ResourceBundle rb = ResourceBundle.getBundle(ERROR_MESSAGES_PROPERTIES);
-		ExceptionHelper exceptionHelper = new ExceptionHelper(rb);
-		return exceptionHelper;
-	}
-
 	@Bean
 	public ObjectMapper objectMapper() {
 		Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
