@@ -7,19 +7,14 @@ import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.service.validator.GiftCertificateValidator;
-import com.epam.esm.service.validator.TagValidator;
 import com.epam.esm.service.exception.GiftCertificateNotFoundException;
 import com.epam.esm.service.exception.InvalidCertificateDescriptionException;
 import com.epam.esm.service.exception.InvalidTagNameException;
+import com.epam.esm.service.validator.GiftCertificateValidator;
+import com.epam.esm.service.validator.TagValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.junit.jupiter.params.provider.Arguments.*;
-
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
@@ -30,6 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestInstance(PER_CLASS)
 public class GiftCertificateServiceImplTest {

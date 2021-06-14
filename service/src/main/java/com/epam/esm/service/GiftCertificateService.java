@@ -1,8 +1,9 @@
 package com.epam.esm.service;
 
 import com.epam.esm.model.dto.FilterDTO;
-import com.epam.esm.model.dto.GiftCertificateDTO;
+import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
+import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.service.exception.ServiceException;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface GiftCertificateService {
 	 * @return {@GiftCertificateOutputDTO} object, that contains all input information plus id of tags associated with
 	 * newly created certificate
 	 */
-	GiftCertificateOutputDTO createCertificate(GiftCertificateDTO dto) throws ServiceException;
+	GiftCertificateOutputDTO createCertificate(GiftCertificateCreateDTO dto);
 
 	/**
 	 * Retrieves certificate with associated tags from database
@@ -28,7 +29,7 @@ public interface GiftCertificateService {
 	 * 		id of certificate to be retrieved
 	 * @return dto containing certificate with associated tags
 	 */
-	GiftCertificateOutputDTO getCertificate(int id) throws ServiceException;
+	GiftCertificateOutputDTO getCertificate(int id);
 
 	/**
 	 * Updates certificate, corresponding tags and relationship between them in database
@@ -39,7 +40,7 @@ public interface GiftCertificateService {
 	 * @return {@GiftCertificateOutputDTO} object, that contains all input information plus id of tags associated with
 	 * updatecertificate
 	 */
-	GiftCertificateOutputDTO updateCertificate(GiftCertificateDTO dto) throws ServiceException;
+	GiftCertificateOutputDTO updateCertificate(GiftCertificateUpdateDTO dto);
 
 	/**
 	 * Deletes certificate with given id from database
@@ -47,7 +48,7 @@ public interface GiftCertificateService {
 	 * @param id
 	 * 		id of certificate to be deleted
 	 */
-	void deleteCertificate(int id) throws ServiceException;
+	void deleteCertificate(int id);
 
 	/**
 	 * Retrieves list of certificates that match given filter
@@ -56,5 +57,5 @@ public interface GiftCertificateService {
 	 * 		object that willbe used to filter certificates. Null fields does not participate in filtering
 	 * @return list of filtered certificate DTOs
 	 */
-	List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter) throws ServiceException;
+	List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter);
 }
