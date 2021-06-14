@@ -4,6 +4,7 @@ package com.epam.esm.web.config;
 import com.epam.esm.web.exceptionhandler.ExceptionHelper;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
 	public ObjectMapper objectMapper() {
 		Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
 		bean.setIndentOutput(true);
-		bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		bean.setDateFormat(new StdDateFormat());
 		bean.setFeaturesToEnable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
 		bean.afterPropertiesSet();
 		ObjectMapper objectMapper = bean.getObject();
