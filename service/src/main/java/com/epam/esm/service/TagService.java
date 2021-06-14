@@ -16,7 +16,7 @@ public interface TagService {
 	 * 		dto representing tag to be created, id is ignored
 	 * @return dto representing created tag
 	 */
-	TagDTO createTag(TagDTO tag) throws ServiceException;
+	TagDTO createTag(TagDTO tag);
 
 	/**
 	 * Retrieves tag object by given id
@@ -25,7 +25,7 @@ public interface TagService {
 	 * 		if of tag to be retrieved
 	 * @return tag matching provided id
 	 */
-	TagDTO getTag(int id) throws ServiceException;
+	TagDTO getTag(int id);
 
 	/**
 	 * Deletes tag object from database
@@ -33,10 +33,10 @@ public interface TagService {
 	 * @param id
 	 * 		id of tag to be deleted
 	 */
-	void deleteTag(int id) throws ServiceException;
+	void deleteTag(int id);
 
 	/**
 	 * Retrieves all existing tags from database
 	 */
-	List<TagDTO> getAllTags() throws ServiceException;
+	List<TagDTO> getAllTags();
 }
