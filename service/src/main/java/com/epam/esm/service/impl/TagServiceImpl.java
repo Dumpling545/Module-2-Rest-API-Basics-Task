@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -25,6 +26,8 @@ public class TagServiceImpl implements TagService {
 	private Validator<TagDTO> tagValidator;
 	private Converter<TagDTO, Tag> tagDtoToTagConverter;
 	private Converter<Tag, TagDTO> tagToTagDtoConverter;
+
+	private static final int DEFAULT_TAG_ID = -1;
 
 	@Value("${tag.exception.already-exists}")
 	private String alreadyExistsExceptionTemplate;
@@ -93,6 +96,19 @@ public class TagServiceImpl implements TagService {
 		List<Tag> tagList = Collections.EMPTY_LIST;
 		try {
 			tagList = tagRepository.getAllTags();
+		} catch (DataAccessException ex) {
+			throw new ServiceException(ex);
+		}
+		List<TagDTO> dtoList = tagList.stream().map(tagToTagDtoConverter::convert).toList();
+		return dtoList;
+	}
+
+	@Override
+	public List<TagDTO> getTagsFromNameSet(Set<String> tagNames) {
+		tagNames.forEach(tn -> tagValidator.validate(new TagDTO(DEFAULT_TAG_ID, tn)));
+		List<Tag> tagList = Collections.EMPTY_LIST;
+		try {
+			tagList = tagRepository.getTagsFromNameSet(tagNames);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}

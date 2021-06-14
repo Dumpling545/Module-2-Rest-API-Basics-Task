@@ -1,9 +1,11 @@
 package com.epam.esm.service;
 
 import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.exception.ServiceException;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Interface of service for manipulating Tag DTO objects
@@ -39,4 +41,11 @@ public interface TagService {
 	 * Retrieves all existing tags from database
 	 */
 	List<TagDTO> getAllTags();
+
+	/**
+	 * Retrieves all tags which names included in provided set from database
+	 * @param tagNames -- {@link Set} of tag names to retrieve
+	 * @return {@link List} of tags
+	 */
+	List<TagDTO> getTagsFromNameSet(Set<String> tagNames);
 }
