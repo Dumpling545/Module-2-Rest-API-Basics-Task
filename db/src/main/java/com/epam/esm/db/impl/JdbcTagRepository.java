@@ -20,13 +20,18 @@ import java.util.*;
 public class JdbcTagRepository implements TagRepository {
 	@Value("${tag.sql.table.name}")
 	private String tagTable;
-	//SQL Table Column and Parameter Labels
+	//SQL Table Column Labels
 	@Value("${tag.sql.column.id}")
 	private String idColumn;
 	@Value("${tag.sql.column.name}")
+	//SQL Parameter keys
 	private String nameColumn;
-	@Value("${tag.sql.column.gift-certificate-id}")
-	private String giftCertificateIdColumn;
+	@Value("${tag.sql.param-key.gift-certificate-id}")
+	private String giftCertificateIdParamKey;
+	@Value("${tag.sql.param-key.id}")
+	private String idParamKey;
+	@Value("${tag.sql.param-key.name}")
+	private String nameParamKey;
 	@Value("${tag.sql.param-key.names}")
 	private String namesParamKey;
 	//SQL Template Queries
@@ -67,7 +72,7 @@ public class JdbcTagRepository implements TagRepository {
 	@Override
 	public Optional<Tag> getTagById(int id) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put(idColumn, id);
+		parameters.put(idParamKey, id);
 		return Optional.ofNullable(
 				DataAccessUtils.singleResult(jdbcOperations.query(getTagByIdSql, parameters, this::mapTag)));
 	}
@@ -75,7 +80,7 @@ public class JdbcTagRepository implements TagRepository {
 	@Override
 	public Optional<Tag> getTagByName(String tagName) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put(nameColumn, tagName);
+		parameters.put(nameParamKey, tagName);
 		return Optional.ofNullable(
 				DataAccessUtils.singleResult(jdbcOperations.query(getTagByNameSql, parameters, this::mapTag)));
 	}
@@ -88,7 +93,7 @@ public class JdbcTagRepository implements TagRepository {
 	@Override
 	public List<Tag> getTagsByCertificate(int certificateId) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put(giftCertificateIdColumn, certificateId);
+		parameters.put(giftCertificateIdParamKey, certificateId);
 		return jdbcOperations.query(getTagsByCertificateSql, parameters, this::mapTag);
 	}
 
@@ -101,7 +106,7 @@ public class JdbcTagRepository implements TagRepository {
 	@Override
 	public boolean deleteTag(int id) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put(idColumn, id);
+		parameters.put(idParamKey, id);
 		return jdbcOperations.update(deleteTagSql, parameters) > 0;
 	}
 }
