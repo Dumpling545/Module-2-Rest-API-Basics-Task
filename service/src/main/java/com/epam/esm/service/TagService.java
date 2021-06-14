@@ -14,8 +14,9 @@ public interface TagService {
 	 *
 	 * @param tag
 	 * 		dto representing tag to be created, id is ignored
+	 * @return dto representing created tag
 	 */
-	void createTag(TagDTO tag) throws ServiceException;
+	TagDTO createTag(TagDTO tag) throws ServiceException;
 
 	/**
 	 * Retrieves tag object by given id

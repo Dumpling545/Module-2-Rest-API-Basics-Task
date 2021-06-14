@@ -16,6 +16,12 @@ public class InvalidTagException extends ServiceException {
 		this.reason = reason;
 	}
 
+	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason) {
+		super(message, thr);
+		this.reason = reason;
+	}
+
+
 	public enum Reason {
 		INVALID_NAME, NOT_FOUND, ALREADY_EXISTS
 	}
