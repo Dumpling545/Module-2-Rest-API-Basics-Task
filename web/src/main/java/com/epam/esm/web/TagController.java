@@ -2,10 +2,13 @@ package com.epam.esm.web;
 
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.service.TagService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -13,7 +16,6 @@ import java.util.List;
 public class TagController {
 	private TagService tagService;
 
-	@Autowired
 	public TagController(TagService tagService) {
 		this.tagService = tagService;
 	}
@@ -28,11 +30,14 @@ public class TagController {
 		return tagService.getAllTags();
 	}
 
-	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public TagDTO createTag(@RequestBody TagDTO tagDTO) {
-		tagService.createTag(tagDTO);
-		return tagDTO;
+	public ResponseEntity<Object> createTag(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
+		TagDTO dto = tagService.createTag(tagDTO);
+		HttpHeaders headers = new HttpHeaders();
+		URI locationUri = ucb.path("/tags/").path(String.valueOf(dto.getId())).build().toUri();
+		headers.setLocation(locationUri);
+		ResponseEntity<Object> entity = new ResponseEntity<Object>(headers, HttpStatus.CREATED);
+		return entity;
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
