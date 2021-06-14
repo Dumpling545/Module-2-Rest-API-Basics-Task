@@ -46,8 +46,10 @@ public interface GiftCertificateRepository {
 	 * 		object that used as filter through {@link GiftCertificate#getId()} property and as update source through other
 	 * 		properties (dates are ignored). Property {@link GiftCertificate#getLastUpdateDate()} will be changed during
 	 * 		execution
+	 * @return true if certificate with given id successfully updated; false if certificate with such id does not exist
+	 * in database by the time of method invocation
 	 */
-	void updateCertificate(GiftCertificate certificate);
+	boolean updateCertificate(GiftCertificate certificate);
 
 	/**
 	 * Deletes certificate with given id from database

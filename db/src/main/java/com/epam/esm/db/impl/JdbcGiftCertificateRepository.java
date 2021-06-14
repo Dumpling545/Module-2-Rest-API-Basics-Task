@@ -183,7 +183,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 
 
 	@Override
-	public void updateCertificate(GiftCertificate certificate) {
+	public boolean updateCertificate(GiftCertificate certificate) {
 		LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put(idParamKey, certificate.getId());
@@ -192,7 +192,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 		parameters.put(durationParamKey, certificate.getDuration());
 		parameters.put(priceParamKey, certificate.getPrice());
 		parameters.put(lastUpdateDateParamKey, localDateTime);
-		jdbcOperations.update(updateCertificateSql, parameters);
+		return jdbcOperations.update(updateCertificateSql, parameters) > 0;
 	}
 
 	@Override
