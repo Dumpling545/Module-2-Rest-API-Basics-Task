@@ -2,6 +2,7 @@ package com.epam.esm.model.dto;
 
 import lombok.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -10,10 +11,9 @@ import java.util.Set;
  */
 @Value
 public class GiftCertificateUpdateDTO {
-	Integer id;
 	String name;
 	String description;
 	Double price;
 	Integer duration;
-	Set<String> tags;
+	Set<String> tagNames = new HashSet<>();
 }

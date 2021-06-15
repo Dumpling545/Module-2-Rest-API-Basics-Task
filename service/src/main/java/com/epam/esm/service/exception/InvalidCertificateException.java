@@ -11,9 +11,16 @@ public class InvalidCertificateException extends ServiceException {
 	@Getter
 	private final Reason reason;
 
+	@Getter
+	private int certificateId;
+
 	public InvalidCertificateException(String message, Reason reason) {
 		super(message);
 		this.reason = reason;
+	}
+	public InvalidCertificateException(String message, Reason reason, int certificateId) {
+		this(message, reason);
+		this.certificateId = certificateId;
 	}
 
 	public InvalidCertificateException(String message, Throwable thr, Reason reason) {
@@ -21,7 +28,12 @@ public class InvalidCertificateException extends ServiceException {
 		this.reason = reason;
 	}
 
+	public InvalidCertificateException(String message, Throwable thr, Reason reason, int certificateId) {
+		this(message, thr, reason);
+		this.certificateId = certificateId;
+	}
+
 	public enum Reason {
-		INVALID_ID, INVALID_NAME, INVALID_DESCRIPTION, INVALID_DURATION, INVALID_PRICE, NOT_FOUND, INVALID_SORT_BY
+		INVALID_NAME, INVALID_DESCRIPTION, INVALID_DURATION, INVALID_PRICE, NOT_FOUND, INVALID_SORT_BY
 	}
 }

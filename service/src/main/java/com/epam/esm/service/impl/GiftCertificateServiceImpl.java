@@ -12,7 +12,6 @@ import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.merger.Merger;
 import com.epam.esm.service.validator.Validator;
 import org.apache.commons.collections4.SetUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
 	private static final int DEFAULT_ID = -1;
 
-	@Autowired
 	public GiftCertificateServiceImpl(TagService tagService, GiftCertificateRepository giftCertificateRepository,
 	                                  Validator<GiftCertificateCreateDTO> certCreateValidator,
 	                                  Validator<GiftCertificateUpdateDTO> certUpdateValidator,
@@ -71,7 +69,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	private InvalidCertificateException createNotFoundException(int id) {
 		String identifier = "id=" + id;
 		String message = String.format(notFoundExceptionTemplate, identifier);
-		return new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND);
+		return new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND, id);
 	}
 
 	private GiftCertificateOutputDTO createAndAddTagsToCertificate(Set<String> tagNames,
@@ -84,8 +82,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		//create new tags and form Set from them
 		Set<TagDTO> newlyCreatedTagDTOs = createTagsFromNameSet(newTagNames);
 		//create Set from both sets
-		Set<TagDTO> tagDTOs = new HashSet<>(existingTagDTOs);
-		tagDTOs.addAll(newlyCreatedTagDTOs);
+		Set<TagDTO> tagDTOs = SetUtils.union(existingTagDTOs, newlyCreatedTagDTOs);
 		//convert certificate to entity & create it
 		GiftCertificate cert = certSupplier.get();
 		//add tags to certificate
@@ -130,13 +127,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	}
 
 	@Transactional
-	public void updateCertificate(GiftCertificateUpdateDTO dto) {
+	public void updateCertificate(int id, GiftCertificateUpdateDTO dto) {
 		certUpdateValidator.validate(dto);
 		try {
 			//retrieve existing certificate
-			Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(dto.getId());
+			Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(id);
 			//throw exception, if certificate not exists
-			GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(dto.getId()));
+			GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(id));
 			//get all tags, currently associated to provided certificate
 			Set<TagDTO> currentTagsOfCertificate = tagService.getTagsByCertificate(cert.getId());
 			//collect map from previous set with tag names as keys, and tag ids as values

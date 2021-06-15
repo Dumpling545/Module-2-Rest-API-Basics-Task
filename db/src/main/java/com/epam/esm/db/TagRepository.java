@@ -57,7 +57,7 @@ public interface TagRepository {
 	List<Tag> getTagsByCertificate(int certificateId);
 
 	/**
-	 * Retrieves all tags which names included in provided set
+	 * Retrieves all tags which names included in provided set from database
 	 * @param tagNames -- {@link Set} of tag names to retrieve
 	 * @return {@link List} of tags
 	 */

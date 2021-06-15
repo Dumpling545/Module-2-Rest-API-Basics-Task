@@ -23,11 +23,11 @@ public class TagValidatorImpl implements Validator<TagDTO> {
 	public void validate(TagDTO target) {
 		String tagName = target.getName();
 		if (target == null) {
-			throw new InvalidTagException(nullNameMessage, InvalidTagException.Reason.INVALID_NAME);
+			throw new InvalidTagException(nullNameMessage, InvalidTagException.Reason.INVALID_NAME, tagName);
 		}
 		if (tagName.length() < minNameLength || tagName.length() > maxNameLength) {
 			String message = String.format(outOfBoundsNameTemplate, tagName.length(), minNameLength, maxNameLength);
-			throw new InvalidTagException(message, InvalidTagException.Reason.INVALID_NAME);
+			throw new InvalidTagException(message, InvalidTagException.Reason.INVALID_NAME, tagName);
 		}
 	}
 }

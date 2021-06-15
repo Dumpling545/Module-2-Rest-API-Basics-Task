@@ -2,7 +2,7 @@ package com.epam.esm.model.dto;
 
 import lombok.Value;
 
-import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -15,5 +15,5 @@ public class GiftCertificateCreateDTO {
 	String description;
 	Double price;
 	Integer duration;
-	Set<String> tags;
+	Set<String> tagNames = new HashSet<>();
 }

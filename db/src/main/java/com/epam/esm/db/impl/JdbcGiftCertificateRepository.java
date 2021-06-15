@@ -4,7 +4,6 @@ import com.epam.esm.db.GiftCertificateRepository;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.SortOption;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -24,10 +23,7 @@ import java.util.Optional;
 
 @Repository
 public class JdbcGiftCertificateRepository implements GiftCertificateRepository {
-	@Value("${cert.sql.table.name}")
-	private String certificateTable;
 	//SQL Table Column Labels
-	@Value("${cert.sql.column.id}")
 	private String idColumn;
 	@Value("${cert.sql.column.name}")
 	private String nameColumn;
@@ -82,7 +78,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	private String filterByTagNameIncompleteSql;
 	@Value("${cert.sql.query-part.filter-by-name-part}")
 	private String filterByNamePartIncompleteSql;
-	@Value("${cert.sql.query-part.filter-by-description-part}")
+	@Value("${cert.sql.query-part.filter-by-desc-part}")
 	private String filterByDescriptionPartIncompleteSql;
 	@Value("${cert.sql.query-part.and}")
 	private String andIncompleteSql;
@@ -98,11 +94,13 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	private final NamedParameterJdbcOperations jdbcOperations;
 	private final SimpleJdbcInsert simpleJdbcInsert;
 
-	@Autowired
-	public JdbcGiftCertificateRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource) {
+	public JdbcGiftCertificateRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource,
+	                                     @Value("${cert.sql.table.name}") String certTableName,
+	                                     @Value("${cert.sql.column.id}") String idColumn) {
 		this.jdbcOperations = jdbcOperations;
+		this.idColumn = idColumn;
 		simpleJdbcInsert =
-				new SimpleJdbcInsert(dataSource).withTableName(certificateTable).usingGeneratedKeyColumns(idColumn);
+				new SimpleJdbcInsert(dataSource).withTableName(certTableName).usingGeneratedKeyColumns(idColumn);
 	}
 
 	private GiftCertificate mapCertificate(ResultSet rs, int row) throws SQLException {
@@ -113,10 +111,10 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	}
 
 	@Override
-	public void createCertificate(GiftCertificate certificate) {
+	public GiftCertificate createCertificate(GiftCertificate certificate) {
 		LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
 		Timestamp timestamp = Timestamp.valueOf(localDateTime);
-		Map<String, Object> parameters = new HashMap<>(6);
+		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(nameColumn, certificate.getName());
 		parameters.put(descriptionColumn, certificate.getDescription());
 		parameters.put(priceColumn, certificate.getPrice());
@@ -124,6 +122,10 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 		parameters.put(createDateColumn, timestamp);
 		parameters.put(lastUpdateDateColumn, timestamp);
 		int id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
+		GiftCertificate giftCertificate =
+				new GiftCertificate(id, certificate.getName(), certificate.getDescription(), certificate.getPrice(),
+						certificate.getDuration(), localDateTime, localDateTime);
+		return giftCertificate;
 	}
 
 	@Override
@@ -150,13 +152,13 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 			joiner = andIncompleteSql;
 		}
 		if (filter.getNamePart() != null && !filter.getNamePart().isBlank()) {
-			sb.append(' ').append(joiner).append(' ').append(filter.getNamePart());
-			parameters.put(namePatternParamKey, "%" + filter.getNamePart() + "%");
+			sb.append(' ').append(joiner).append(' ').append(filterByNamePartIncompleteSql);
+			parameters.put(namePatternParamKey, filter.getNamePart());
 			joiner = andIncompleteSql;
 		}
 		if (filter.getDescriptionPart() != null && !filter.getDescriptionPart().isBlank()) {
-			sb.append(' ').append(joiner).append(' ').append(filter.getDescriptionPart());
-			parameters.put(descriptionPatternParamKey, "%" + filter.getDescriptionPart() + "%");
+			sb.append(' ').append(joiner).append(' ').append(filterByDescriptionPartIncompleteSql);
+			parameters.put(descriptionPatternParamKey, filter.getDescriptionPart());
 			joiner = andIncompleteSql;
 		}
 		if (filter.getSortBy() != null) {

@@ -47,5 +47,14 @@ public interface TagService {
 	 * @param tagNames -- {@link Set} of tag names to retrieve
 	 * @return {@link List} of tags
 	 */
-	List<TagDTO> getTagsFromNameSet(Set<String> tagNames);
+	Set<TagDTO> getTagsFromNameSet(Set<String> tagNames);
+
+	/**
+	 * Retrieves all tags associated with provided gift certificate
+	 *
+	 * @param certificateId
+	 * 		id of gift certificate
+	 * @return {@link List} with all Tag objects associated with given gift certificate id from database
+	 */
+	Set<TagDTO> getTagsByCertificate(int certificateId);
 }

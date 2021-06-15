@@ -2,7 +2,8 @@ package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.model.dto.Error;
 import com.epam.esm.service.exception.InvalidTagException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -27,8 +28,8 @@ public class TagExceptionHandler {
 	private String serviceMsg;
 
 	private ExceptionHelper helper;
+	private static final Logger logger = LogManager.getLogger();
 
-	@Autowired
 	public TagExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;
 	}
@@ -37,20 +38,21 @@ public class TagExceptionHandler {
 	public ResponseEntity<Error> handleException(InvalidTagException ex) {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		String message = serviceMsg;
-		switch (ex.getReason()){
+		switch (ex.getReason()) {
 			case INVALID_NAME:
 				status = HttpStatus.BAD_REQUEST;
-				message = tagInvalidNameMsg;
+				message = String.format(tagInvalidNameMsg, ex.getTagName());
 				break;
 			case ALREADY_EXISTS:
 				status = HttpStatus.CONFLICT;
-				message = tagAlreadyExistsMsg;
+				message = String.format(tagAlreadyExistsMsg, ex.getTagName());
 				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
-				message = tagNotFoundMsg;
+				message = String.format(tagNotFoundMsg, ex.getTagId());
 				break;
 		}
+		logger.error("", ex);
 		return helper.handle(status, message, tagPostfix);
 	}
 }

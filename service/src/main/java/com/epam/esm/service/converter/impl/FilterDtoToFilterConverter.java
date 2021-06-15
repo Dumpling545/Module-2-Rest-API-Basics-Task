@@ -25,7 +25,7 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 	private SortOption.Field field(String field) {
 		SortOption.Field fieldEnum = null;
 		try {
-			SortOption.Field.valueOf(field.toUpperCase());
+			fieldEnum = SortOption.Field.valueOf(field.toUpperCase());
 		} catch (IllegalArgumentException | NullPointerException ex) {
 			String message = String.format(invalidFieldTokenTemplate, field);
 			throw new InvalidCertificateException(message, ex, InvalidCertificateException.Reason.INVALID_SORT_BY);
@@ -36,7 +36,7 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 	private SortOption.Direction direction(String direction) {
 		SortOption.Direction directionEnum = null;
 		try {
-			SortOption.Direction.valueOf(direction.toUpperCase());
+			directionEnum = SortOption.Direction.valueOf(direction.toUpperCase());
 		} catch (IllegalArgumentException | NullPointerException ex) {
 			String message = String.format(invalidDirectionTokenTemplate, direction);
 			throw new InvalidCertificateException(message, ex, InvalidCertificateException.Reason.INVALID_SORT_BY);
@@ -46,15 +46,18 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 
 	@Override
 	public Filter convert(FilterDTO filterDTO) {
-		String tokens[] = filterDTO.getSortBy().split(DELIMITER);
-		if (tokens.length != REQUIRED_SORT_BY_NUMBER_OF_TOKENS) {
-			String message = String.format(invalidNumberOfTokensTemplate, filterDTO.getSortBy(), tokens.length,
-					String.join(DELIMITER, tokens), REQUIRED_SORT_BY_NUMBER_OF_TOKENS);
-			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_SORT_BY);
+		SortOption sortOption = null;
+		if(filterDTO.getSortBy() != null) {
+			String tokens[] = filterDTO.getSortBy().split(DELIMITER);
+			if (tokens.length != REQUIRED_SORT_BY_NUMBER_OF_TOKENS) {
+				String message = String.format(invalidNumberOfTokensTemplate, filterDTO.getSortBy(), tokens.length,
+						String.join(DELIMITER, tokens), REQUIRED_SORT_BY_NUMBER_OF_TOKENS);
+				throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_SORT_BY);
+			}
+			SortOption.Field field = field(tokens[FIELD_TOKEN_INDEX]);
+			SortOption.Direction direction = direction(tokens[DIRECTION_TOKEN_INDEX]);
+			sortOption = new SortOption(field, direction);
 		}
-		SortOption.Field field = field(tokens[FIELD_TOKEN_INDEX]);
-		SortOption.Direction direction = direction(tokens[DIRECTION_TOKEN_INDEX]);
-		SortOption sortOption = new SortOption(field, direction);
 		Filter filter =
 				new Filter(filterDTO.getNamePart(), filterDTO.getDescriptionPart(), filterDTO.getTagName(), sortOption);
 		return filter;

@@ -4,8 +4,9 @@ import com.epam.esm.model.dto.Error;
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.web.GiftCertificateController;
 import com.epam.esm.web.TagController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.TypeMismatchException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -22,9 +23,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+
 @Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
-public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
+public class CommonExceptionHandler {
 	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
 	@Value("${tag.error-info.postfix}")
@@ -40,7 +42,8 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private ExceptionHelper helper;
 
-	@Autowired
+	private static final Logger logger = LogManager.getLogger();
+
 	public CommonExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;
 	}
@@ -59,45 +62,19 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(ServiceException.class)
 	public ResponseEntity<Error> handleException(ServiceException ex, HandlerMethod handlerMethod) {
 		int postfix = resolvePostfix(handlerMethod);
+		logger.error("",ex);
 		return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR, serviceMsg, postfix);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Error> handleException(Exception ex, HandlerMethod handlerMethod) {
+	public ResponseEntity<Error> handleException(Exception ex) {
+		logger.error("", ex);
+		return helper.handle(HttpStatus.BAD_REQUEST, otherMsg, commonPostfix);
+	}
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<Error> handleException(HttpMessageNotReadableException ex, HandlerMethod handlerMethod) {
 		int postfix = resolvePostfix(handlerMethod);
-		return helper.handle(HttpStatus.BAD_REQUEST, otherMsg, postfix);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
-	                                                                     HttpHeaders headers, HttpStatus status,
-	                                                                     WebRequest request) {
-		return helper.noPostfixHandle(status, otherMsg);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
-	                                                           HttpStatus status, WebRequest request) {
-		return helper.noPostfixHandle(status, otherMsg);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
-	                                                                      HttpHeaders headers, HttpStatus status,
-	                                                                      WebRequest request) {
-		return helper.noPostfixHandle(status, otherMsg);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
-	                                                    HttpStatus status, WebRequest request) {
-		return helper.noPostfixHandle(status, otherMsg);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-	                                                              HttpHeaders headers, HttpStatus status,
-	                                                              WebRequest request) {
-		return helper.noPostfixHandle(status, jsonMsg);
+		logger.error("", ex);
+		return helper.handle(HttpStatus.BAD_REQUEST, jsonMsg, postfix);
 	}
 }

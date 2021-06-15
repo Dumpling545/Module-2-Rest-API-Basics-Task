@@ -38,7 +38,7 @@ public interface GiftCertificateService {
 	 * 		-- DTO of certificate to be updated. Not null and not default fields will be merged with current state of
 	 * 		certificate and then this merged object override existing certificate
 	 */
-	void updateCertificate(GiftCertificateUpdateDTO dto);
+	void updateCertificate(int id, GiftCertificateUpdateDTO dto);
 
 	/**
 	 * Deletes certificate with given id from database

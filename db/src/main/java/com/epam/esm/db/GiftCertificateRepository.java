@@ -11,14 +11,13 @@ import java.util.Optional;
  */
 public interface GiftCertificateRepository {
 	/**
-	 * Creates new certificate in database. Properties {@link GiftCertificate#getId()}, {@link
-	 * GiftCertificate#getCreateDate()} and {@link GiftCertificate#getLastUpdateDate()} will be changed during
-	 * execution
+	 * Creates new certificate in database
 	 *
 	 * @param certificate
 	 * 		object containing sources for new certificate, id field is ignored
+	 * @return created certificate
 	 */
-	void createCertificate(GiftCertificate certificate);
+	GiftCertificate createCertificate(GiftCertificate certificate);
 
 	/**
 	 * Retrieves certificate with given id

@@ -38,9 +38,6 @@ public class GiftCertificateUpdateDtoValidatorImpl implements Validator<GiftCert
 
 	@Override
 	public void validate(GiftCertificateUpdateDTO target) {
-		if (target.getId() == null) {
-			throw new InvalidCertificateException(nullIdMessage, InvalidCertificateException.Reason.INVALID_ID);
-		}
 		if (target.getName() != null &&
 				(target.getName().length() < minNameLength || target.getName().length() > maxNameLength)) {
 			String message =

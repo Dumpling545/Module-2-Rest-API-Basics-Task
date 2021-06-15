@@ -2,7 +2,8 @@ package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.model.dto.Error;
 import com.epam.esm.service.exception.InvalidCertificateException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -24,14 +25,17 @@ public class GiftCertificateExceptionHandler {
 	private String certInvalidDurationMsg;
 	@Value("${cert.error-message.invalid-price}")
 	private String certInvalidPriceMsg;
-	@Value("${cert.error-message.not-found}")
+	@Value("${cert.error-message.invalid-sort}")
+	private String certInvalidSortMsg;
+	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
 	@Value("${common.error-message.service}")
 	private String serviceMsg;
 
 	private ExceptionHelper helper;
 
-	@Autowired
+	private static final Logger logger = LogManager.getLogger();
+
 	public GiftCertificateExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;
 	}
@@ -59,9 +63,14 @@ public class GiftCertificateExceptionHandler {
 				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
-				message = certNotFoundMsg;
+				message = String.format(certNotFoundMsg, ex.getCertificateId());
+				break;
+			case INVALID_SORT_BY:
+				status = HttpStatus.BAD_REQUEST;
+				message = certInvalidSortMsg;
 				break;
 		}
+		logger.error("", ex);
 		return helper.handle(status, message, certPostfix);
 	}
 }

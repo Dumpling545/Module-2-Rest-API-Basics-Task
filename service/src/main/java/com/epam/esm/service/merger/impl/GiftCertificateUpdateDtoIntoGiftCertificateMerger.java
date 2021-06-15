@@ -14,7 +14,9 @@ public class GiftCertificateUpdateDtoIntoGiftCertificateMerger
 		String description = merged.getDescription() == null ? base.getDescription() : merged.getDescription();
 		Integer duration = merged.getDuration() == null ? base.getDuration() : merged.getDuration();
 		Double price = merged.getPrice() == null ? base.getPrice() : merged.getPrice();
-		GiftCertificate certificate = new GiftCertificate(base.getId(), name, description, price, duration, null, null);
+		GiftCertificate certificate =
+				new GiftCertificate(base.getId(), name, description, price, duration, base.getCreateDate(),
+						base.getLastUpdateDate());
 		return certificate;
 	}
 }

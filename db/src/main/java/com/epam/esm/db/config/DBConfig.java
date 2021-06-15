@@ -12,7 +12,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan(basePackages = {"com.epam.esm.db"})
-@PropertySource("classpath:sql-queries.properties")
+@PropertySource("classpath:sql.properties")
 public class DBConfig {
 	private static final String PRODUCTION_DB_PROPERTIES = "/hikari-production.properties";
 	private static final String DEVELOPMENT_DB_PROPERTIES = "/hikari-development.properties";

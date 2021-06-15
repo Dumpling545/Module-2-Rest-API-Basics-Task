@@ -2,7 +2,6 @@ package com.epam.esm.db.impl;
 
 import com.epam.esm.db.TagRepository;
 import com.epam.esm.model.entity.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,10 +17,7 @@ import java.util.*;
 
 @Repository
 public class JdbcTagRepository implements TagRepository {
-	@Value("${tag.sql.table.name}")
-	private String tagTable;
 	//SQL Table Column Labels
-	@Value("${tag.sql.column.id}")
 	private String idColumn;
 	@Value("${tag.sql.column.name}")
 	//SQL Parameter keys
@@ -43,7 +39,7 @@ public class JdbcTagRepository implements TagRepository {
 	private String getTagByNameSql;
 	@Value("${tag.sql.query.get-by-certificate}")
 	private String getTagsByCertificateSql;
-	@Value("${tag.sql.query.get-from-name-se}")
+	@Value("${tag.sql.query.get-from-name-set}")
 	private String getTagsFromNameSet;
 	@Value("${tag.sql.query.delete-by-id}")
 	private String deleteTagSql;
@@ -51,10 +47,13 @@ public class JdbcTagRepository implements TagRepository {
 	private NamedParameterJdbcOperations jdbcOperations;
 	private SimpleJdbcInsert simpleJdbcInsert;
 
-	@Autowired
-	public JdbcTagRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource) {
+	public JdbcTagRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource,
+	                         @Value("${tag.sql.table.name}") String tagTableName,
+	                         @Value("${tag.sql.column.id}") String idColumn) {
 		this.jdbcOperations = jdbcOperations;
-		simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(tagTable).usingGeneratedKeyColumns(idColumn);
+		this.idColumn = idColumn;
+		simpleJdbcInsert =
+				new SimpleJdbcInsert(dataSource).withTableName(tagTableName).usingGeneratedKeyColumns(idColumn);
 	}
 
 	private Tag mapTag(ResultSet rs, int row) throws SQLException {
@@ -63,7 +62,7 @@ public class JdbcTagRepository implements TagRepository {
 
 	@Override
 	public Tag createTag(Tag tag) {
-		Map<String, Object> parameters = new HashMap<>(1);
+		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(nameColumn, tag.getName());
 		int id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
 		return new Tag(id, tag.getName());

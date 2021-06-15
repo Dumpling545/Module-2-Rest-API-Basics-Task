@@ -1,12 +1,10 @@
 package com.epam.esm.model.dto;
 
-import com.epam.esm.model.entity.GiftCertificate;
+import lombok.Setter;
 import lombok.Value;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,5 +17,7 @@ public class GiftCertificateOutputDTO {
 	String description;
 	Double price;
 	Integer duration;
+	LocalDateTime createDate;
+	LocalDateTime lastUpdateDate;
 	Set<TagDTO> tags;
 }

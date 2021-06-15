@@ -10,10 +10,24 @@ import lombok.Getter;
 public class InvalidTagException extends ServiceException {
 	@Getter
 	private final Reason reason;
+	@Getter
+	private int tagId;
+	@Getter
+	private String tagName;
 
 	public InvalidTagException(String message, Reason reason) {
 		super(message);
 		this.reason = reason;
+	}
+
+	public InvalidTagException(String message, Reason reason, int id) {
+		this(message, reason);
+		this.tagId = id;
+	}
+
+	public InvalidTagException(String message, Reason reason, String tagName) {
+		this(message, reason);
+		this.tagName = tagName;
 	}
 
 	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason) {
@@ -21,6 +35,15 @@ public class InvalidTagException extends ServiceException {
 		this.reason = reason;
 	}
 
+	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason, int tagId) {
+		this(message, thr, reason);
+		this.tagId = tagId;
+	}
+
+	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason, String tagName) {
+		this(message, thr, reason);
+		this.tagName = tagName;
+	}
 
 	public enum Reason {
 		INVALID_NAME, NOT_FOUND, ALREADY_EXISTS
