@@ -30,6 +30,7 @@ public class GiftCertificateUpdateDtoIntoGiftCertificateMergerTest {
 		GiftCertificate newEntity = merger.merge(entity, dto);
 		assertEquals(entity, newEntity);
 	}
+
 	@Test
 	public void mergeShouldReturnNewEntityWhenPassedNonEmptyDto() {
 		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(null, DTO_DESC, null, null);

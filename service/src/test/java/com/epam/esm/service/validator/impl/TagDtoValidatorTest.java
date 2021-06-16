@@ -49,11 +49,12 @@ public class TagDtoValidatorTest {
 		TagDTO tagDTO = new TagDTO(ID, OUT_OF_BOUNDS_NAME);
 		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagValidator.validate(tagDTO));
 		assertEquals(InvalidTagException.Reason.INVALID_NAME, ex.getReason());
-		String expected = String.format(OUT_OF_BOUNDS_TEMPLATE, OUT_OF_BOUNDS_NAME.length(), MIN_NAME_LENGTH,
-				MAX_NAME_LENGTH);
+		String expected =
+				String.format(OUT_OF_BOUNDS_TEMPLATE, OUT_OF_BOUNDS_NAME.length(), MIN_NAME_LENGTH, MAX_NAME_LENGTH);
 		assertEquals(expected, ex.getMessage());
 		assertEquals(OUT_OF_BOUNDS_NAME, ex.getTagName());
 	}
+
 	@Test
 	public void validateShouldNotThrowExceptionWhenPassedCorrectTag() {
 		TagDTO tagDTO = new TagDTO(ID, CORRECT_NAME);

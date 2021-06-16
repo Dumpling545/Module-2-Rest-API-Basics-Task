@@ -43,6 +43,7 @@ public class TagRepositoryTest {
 	@Autowired
 	TagRepository tagRepository;
 	private List<Tag> expectedTagListOfCertificateOne = new ArrayList<>();
+
 	@BeforeAll
 	public void initExpectedTagListOfCertificateOne() {
 		expectedTagListOfCertificateOne.add(new Tag(EXISTING_TAG_ID_8, EXISTING_TAG_NAME_8));
@@ -111,11 +112,13 @@ public class TagRepositoryTest {
 		List<Tag> tags = tagRepository.getTagsByCertificate(EXISTING_CERT_ID_1);
 		assertEquals(expectedTagListOfCertificateOne, tags);
 	}
+
 	@Test
 	public void getTagsByCertificateShouldReturnEmptyListWhenPassedNonExistingCertificateId() {
 		List<Tag> tags = tagRepository.getTagsByCertificate(NON_EXISTING_CERTIFICATE_ID);
 		assertTrue(tags.isEmpty());
 	}
+
 	@Test
 	public void getTagsFromNameSetShouldReturnListWhenPassedAtLeastOneExistingTagName() {
 		Set<String> tagNames = new HashSet<>();

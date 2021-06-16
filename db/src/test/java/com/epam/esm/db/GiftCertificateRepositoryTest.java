@@ -42,12 +42,11 @@ public class GiftCertificateRepositoryTest {
 	private static final int NOT_ASSOCIATED_TAG_ID = 5;
 	private static final int ASSOCIATED_CERTIFICATE_ID = 2;
 	private static final int ASSOCIATED_TAG_ID = 7;
-	private static double EPS = 1e-5;
 	private static final Filter CONDITIONS_THAT_SOME_DATA_MEET =
 			new Filter("ertif", "escriptio", "tag8", new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC));
 	private static final Filter CONDITIONS_THAT_NO_DATA_MEET =
 			new Filter("wfwf", "wef", "tagr8", new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC));
-
+	private static double EPS = 1e-5;
 	@Autowired
 	GiftCertificateRepository giftCertificateRepository;
 	@Autowired

@@ -166,6 +166,7 @@ public class TagServiceImplTest {
 			assertEquals(expectedOutput, tagDTOs);
 		});
 	}
+
 	@Test
 	public void getAllTagsShouldNotThrowExceptionWhenPassedExistingId() {
 		Validator<TagDTO> tagValidator = Mockito.mock(Validator.class);
@@ -188,6 +189,7 @@ public class TagServiceImplTest {
 			assertEquals(expectedOutput, tagDTOs);
 		});
 	}
+
 	@Test
 	public void getTagsFromNameSetShouldReturnEmptyTagDtoSetWhenPassedEmptyNameSet() {
 		Validator<TagDTO> tagValidator = Mockito.mock(Validator.class);

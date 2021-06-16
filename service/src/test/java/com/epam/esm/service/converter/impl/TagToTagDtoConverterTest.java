@@ -11,12 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TagToTagDtoConverterTest {
 	private static final int ID = 1;
 	private static final String NAME = "name";
+
 	@Test
 	public void convertShouldReturnDtoWhenPassedCorrectEntity() {
 		Tag entity = new Tag(ID, NAME);
 		Converter<Tag, TagDTO> converter = new TagToTagDtoConverter();
 		assertDoesNotThrow(() -> {
-			TagDTO dto  = converter.convert(entity);
+			TagDTO dto = converter.convert(entity);
 			assertEquals(ID, dto.getId());
 			assertEquals(NAME, dto.getName());
 		});

@@ -27,9 +27,10 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 
 	private Validator<TagDTO> tagValidator;
 
-	public FilterDtoToFilterConverter(Validator<TagDTO> tagValidator){
+	public FilterDtoToFilterConverter(Validator<TagDTO> tagValidator) {
 		this.tagValidator = tagValidator;
 	}
+
 	private SortOption.Field field(String field) {
 		SortOption.Field fieldEnum = null;
 		try {
@@ -66,7 +67,7 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 			SortOption.Direction direction = direction(tokens[DIRECTION_TOKEN_INDEX]);
 			sortOption = new SortOption(field, direction);
 		}
-		if(filterDTO.getTagName() != null){
+		if (filterDTO.getTagName() != null) {
 			tagValidator.validate(new TagDTO(DEFAULT_ID, filterDTO.getTagName()));
 		}
 		Filter filter =

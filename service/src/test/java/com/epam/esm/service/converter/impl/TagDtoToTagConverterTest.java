@@ -1,17 +1,17 @@
 package com.epam.esm.service.converter.impl;
 
-import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.TagDTO;
-import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.converter.Converter;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TagDtoToTagConverterTest {
 	private static final int ID = 1;
 	private static final String NAME = "name";
+
 	@Test
 	public void convertShouldReturnEntityWhenPassedCorrectDto() {
 		TagDTO dto = new TagDTO(ID, NAME);

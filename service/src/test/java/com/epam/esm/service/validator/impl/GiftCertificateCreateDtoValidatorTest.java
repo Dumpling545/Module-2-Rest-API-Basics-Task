@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class GiftCertificateCreateDtoValidatorTest {
-	private Validator<GiftCertificateCreateDTO> validator = new GiftCertificateCreateDtoValidatorImpl();
 	static final int MIN_NAME_LENGTH = 3;
 	private static final int MAX_NAME_LENGTH = 10;
 	private static final int MIN_DESC_LENGTH = 5;
@@ -38,7 +37,6 @@ public class GiftCertificateCreateDtoValidatorTest {
 	private static final String CORRECT_DESC = "abcdefghijk";
 	private static final String TOO_SHORT_DESC = "a";
 	private static final String TOO_LONG_DESC = "abcdefghijklmnopqrstu";
-
 	private static final String MIN_NAME_LENGTH_FIELD_NAME = "minNameLength";
 	private static final String MAX_NAME_LENGTH_FIELD_NAME = "maxNameLength";
 	private static final String MIN_DESC_LENGTH_FIELD_NAME = "minDescLength";
@@ -47,7 +45,6 @@ public class GiftCertificateCreateDtoValidatorTest {
 	private static final String MAX_DURATION_FIELD_NAME = "maxDuration";
 	private static final String MIN_PRICE_FIELD_NAME = "minPrice";
 	private static final String MAX_PRICE_FIELD_NAME = "maxPrice";
-
 	private static final String NULL_NAME_MESSAGE_FIELD_NAME = "nullNameMessage";
 	private static final String OUT_OF_BOUNDS_NAME_MESSAGE_FIELD_NAME = "outOfBoundsNameTemplate";
 	private static final String NULL_DESC_MESSAGE_FIELD_NAME = "nullDescMessage";
@@ -57,6 +54,7 @@ public class GiftCertificateCreateDtoValidatorTest {
 	private static final String NULL_PRICE_MESSAGE_FIELD_NAME = "nullPriceMessage";
 	private static final String OUT_OF_BOUNDS_PRICE_MESSAGE_FIELD_NAME = "outOfBoundsPriceTemplate";
 	private static final String MOCK_EX_MESSAGE = "test";
+	private Validator<GiftCertificateCreateDTO> validator = new GiftCertificateCreateDtoValidatorImpl();
 
 	@BeforeAll
 	public void initValidator() {
@@ -74,7 +72,8 @@ public class GiftCertificateCreateDtoValidatorTest {
 		ReflectionTestUtils.setField(validator, NULL_PRICE_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		ReflectionTestUtils.setField(validator, OUT_OF_BOUNDS_NAME_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		ReflectionTestUtils.setField(validator, OUT_OF_BOUNDS_DESC_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
-		ReflectionTestUtils.setField(validator, OUT_OF_BOUNDS_DURATION_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
+		ReflectionTestUtils
+				.setField(validator, OUT_OF_BOUNDS_DURATION_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		ReflectionTestUtils.setField(validator, OUT_OF_BOUNDS_PRICE_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 
 	}
@@ -147,7 +146,7 @@ public class GiftCertificateCreateDtoValidatorTest {
 
 	@ParameterizedTest
 	@MethodSource("invalidPriceTestSource")
-	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidPrice(GiftCertificateCreateDTO cert){
+	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidPrice(GiftCertificateCreateDTO cert) {
 		InvalidCertificateException ex =
 				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_PRICE, ex.getReason());

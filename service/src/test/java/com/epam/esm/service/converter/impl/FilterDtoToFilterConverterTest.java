@@ -70,8 +70,9 @@ public class FilterDtoToFilterConverterTest {
 		Validator<TagDTO> tagValidator = Mockito.mock(Validator.class);
 		FilterDTO dto = new FilterDTO(NAME_PART, DESC_PART, TAG_NAME, INVALID_SORT_OPTION_STR);
 		Converter<FilterDTO, Filter> converter = new FilterDtoToFilterConverter(tagValidator);
-		ReflectionTestUtils.setField(converter, INVALID_FIELD_TOKEN_TEMPLATE_FIELD_NAME,
-				TEST_EXCEPTION_MESSAGE_TEMPLATE, String.class);
+		ReflectionTestUtils
+				.setField(converter, INVALID_FIELD_TOKEN_TEMPLATE_FIELD_NAME, TEST_EXCEPTION_MESSAGE_TEMPLATE,
+						String.class);
 		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class, () -> converter.convert(dto));
 		assertEquals(InvalidCertificateException.Reason.INVALID_SORT_BY, ex.getReason());
 		assertEquals(EXPECTED_SORT_OPTION_MESSAGE, ex.getMessage());
