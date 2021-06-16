@@ -1,31 +1,21 @@
 package com.epam.esm.db;
 
-import com.epam.esm.model.entity.Filter;
-import com.epam.esm.model.entity.GiftCertificate;
-import com.epam.esm.model.entity.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.temporal.ChronoField;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = DatabaseTestConfig.class)
 @ActiveProfiles("test")
 public class GiftCertificateRepositoryTest {
+	public static double EPS = 1e-5;
 	@Autowired
 	GiftCertificateRepository giftCertificateRepository;
 	@Autowired
 	TagRepository tagRepository;
-	public static double EPS = 1e-5;
 /*
 	private void assertCertificatesEqual(GiftCertificate c1, GiftCertificate c2) {
 		assertEquals(c1.getId(), c2.getId());

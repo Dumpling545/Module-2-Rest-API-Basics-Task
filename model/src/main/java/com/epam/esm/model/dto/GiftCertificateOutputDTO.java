@@ -1,10 +1,8 @@
 package com.epam.esm.model.dto;
 
-import lombok.Setter;
 import lombok.Value;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 /**

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TagExceptionHandler {
 
+	private static final Logger logger = LogManager.getLogger();
 	@Value("${tag.error-message.not-found}")
 	private String tagNotFoundMsg;
 	@Value("${tag.error-message.already-exists}")
@@ -26,9 +27,7 @@ public class TagExceptionHandler {
 	private int tagPostfix;
 	@Value("${common.error-message.service}")
 	private String serviceMsg;
-
 	private ExceptionHelper helper;
-	private static final Logger logger = LogManager.getLogger();
 
 	public TagExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;

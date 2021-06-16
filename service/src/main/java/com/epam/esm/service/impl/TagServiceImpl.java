@@ -22,13 +22,11 @@ import java.util.stream.Collectors;
 @Service
 public class TagServiceImpl implements TagService {
 
+	private static final int DEFAULT_TAG_ID = -1;
 	private TagRepository tagRepository;
 	private Validator<TagDTO> tagValidator;
 	private Converter<TagDTO, Tag> tagDtoToTagConverter;
 	private Converter<Tag, TagDTO> tagToTagDtoConverter;
-
-	private static final int DEFAULT_TAG_ID = -1;
-
 	@Value("${tag.exception.already-exists}")
 	private String alreadyExistsExceptionTemplate;
 	@Value("${tag.exception.not-found}")
@@ -104,7 +102,7 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public Set<TagDTO> getTagsFromNameSet(Set<String> tagNames) {
-		if(tagNames.size() == 0){
+		if (tagNames.size() == 0) {
 			return Collections.EMPTY_SET;
 		}
 		tagNames.forEach(tn -> tagValidator.validate(new TagDTO(DEFAULT_TAG_ID, tn)));

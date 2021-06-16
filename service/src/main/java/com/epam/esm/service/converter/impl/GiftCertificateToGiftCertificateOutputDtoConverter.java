@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 
 @Component
-public class GiftCertificateToGiftCertificateOutputDto implements Converter<GiftCertificate, GiftCertificateOutputDTO> {
+public class GiftCertificateToGiftCertificateOutputDtoConverter implements Converter<GiftCertificate, GiftCertificateOutputDTO> {
 
 	@Override
 	public GiftCertificateOutputDTO convert(GiftCertificate giftCertificate) {

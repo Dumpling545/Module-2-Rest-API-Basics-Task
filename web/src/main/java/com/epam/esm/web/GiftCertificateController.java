@@ -37,7 +37,6 @@ public class GiftCertificateController {
 		return certService.getCertificates(filterDTO);
 	}
 
-	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public ResponseEntity<Object> createCertificate(@RequestBody GiftCertificateCreateDTO certDTO,
 	                                                UriComponentsBuilder ucb) {
@@ -49,10 +48,16 @@ public class GiftCertificateController {
 		return entity;
 	}
 
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PutMapping(value = "/{id}")
-	public void updateCertificate(@PathVariable("id") int id, @RequestBody GiftCertificateUpdateDTO certDTO) {
+	public ResponseEntity<Object> updateCertificate(@PathVariable("id") int id,
+	                                                @RequestBody GiftCertificateUpdateDTO certDTO,
+	                                                UriComponentsBuilder ucb) {
 		certService.updateCertificate(id, certDTO);
+		HttpHeaders headers = new HttpHeaders();
+		URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(id)).build().toUri();
+		headers.setLocation(locationUri);
+		ResponseEntity<Object> entity = new ResponseEntity<Object>(headers, HttpStatus.NO_CONTENT);
+		return entity;
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

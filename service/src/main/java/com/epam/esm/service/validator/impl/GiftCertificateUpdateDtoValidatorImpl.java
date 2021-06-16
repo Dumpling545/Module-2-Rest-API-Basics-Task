@@ -25,8 +25,6 @@ public class GiftCertificateUpdateDtoValidatorImpl implements Validator<GiftCert
 	@Value("${cert.price.max}")
 	private double maxPrice;
 
-	@Value("${cert.exception.id.null}")
-	private String nullIdMessage;
 	@Value("${cert.exception.name.out-of-bounds}")
 	private String outOfBoundsNameTemplate;
 	@Value("${cert.exception.desc.out-of-bounds}")

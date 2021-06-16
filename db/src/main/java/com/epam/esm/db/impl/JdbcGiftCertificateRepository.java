@@ -23,6 +23,8 @@ import java.util.Optional;
 
 @Repository
 public class JdbcGiftCertificateRepository implements GiftCertificateRepository {
+	private final NamedParameterJdbcOperations jdbcOperations;
+	private final SimpleJdbcInsert simpleJdbcInsert;
 	//SQL Table Column Labels
 	private String idColumn;
 	@Value("${cert.sql.column.name}")
@@ -90,9 +92,6 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	private String ascIncompleteSql;
 	@Value("${cert.sql.query-part.desc}")
 	private String descIncompleteSql;
-
-	private final NamedParameterJdbcOperations jdbcOperations;
-	private final SimpleJdbcInsert simpleJdbcInsert;
 
 	public JdbcGiftCertificateRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource,
 	                                     @Value("${cert.sql.table.name}") String certTableName,

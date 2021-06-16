@@ -6,13 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.ResourceBundle;
-
 @Component
 public class ExceptionHelper {
 
 	@Value("${common.error-info.postfix}")
 	private int commonPostfix;
+
 	private int getErrorCode(HttpStatus status, int postfix) {
 		return status.value() * 100 + postfix;
 	}

@@ -22,7 +22,7 @@ public class TagValidatorImpl implements Validator<TagDTO> {
 	@Override
 	public void validate(TagDTO target) {
 		String tagName = target.getName();
-		if (target == null) {
+		if (tagName == null) {
 			throw new InvalidTagException(nullNameMessage, InvalidTagException.Reason.INVALID_NAME, tagName);
 		}
 		if (tagName.length() < minNameLength || tagName.length() > maxNameLength) {

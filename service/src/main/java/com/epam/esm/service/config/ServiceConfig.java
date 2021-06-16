@@ -8,4 +8,5 @@ import org.springframework.context.annotation.PropertySource;
 @ComponentScan(basePackages = {"com.epam.esm.service"})
 @PropertySource("classpath:validation.properties")
 @PropertySource("classpath:exception.properties")
-public class ServiceConfig {}
+public class ServiceConfig {
+}

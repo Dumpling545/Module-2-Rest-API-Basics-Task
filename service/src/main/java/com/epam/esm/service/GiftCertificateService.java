@@ -4,7 +4,6 @@ import com.epam.esm.model.dto.FilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
-import com.epam.esm.service.exception.ServiceException;
 
 import java.util.List;
 

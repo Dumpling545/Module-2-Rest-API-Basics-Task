@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class GiftCertificateExceptionHandler {
+	private static final Logger logger = LogManager.getLogger();
 	@Value("${cert.error-message.not-found}")
 	private String certNotFoundMsg;
 	@Value("${cert.error-message.invalid-name}")
@@ -31,10 +32,7 @@ public class GiftCertificateExceptionHandler {
 	private int certPostfix;
 	@Value("${common.error-message.service}")
 	private String serviceMsg;
-
 	private ExceptionHelper helper;
-
-	private static final Logger logger = LogManager.getLogger();
 
 	public GiftCertificateExceptionHandler(ExceptionHelper helper) {
 		this.helper = helper;

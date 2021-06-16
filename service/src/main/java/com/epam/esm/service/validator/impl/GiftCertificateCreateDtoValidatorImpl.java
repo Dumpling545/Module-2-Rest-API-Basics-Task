@@ -70,8 +70,7 @@ public class GiftCertificateCreateDtoValidatorImpl implements Validator<GiftCert
 			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_DURATION);
 		}
 		if (target.getPrice() == null) {
-			throw new InvalidCertificateException(nullPriceMessage,
-					InvalidCertificateException.Reason.INVALID_PRICE);
+			throw new InvalidCertificateException(nullPriceMessage, InvalidCertificateException.Reason.INVALID_PRICE);
 		}
 		if (target.getPrice() < minPrice || target.getPrice() > maxPrice) {
 			throw new InvalidCertificateException(outOfBoundsPriceTemplate,

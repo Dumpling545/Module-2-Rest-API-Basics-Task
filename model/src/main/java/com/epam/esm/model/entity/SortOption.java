@@ -14,6 +14,7 @@ public class SortOption {
 	public enum Field {
 		NAME, LAST_UPDATE_DATE, CREATE_DATE
 	}
+
 	public enum Direction {
 		ASC, DESC
 	}

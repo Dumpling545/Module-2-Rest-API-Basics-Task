@@ -58,7 +58,9 @@ public interface TagRepository {
 
 	/**
 	 * Retrieves all tags which names included in provided set from database
-	 * @param tagNames -- {@link Set} of tag names to retrieve
+	 *
+	 * @param tagNames
+	 * 		-- {@link Set} of tag names to retrieve
 	 * @return {@link List} of tags
 	 */
 	List<Tag> getTagsFromNameSet(Set<String> tagNames);

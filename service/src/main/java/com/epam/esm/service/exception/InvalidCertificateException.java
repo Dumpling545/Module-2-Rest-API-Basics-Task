@@ -18,6 +18,7 @@ public class InvalidCertificateException extends ServiceException {
 		super(message);
 		this.reason = reason;
 	}
+
 	public InvalidCertificateException(String message, Reason reason, int certificateId) {
 		this(message, reason);
 		this.certificateId = certificateId;

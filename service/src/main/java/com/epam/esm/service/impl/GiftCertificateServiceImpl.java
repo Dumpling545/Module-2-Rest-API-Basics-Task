@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
+	private static final int DEFAULT_ID = -1;
 	private TagService tagService;
 	private GiftCertificateRepository giftCertificateRepository;
 	private Validator<GiftCertificateCreateDTO> certCreateValidator;
@@ -33,11 +34,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	private Converter<FilterDTO, Filter> dtoToFilterConverter;
 	private Converter<GiftCertificateCreateDTO, GiftCertificate> createDtoToCertConverter;
 	private Converter<GiftCertificate, GiftCertificateOutputDTO> certToOutputDtoConverter;
-
 	@Value("${cert.exception.not-found}")
 	private String notFoundExceptionTemplate;
-
-	private static final int DEFAULT_ID = -1;
 
 	public GiftCertificateServiceImpl(TagService tagService, GiftCertificateRepository giftCertificateRepository,
 	                                  Validator<GiftCertificateCreateDTO> certCreateValidator,
