@@ -67,6 +67,8 @@ public class TagRepositoryTest {
 	public void deleteTagShouldReturnTrueWhenPassedExistingTagId() {
 		boolean deleted = tagRepository.deleteTag(EXISTING_TAG_ID_2);
 		assertTrue(deleted);
+		Optional fetchedAfterDeletion = tagRepository.getTagById(EXISTING_TAG_ID_2);
+		assertTrue(fetchedAfterDeletion.isEmpty());
 	}
 
 	@Test
@@ -93,6 +95,9 @@ public class TagRepositoryTest {
 		Tag tag = new Tag(NON_EXISTING_TAG_ID, NON_EXISTING_TAG_NAME_TO_BE_CREATED);
 		Tag created = tagRepository.createTag(tag);
 		assertNotNull(created);
+		Optional<Tag> fetchedAfterCreation = tagRepository.getTagById(created.getId());
+		assertTrue(fetchedAfterCreation.isPresent());
+		assertEquals(fetchedAfterCreation.get(), created);
 	}
 
 	@Test
@@ -115,12 +120,12 @@ public class TagRepositoryTest {
 	public void getTagsFromNameSetShouldReturnListWhenPassedAtLeastOneExistingTagName() {
 		Set<String> tagNames = new HashSet<>();
 		tagNames.add(EXISTING_TAG_NAME_1);
-		tagNames.add(EXISTING_TAG_NAME_2);
+		tagNames.add(EXISTING_TAG_NAME_8);
 		tagNames.add(NON_EXISTING_TAG_NAME);
 		List<Tag> output = tagRepository.getTagsFromNameSet(tagNames);
 		List<Tag> expected = new ArrayList<>();
 		expected.add(new Tag(EXISTING_TAG_ID_1, EXISTING_TAG_NAME_1));
-		expected.add(new Tag(EXISTING_TAG_ID_2, EXISTING_TAG_NAME_2));
+		expected.add(new Tag(EXISTING_TAG_ID_8, EXISTING_TAG_NAME_8));
 		assertEquals(expected, output);
 	}
 }
