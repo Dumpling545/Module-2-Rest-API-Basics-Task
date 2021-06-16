@@ -14,7 +14,7 @@ public interface GiftCertificateRepository {
 	 * Creates new certificate in database
 	 *
 	 * @param certificate
-	 * 		object containing sources for new certificate, id field is ignored
+	 * 		object containing sources for new certificate, id and date properties are ignored.
 	 * @return created certificate
 	 */
 	GiftCertificate createCertificate(GiftCertificate certificate);
@@ -43,8 +43,7 @@ public interface GiftCertificateRepository {
 	 *
 	 * @param certificate
 	 * 		object that used as filter through {@link GiftCertificate#getId()} property and as update source through other
-	 * 		properties (dates are ignored). Property {@link GiftCertificate#getLastUpdateDate()} will be changed during
-	 * 		execution
+	 * 		properties (dates are ignored).
 	 * @return true if certificate with given id successfully updated; false if certificate with such id does not exist
 	 * in database by the time of method invocation
 	 */

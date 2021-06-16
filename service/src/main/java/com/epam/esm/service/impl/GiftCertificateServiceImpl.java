@@ -1,7 +1,11 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.db.GiftCertificateRepository;
-import com.epam.esm.model.dto.*;
+import com.epam.esm.model.dto.FilterDTO;
+import com.epam.esm.model.dto.GiftCertificateCreateDTO;
+import com.epam.esm.model.dto.GiftCertificateOutputDTO;
+import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
+import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
@@ -17,7 +21,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 

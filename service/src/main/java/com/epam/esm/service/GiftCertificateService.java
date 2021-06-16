@@ -51,7 +51,7 @@ public interface GiftCertificateService {
 	 * Retrieves list of certificates that match given filter
 	 *
 	 * @param filter
-	 * 		object that willbe used to filter certificates. Null fields does not participate in filtering
+	 * 		object that will be used to filter certificates. Null fields does not participate in filtering
 	 * @return list of filtered certificate DTOs
 	 */
 	List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter);

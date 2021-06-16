@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public interface TagRepository {
 	/**
-	 * Creates new tag in database. Property {@link Tag#getId()} will be changed during  execution
+	 * Creates new tag in database (id property is ignored).
 	 *
 	 * @param tag
 	 * 		object containing name for new tag, id field is ignored
