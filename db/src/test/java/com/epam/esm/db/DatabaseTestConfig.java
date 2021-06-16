@@ -1,14 +1,14 @@
 package com.epam.esm.db;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 
 @Configuration
+@ComponentScan(basePackages = {"com.epam.esm.db"})
+@PropertySource("classpath:sql.properties")
 public class DatabaseTestConfig {
 	@Profile("test")
 	@Bean

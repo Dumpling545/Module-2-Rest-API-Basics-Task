@@ -1,10 +1,16 @@
 package com.epam.esm.db;
 
+import com.epam.esm.model.entity.GiftCertificate;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.time.temporal.ChronoField;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @ExtendWith(SpringExtension.class)
@@ -16,7 +22,7 @@ public class GiftCertificateRepositoryTest {
 	GiftCertificateRepository giftCertificateRepository;
 	@Autowired
 	TagRepository tagRepository;
-/*
+
 	private void assertCertificatesEqual(GiftCertificate c1, GiftCertificate c2) {
 		assertEquals(c1.getId(), c2.getId());
 		assertEquals(c1.getName(), c2.getName());
@@ -126,5 +132,5 @@ public class GiftCertificateRepositoryTest {
 		tags = tagRepository.getTagsByCertificate(3);
 		assertTrue(tags.stream().noneMatch(t -> t.getId() == 3));
 	}
-*/
+
 }
