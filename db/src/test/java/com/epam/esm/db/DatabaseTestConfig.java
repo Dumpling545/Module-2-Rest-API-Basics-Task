@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan(basePackages = {"com.epam.esm.db"})
-@PropertySource("classpath:sql.properties")
 public class DatabaseTestConfig {
 	@Profile("test")
 	@Bean
