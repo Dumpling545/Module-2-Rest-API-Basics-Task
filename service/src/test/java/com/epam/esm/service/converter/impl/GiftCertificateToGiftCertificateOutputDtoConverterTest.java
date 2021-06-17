@@ -5,6 +5,7 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.service.converter.Converter;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -15,7 +16,7 @@ public class GiftCertificateToGiftCertificateOutputDtoConverterTest {
 	private static final String NAME = "name";
 	private static final String DESCRIPTION = "description";
 	private static final int DURATION = 1;
-	private static final double PRICE = 2.3;
+	private static final BigDecimal PRICE = BigDecimal.valueOf(2.3);
 	private static final int ID = 1;
 	private static final LocalDateTime CREATE_DATE = LocalDateTime.now();
 	private static final LocalDateTime LAST_UPDATE_DATE = LocalDateTime.MAX;

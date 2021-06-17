@@ -5,6 +5,8 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.service.merger.Merger;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class GiftCertificateUpdateDtoIntoGiftCertificateMerger
 		implements Merger<GiftCertificate, GiftCertificateUpdateDTO> {
@@ -13,7 +15,7 @@ public class GiftCertificateUpdateDtoIntoGiftCertificateMerger
 		String name = merged.getName() == null ? base.getName() : merged.getName();
 		String description = merged.getDescription() == null ? base.getDescription() : merged.getDescription();
 		Integer duration = merged.getDuration() == null ? base.getDuration() : merged.getDuration();
-		Double price = merged.getPrice() == null ? base.getPrice() : merged.getPrice();
+		BigDecimal price = merged.getPrice() == null ? base.getPrice() : merged.getPrice();
 		GiftCertificate certificate =
 				new GiftCertificate(base.getId(), name, description, price, duration, base.getCreateDate(),
 						base.getLastUpdateDate());

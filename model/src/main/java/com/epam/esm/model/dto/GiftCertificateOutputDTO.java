@@ -2,6 +2,7 @@ package com.epam.esm.model.dto;
 
 import lombok.Value;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public class GiftCertificateOutputDTO {
 	Integer id;
 	String name;
 	String description;
-	Double price;
+	BigDecimal price;
 	Integer duration;
 	LocalDateTime createDate;
 	LocalDateTime lastUpdateDate;

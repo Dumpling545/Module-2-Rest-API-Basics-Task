@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
 import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
@@ -32,15 +33,15 @@ public class GiftCertificateRepositoryTest {
 	private static final String EXISTING_NAME_1 = "certificate1";
 	private static final String EXISTING_DESC_1 = "description1";
 	private static final int EXISTING_DURATION_1 = 1;
-	private static final double EXISTING_PRICE_1 = 12.34;
+	private static final BigDecimal EXISTING_PRICE_1 = BigDecimal.valueOf(12.34);
 	private static final String NAME_TO_BE_CREATED = "certificate6";
 	private static final String DESCRIPTION_TO_BE_CREATED = "description6";
-	private static final double PRICE_TO_BE_CREATED = 123.42;
+	private static final BigDecimal PRICE_TO_BE_CREATED = BigDecimal.valueOf(123.42);
 	private static final int DURATION_TO_BE_CREATED = 6;
 	private static final int EXISTING_ID_2 = 2;
 	private static final String NEW_NAME_2 = "certificate111";
 	private static final String NEW_DESC_2 = "description111";
-	private static final double NEW_PRICE_2 = 123.42;
+	private static final BigDecimal NEW_PRICE_2 = BigDecimal.valueOf(123.42);
 	private static final int NEW_DURATION_2 = 60;
 	private static final int EXISTING_ID_3 = 3;
 	private static final int NOT_ASSOCIATED_CERTIFICATE_ID = 5;
@@ -51,7 +52,6 @@ public class GiftCertificateRepositoryTest {
 			new Filter("ertif", "escriptio", "tag8", new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC));
 	private static final Filter CONDITIONS_THAT_NO_DATA_MEET =
 			new Filter("wfwf", "wef", "tagr8", new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC));
-	private static double EPS = 1e-5;
 	@Autowired
 	GiftCertificateRepository giftCertificateRepository;
 	@Autowired
@@ -62,7 +62,7 @@ public class GiftCertificateRepositoryTest {
 		assertEquals(c1.getName(), c2.getName());
 		assertEquals(c1.getDescription(), c2.getDescription());
 		assertEquals(c1.getDuration(), c2.getDuration());
-		assertEquals(c1.getPrice(), c2.getPrice(), EPS);
+		assertEquals(c1.getPrice(), c2.getPrice());
 		if (c1.getLastUpdateDate() != null && c2.getLastUpdateDate() != null) {
 			assertEquals(c1.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY),
 					c2.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY));
@@ -95,7 +95,7 @@ public class GiftCertificateRepositoryTest {
 		assertEquals(EXISTING_NAME_1, fetched.getName());
 		assertEquals(EXISTING_DESC_1, fetched.getDescription());
 		assertEquals(EXISTING_DURATION_1, fetched.getDuration());
-		assertEquals(EXISTING_PRICE_1, fetched.getPrice(), EPS);
+		assertEquals(EXISTING_PRICE_1, fetched.getPrice());
 	}
 
 	@Test

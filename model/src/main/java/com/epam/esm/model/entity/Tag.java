@@ -7,6 +7,6 @@ import lombok.Value;
  */
 @Value
 public class Tag {
-	int id;
+	Integer id;
 	String name;
 }

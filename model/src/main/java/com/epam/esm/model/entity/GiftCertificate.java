@@ -2,6 +2,7 @@ package com.epam.esm.model.entity;
 
 import lombok.Value;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -10,11 +11,11 @@ import java.time.LocalDateTime;
  */
 @Value
 public class GiftCertificate {
-	int id;
+	Integer id;
 	String name;
 	String description;
-	double price;
-	int duration;
+	BigDecimal price;
+	Integer duration;
 	LocalDateTime createDate;
 	LocalDateTime lastUpdateDate;
 }

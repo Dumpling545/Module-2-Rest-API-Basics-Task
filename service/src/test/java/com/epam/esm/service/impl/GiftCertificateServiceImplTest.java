@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -58,7 +59,7 @@ public class GiftCertificateServiceImplTest {
 	private static final String CERT_NAME = "cert name";
 	private static final String INVALID_CERT_NAME = "invalid cert name";
 	private static final String CERT_DESC = "cert desc";
-	private static final double CERT_PRICE = 12.3;
+	private static final BigDecimal CERT_PRICE = BigDecimal.valueOf(12.3);
 	private static final int CERT_DURATION = 3;
 	private static final LocalDateTime CERT_CREATE_DATE = LocalDateTime.MIN;
 	private static final LocalDateTime CERT_LAST_UPDATE_DATE = LocalDateTime.MAX;
@@ -179,7 +180,7 @@ public class GiftCertificateServiceImplTest {
 			String description =
 					updateDTO.getDescription() == null ? cert.getDescription() : updateDTO.getDescription();
 			Integer duration = updateDTO.getDuration() == null ? cert.getDuration() : updateDTO.getDuration();
-			Double price = updateDTO.getPrice() == null ? cert.getPrice() : updateDTO.getPrice();
+			BigDecimal price = updateDTO.getPrice() == null ? cert.getPrice() : updateDTO.getPrice();
 			GiftCertificate certificate =
 					new GiftCertificate(cert.getId(), name, description, price, duration, cert.getCreateDate(),
 							cert.getLastUpdateDate());

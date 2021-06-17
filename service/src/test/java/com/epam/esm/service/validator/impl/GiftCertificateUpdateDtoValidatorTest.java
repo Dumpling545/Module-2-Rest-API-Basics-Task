@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,12 +29,12 @@ public class GiftCertificateUpdateDtoValidatorTest {
 	private static final int MAX_DESC_LENGTH = 12;
 	private static final int MIN_DURATION = 1;
 	private static final int MAX_DURATION = 10;
-	private static final double MIN_PRICE = 0.1;
-	private static final double MAX_PRICE = 24.32;
+	private static final BigDecimal MIN_PRICE = BigDecimal.valueOf(0.1);
+	private static final BigDecimal MAX_PRICE = BigDecimal.valueOf(24.32);
 	private static final int CORRECT_DURATION = 5;
 	private static final int DELTA_DURATION = 1;
-	private static final double CORRECT_PRICE = 15.46;
-	private static final double DELTA_PRICE = 1;
+	private static final BigDecimal CORRECT_PRICE = BigDecimal.valueOf(15.46);
+	private static final BigDecimal DELTA_PRICE = BigDecimal.valueOf(1);
 	private static final String CORRECT_NAME = "abcde";
 	private static final String TOO_SHORT_NAME = "a";
 	private static final String TOO_LONG_NAME = "abcdefghijklmnop";
@@ -102,9 +103,9 @@ public class GiftCertificateUpdateDtoValidatorTest {
 
 	private Stream<GiftCertificateUpdateDTO> invalidPriceTestSource() {
 		List<GiftCertificateUpdateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE - DELTA_PRICE, CORRECT_DURATION,
-				Collections.EMPTY_SET));
-		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MAX_PRICE + DELTA_PRICE, CORRECT_DURATION,
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE.subtract(DELTA_PRICE),
+				CORRECT_DURATION, Collections.EMPTY_SET));
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MAX_PRICE.add(DELTA_PRICE), CORRECT_DURATION,
 				Collections.EMPTY_SET));
 		return tests.stream();
 	}

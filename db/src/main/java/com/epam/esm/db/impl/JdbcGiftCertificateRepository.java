@@ -84,7 +84,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 
 	private GiftCertificate mapCertificate(ResultSet rs, int row) throws SQLException {
 		return new GiftCertificate(rs.getInt(ID_COLUMN), rs.getString(NAME_COLUMN), rs.getString(DESCRIPTION_COLUMN),
-				rs.getDouble(PRICE_COLUMN), rs.getInt(DURATION_COLUMN),
+				rs.getBigDecimal(PRICE_COLUMN), rs.getInt(DURATION_COLUMN),
 				rs.getTimestamp(CREATE_DATE_COLUMN).toLocalDateTime(),
 				rs.getTimestamp(LAST_UPDATE_DATE_COLUMN).toLocalDateTime());
 	}

@@ -6,6 +6,8 @@ import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class GiftCertificateUpdateDtoValidatorImpl implements Validator<GiftCertificateUpdateDTO> {
 	@Value("${cert.name.length.min}")
@@ -21,9 +23,9 @@ public class GiftCertificateUpdateDtoValidatorImpl implements Validator<GiftCert
 	@Value("${cert.duration.max}")
 	private int maxDuration;
 	@Value("${cert.price.min}")
-	private double minPrice;
+	private BigDecimal minPrice;
 	@Value("${cert.price.max}")
-	private double maxPrice;
+	private BigDecimal maxPrice;
 
 	@Value("${cert.exception.name.out-of-bounds}")
 	private String outOfBoundsNameTemplate;
@@ -53,7 +55,8 @@ public class GiftCertificateUpdateDtoValidatorImpl implements Validator<GiftCert
 			String message = String.format(outOfBoundsDurationTemplate, target.getDuration(), minDuration, maxDuration);
 			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_DURATION);
 		}
-		if (target.getPrice() != null && (target.getPrice() < minPrice || target.getPrice() > maxPrice)) {
+		if (target.getPrice() != null &&
+				(target.getPrice().compareTo(minPrice) < 0 || target.getPrice().compareTo(maxPrice) > 0)) {
 			throw new InvalidCertificateException(outOfBoundsPriceTemplate,
 					InvalidCertificateException.Reason.INVALID_PRICE);
 		}
