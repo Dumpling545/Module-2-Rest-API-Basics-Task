@@ -32,25 +32,21 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 	}
 
 	private SortOption.Field field(String field) {
-		SortOption.Field fieldEnum = null;
 		try {
-			fieldEnum = SortOption.Field.valueOf(field.toUpperCase());
+			return SortOption.Field.valueOf(field.toUpperCase());
 		} catch (IllegalArgumentException | NullPointerException ex) {
 			String message = String.format(invalidFieldTokenTemplate, field);
 			throw new InvalidCertificateException(message, ex, InvalidCertificateException.Reason.INVALID_SORT_BY);
 		}
-		return fieldEnum;
 	}
 
 	private SortOption.Direction direction(String direction) {
-		SortOption.Direction directionEnum = null;
 		try {
-			directionEnum = SortOption.Direction.valueOf(direction.toUpperCase());
+			return SortOption.Direction.valueOf(direction.toUpperCase());
 		} catch (IllegalArgumentException | NullPointerException ex) {
 			String message = String.format(invalidDirectionTokenTemplate, direction);
 			throw new InvalidCertificateException(message, ex, InvalidCertificateException.Reason.INVALID_SORT_BY);
 		}
-		return directionEnum;
 	}
 
 	@Override

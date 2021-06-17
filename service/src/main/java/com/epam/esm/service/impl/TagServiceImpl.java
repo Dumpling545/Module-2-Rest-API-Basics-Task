@@ -44,17 +44,15 @@ public class TagServiceImpl implements TagService {
 	public TagDTO createTag(TagDTO tagDto) {
 		tagValidator.validate(tagDto);
 		Tag tag = tagDtoToTagConverter.convert(tagDto);
-		Tag newTag = null;
 		try {
-			newTag = tagRepository.createTag(tag);
+			Tag newTag = tagRepository.createTag(tag);
+			return tagToTagDtoConverter.convert(newTag);
 		} catch (DuplicateKeyException ex) {
 			String message = String.format(alreadyExistsExceptionTemplate, tagDto.getName());
 			throw new InvalidTagException(message, ex, InvalidTagException.Reason.ALREADY_EXISTS, tagDto.getName());
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		return tagToTagDtoConverter.convert(newTag);
-
 	}
 
 	@Override
