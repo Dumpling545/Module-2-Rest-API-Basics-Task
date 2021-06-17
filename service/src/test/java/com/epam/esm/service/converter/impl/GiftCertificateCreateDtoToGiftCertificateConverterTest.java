@@ -16,7 +16,7 @@ public class GiftCertificateCreateDtoToGiftCertificateConverterTest {
 
 	@Test
 	public void convertShouldReturnEntityWhenPassedCorrectDto() {
-		GiftCertificateCreateDTO dto = new GiftCertificateCreateDTO(NAME, DESCRIPTION, PRICE, DURATION);
+		GiftCertificateCreateDTO dto = new GiftCertificateCreateDTO(NAME, DESCRIPTION, PRICE, DURATION, null);
 		Converter<GiftCertificateCreateDTO, GiftCertificate> converter =
 				new GiftCertificateCreateDtoToGiftCertificateConverter();
 		assertDoesNotThrow(() -> {

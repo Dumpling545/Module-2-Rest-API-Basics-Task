@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -82,35 +83,44 @@ public class GiftCertificateCreateDtoValidatorTest {
 
 	private Stream<GiftCertificateCreateDTO> invalidNameTestSource() {
 		List<GiftCertificateCreateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateCreateDTO(TOO_SHORT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateCreateDTO(TOO_LONG_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateCreateDTO(null, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION));
+		tests.add(new GiftCertificateCreateDTO(TOO_SHORT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(TOO_LONG_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(null, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
 	private Stream<GiftCertificateCreateDTO> invalidDescriptionTestSource() {
 		List<GiftCertificateCreateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, TOO_SHORT_DESC, CORRECT_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, TOO_LONG_DESC, CORRECT_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, null, CORRECT_PRICE, CORRECT_DURATION));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, TOO_SHORT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, TOO_LONG_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, null, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
 	private Stream<GiftCertificateCreateDTO> invalidDurationTestSource() {
 		List<GiftCertificateCreateDTO> tests = new ArrayList<>();
-		tests.add(
-				new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MIN_DURATION - DELTA_DURATION));
-		tests.add(
-				new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MAX_DURATION + DELTA_DURATION));
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, null));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MIN_DURATION - DELTA_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MAX_DURATION + DELTA_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, null, Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
 	private Stream<GiftCertificateCreateDTO> invalidPriceTestSource() {
 		List<GiftCertificateCreateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE - DELTA_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, MAX_PRICE + DELTA_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, null, CORRECT_DURATION));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE - DELTA_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, MAX_PRICE + DELTA_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, null, CORRECT_DURATION,
+				Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
@@ -118,7 +128,8 @@ public class GiftCertificateCreateDtoValidatorTest {
 	@Test
 	public void validateShouldNotThrowExceptionWhenPassedCorrectCertificate() {
 		GiftCertificateCreateDTO createDTO =
-				new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION);
+				new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+						Collections.EMPTY_SET);
 		assertDoesNotThrow(() -> validator.validate(createDTO));
 	}
 

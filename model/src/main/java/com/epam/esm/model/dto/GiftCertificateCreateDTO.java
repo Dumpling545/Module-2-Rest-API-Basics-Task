@@ -15,5 +15,5 @@ public class GiftCertificateCreateDTO {
 	String description;
 	Double price;
 	Integer duration;
-	Set<String> tagNames = new HashSet<>();
+	Set<String> tagNames;
 }

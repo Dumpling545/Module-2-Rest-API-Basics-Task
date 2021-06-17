@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -74,31 +75,37 @@ public class GiftCertificateUpdateDtoValidatorTest {
 
 	private Stream<GiftCertificateUpdateDTO> invalidNameTestSource() {
 		List<GiftCertificateUpdateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateUpdateDTO(TOO_SHORT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateUpdateDTO(TOO_LONG_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION));
+		tests.add(new GiftCertificateUpdateDTO(TOO_SHORT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateUpdateDTO(TOO_LONG_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
 	private Stream<GiftCertificateUpdateDTO> invalidDescriptionTestSource() {
 		List<GiftCertificateUpdateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, TOO_SHORT_DESC, CORRECT_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, TOO_LONG_DESC, CORRECT_PRICE, CORRECT_DURATION));
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, TOO_SHORT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, TOO_LONG_DESC, CORRECT_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
 	private Stream<GiftCertificateUpdateDTO> invalidDurationTestSource() {
 		List<GiftCertificateUpdateDTO> tests = new ArrayList<>();
-		tests.add(
-				new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MIN_DURATION - DELTA_DURATION));
-		tests.add(
-				new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MAX_DURATION + DELTA_DURATION));
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MIN_DURATION - DELTA_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, MAX_DURATION + DELTA_DURATION,
+				Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
 	private Stream<GiftCertificateUpdateDTO> invalidPriceTestSource() {
 		List<GiftCertificateUpdateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE - DELTA_PRICE, CORRECT_DURATION));
-		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MAX_PRICE + DELTA_PRICE, CORRECT_DURATION));
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE - DELTA_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
+		tests.add(new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, MAX_PRICE + DELTA_PRICE, CORRECT_DURATION,
+				Collections.EMPTY_SET));
 		return tests.stream();
 	}
 
@@ -106,13 +113,14 @@ public class GiftCertificateUpdateDtoValidatorTest {
 	@Test
 	public void validateShouldNotThrowExceptionWhenPassedCorrectNonEmptyCertificate() {
 		GiftCertificateUpdateDTO dto =
-				new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION);
+				new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
+						Collections.EMPTY_SET);
 		assertDoesNotThrow(() -> validator.validate(dto));
 	}
 
 	@Test
 	public void validateShouldNotThrowExceptionWhenPassedEmptyCertificate() {
-		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(null, null, null, null);
+		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(null, null, null, null, Collections.EMPTY_SET);
 		assertDoesNotThrow(() -> validator.validate(dto));
 	}
 

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
 	private GiftCertificateOutputDTO createAndAddTagsToCertificate(Set<String> tagNames,
 	                                                               Supplier<GiftCertificate> certSupplier) {
+		if (tagNames == null) {
+			tagNames = Collections.EMPTY_SET;
+		}
 		//get tags that are already exists in database
 		Set<TagDTO> existingTagDTOs = tagService.getTagsFromNameSet(tagNames);
 		Set<String> existingTagNames = existingTagDTOs.stream().map(t -> t.getName()).collect(Collectors.toSet());
@@ -141,21 +145,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 			Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(id);
 			//throw exception, if certificate not exists
 			GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(id));
-			//get all tags, currently associated to provided certificate
-			Set<TagDTO> currentTagsOfCertificate = tagService.getTagsByCertificate(cert.getId());
-			//collect map from previous set with tag names as keys, and tag ids as values
-			Map<String, Integer> mapCurrentTagNamesToIds =
-					currentTagsOfCertificate.stream().collect(Collectors.toMap(t -> t.getName(), t -> t.getId()));
-			//get tag names needed to be added to certificate
-			Set<String> tagNamesToAdd = SetUtils.difference(dto.getTagNames(), mapCurrentTagNamesToIds.keySet());
-			//add tags
-			createAndAddTagsToCertificate(tagNamesToAdd, () -> cert);
-			//get tags names needed to be removed from certificate
-			Set<String> tagNamesToRemove = SetUtils.difference(mapCurrentTagNamesToIds.keySet(), dto.getTagNames());
-			//remove tags
-			for (String tagName : tagNamesToRemove) {
-				int tagId = mapCurrentTagNamesToIds.get(tagName);
-				giftCertificateRepository.removeTagFromCertificate(cert.getId(), tagId);
+			//perform any manipulations with tag only if they were received in dto
+			if (dto.getTagNames() != null) {
+				//get all tags, currently associated to provided certificate
+				Set<TagDTO> currentTagsOfCertificate = tagService.getTagsByCertificate(cert.getId());
+				//collect map from previous set with tag names as keys, and tag ids as values
+				Map<String, Integer> mapCurrentTagNamesToIds =
+						currentTagsOfCertificate.stream().collect(Collectors.toMap(t -> t.getName(), t -> t.getId()));
+				//get tag names needed to be added to certificate
+				Set<String> tagNamesToAdd = SetUtils.difference(dto.getTagNames(), mapCurrentTagNamesToIds.keySet());
+				//add tags
+				createAndAddTagsToCertificate(tagNamesToAdd, () -> cert);
+				//get tags names needed to be removed from certificate
+				Set<String> tagNamesToRemove = SetUtils.difference(mapCurrentTagNamesToIds.keySet(), dto.getTagNames());
+				//remove tags
+				for (String tagName : tagNamesToRemove) {
+					int tagId = mapCurrentTagNamesToIds.get(tagName);
+					giftCertificateRepository.removeTagFromCertificate(cert.getId(), tagId);
+				}
 			}
 			//merge updated dto and current certificate into new certificate
 			GiftCertificate updatedCert = updateDtoIntoCertMerger.merge(cert, dto);

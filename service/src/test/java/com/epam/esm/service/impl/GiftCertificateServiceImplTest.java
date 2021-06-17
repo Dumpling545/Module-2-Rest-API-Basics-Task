@@ -27,13 +27,13 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Collections.EMPTY_SET;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -116,7 +116,7 @@ public class GiftCertificateServiceImplTest {
 				tagSet.add(new TagDTO(DB_ID_2, DB_TAG_NAME_2));
 			}
 			if (tagSet.size() == 0) {
-				tagSet = EMPTY_SET;
+				tagSet = Collections.EMPTY_SET;
 			}
 			return tagSet;
 		});
@@ -189,19 +189,25 @@ public class GiftCertificateServiceImplTest {
 
 	private Stream<GiftCertificateCreateDTO> createTestSources() {
 		GiftCertificateCreateDTO withoutTags =
-				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
+				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, null);
+		GiftCertificateCreateDTO withEmptyTagSet =
+				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, Collections.EMPTY_SET);
+		Set<String> setOnlyWithExistingTags = new HashSet<>();
+		setOnlyWithExistingTags.add(DB_TAG_NAME_1);
+		setOnlyWithExistingTags.add(DB_TAG_NAME_2);
 		GiftCertificateCreateDTO onlyWithExistingTags =
-				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
-		onlyWithExistingTags.getTagNames().add(DB_TAG_NAME_1);
-		onlyWithExistingTags.getTagNames().add(DB_TAG_NAME_2);
+				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, setOnlyWithExistingTags);
+		Set<String> setOnlyWithNewTags = new HashSet<>();
+		setOnlyWithNewTags.add(NO_DB_TAG_NAME_3);
+		setOnlyWithNewTags.add(NO_DB_TAG_NAME_4);
 		GiftCertificateCreateDTO onlyWithNewTags =
-				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
-		onlyWithNewTags.getTagNames().add(NO_DB_TAG_NAME_3);
-		onlyWithNewTags.getTagNames().add(NO_DB_TAG_NAME_4);
+				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, setOnlyWithNewTags);
+		Set<String> setWithBothExistingAndNewTags = new HashSet<>();
+		setWithBothExistingAndNewTags.add(DB_TAG_NAME_1);
+		setWithBothExistingAndNewTags.add(NO_DB_TAG_NAME_4);
 		GiftCertificateCreateDTO withBothExistingAndNewTags =
-				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
-		withBothExistingAndNewTags.getTagNames().add(DB_TAG_NAME_1);
-		withBothExistingAndNewTags.getTagNames().add(NO_DB_TAG_NAME_4);
+				new GiftCertificateCreateDTO(CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION,
+						setWithBothExistingAndNewTags);
 		return Stream.of(withoutTags, onlyWithExistingTags, onlyWithNewTags, withBothExistingAndNewTags);
 	}
 
@@ -214,15 +220,19 @@ public class GiftCertificateServiceImplTest {
 						certToOutputDtoConverter);
 		assertDoesNotThrow(() -> {
 			GiftCertificateOutputDTO outputDTO = service.createCertificate(dto);
-			Set<String> outputTagNames = outputDTO.getTags().stream().map(t -> t.getName()).collect(Collectors.toSet());
-			assertEquals(dto.getTagNames(), outputTagNames);
+			if (dto.getTagNames() != null) {
+				Set<String> outputTagNames =
+						outputDTO.getTags().stream().map(t -> t.getName()).collect(Collectors.toSet());
+				assertEquals(dto.getTagNames(), outputTagNames);
+			}
 		});
 	}
 
 	@Test
 	public void createCertificateShouldThrowExceptionWhenPassedInvalidDto() {
 		GiftCertificateCreateDTO dto =
-				new GiftCertificateCreateDTO(INVALID_CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
+				new GiftCertificateCreateDTO(INVALID_CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION,
+						Collections.EMPTY_SET);
 		GiftCertificateService service =
 				new GiftCertificateServiceImpl(tagService, giftCertificateRepository, certCreateValidator,
 						certUpdateValidator, updateDtoIntoCertMerger, dtoToFilterConverter, createDtoToCertConverter,
@@ -234,30 +244,40 @@ public class GiftCertificateServiceImplTest {
 
 	private Stream<Arguments> updateTestSources() {
 		GiftCertificateUpdateDTO tagsNotChanged =
-				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
-		tagsNotChanged.getTagNames().add(DB_TAG_NAME_1);
-		tagsNotChanged.getTagNames().add(DB_TAG_NAME_2);
+				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, null);
 		int tagsNotChangedAddedTagsCount = 0;
 		int tagsNotChangedRemovedTagsCount = 0;
+
+
+		GiftCertificateUpdateDTO allTagsRemoved =
+				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION,
+						Collections.EMPTY_SET);
+		int allTagsRemovedAddedTagsCount = 0;
+		int allTagsRemovedRemovedTagsCount = 2;
+		Set<String> setOnlyAddNewTags = new HashSet<>();
+		setOnlyAddNewTags.add(DB_TAG_NAME_1);
+		setOnlyAddNewTags.add(DB_TAG_NAME_2);
+		setOnlyAddNewTags.add(NO_DB_TAG_NAME_3);
 		GiftCertificateUpdateDTO onlyAddNewTags =
-				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
-		onlyAddNewTags.getTagNames().add(DB_TAG_NAME_1);
-		onlyAddNewTags.getTagNames().add(DB_TAG_NAME_2);
-		onlyAddNewTags.getTagNames().add(NO_DB_TAG_NAME_3);
+				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, setOnlyAddNewTags);
 		int onlyAddNewTagsAddedTagsCount = 1;
 		int onlyAddNewTagsRemovedTagsCount = 0;
+		Set<String> setOnlyRemoveOldTags = new HashSet<>();
+		setOnlyRemoveOldTags.add(DB_TAG_NAME_1);
 		GiftCertificateUpdateDTO onlyRemoveOldTags =
-				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
-		onlyRemoveOldTags.getTagNames().add(DB_TAG_NAME_1);
+				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, setOnlyRemoveOldTags);
 		int onlyRemoveOldTagsAddedTagsCount = 0;
 		int onlyRemoveOldTagsRemovedTagsCount = 1;
+		Set<String> setBothAddAndRemoveTags = new HashSet<>();
+		setBothAddAndRemoveTags.add(DB_TAG_NAME_1);
+		setBothAddAndRemoveTags.add(NO_DB_TAG_NAME_3);
 		GiftCertificateUpdateDTO bothAddAndRemoveTags =
-				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
-		bothAddAndRemoveTags.getTagNames().add(DB_TAG_NAME_1);
-		bothAddAndRemoveTags.getTagNames().add(NO_DB_TAG_NAME_3);
+				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION,
+						setBothAddAndRemoveTags);
 		int bothAddAndRemoveTagsAddedTagsCount = 1;
 		int bothAddAndRemoveTagsRemovedTagsCount = 1;
 		return Stream.of(arguments(tagsNotChanged, tagsNotChangedAddedTagsCount, tagsNotChangedRemovedTagsCount),
+				arguments(allTagsRemoved, allTagsRemovedAddedTagsCount, allTagsRemovedRemovedTagsCount),
 				arguments(onlyAddNewTags, onlyAddNewTagsAddedTagsCount, onlyAddNewTagsRemovedTagsCount),
 				arguments(onlyRemoveOldTags, onlyRemoveOldTagsAddedTagsCount, onlyRemoveOldTagsRemovedTagsCount),
 				arguments(bothAddAndRemoveTags, bothAddAndRemoveTagsAddedTagsCount,
@@ -275,8 +295,10 @@ public class GiftCertificateServiceImplTest {
 						certToOutputDtoConverter);
 		assertDoesNotThrow(() -> {
 			service.updateCertificate(CERT_ID, dto);
-			Mockito.verify(giftCertificateRepository, Mockito.times(addedTagsCount)).addTagToCertificate(eq(CERT_ID), anyInt());
-			Mockito.verify(giftCertificateRepository, Mockito.times(removedTagsCount)).removeTagFromCertificate(eq(CERT_ID), anyInt());
+			Mockito.verify(giftCertificateRepository, Mockito.times(addedTagsCount))
+					.addTagToCertificate(eq(CERT_ID), anyInt());
+			Mockito.verify(giftCertificateRepository, Mockito.times(removedTagsCount))
+					.removeTagFromCertificate(eq(CERT_ID), anyInt());
 		});
 	}
 
@@ -287,8 +309,8 @@ public class GiftCertificateServiceImplTest {
 						certUpdateValidator, updateDtoIntoCertMerger, dtoToFilterConverter, createDtoToCertConverter,
 						certToOutputDtoConverter);
 		ReflectionTestUtils.setField(service, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
-		GiftCertificateUpdateDTO dto =
-				new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION);
+		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(CERT_NEW_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION,
+				null);
 		InvalidCertificateException ex =
 				assertThrows(InvalidCertificateException.class, () -> service.updateCertificate(NON_EXISTING_ID, dto));
 		assertEquals(InvalidCertificateException.Reason.NOT_FOUND, ex.getReason());

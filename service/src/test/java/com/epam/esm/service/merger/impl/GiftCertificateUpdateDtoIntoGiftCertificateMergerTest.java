@@ -22,7 +22,7 @@ public class GiftCertificateUpdateDtoIntoGiftCertificateMergerTest {
 
 	@Test
 	public void mergeShouldReturnBaseEntityWhenPassedEmptyDto() {
-		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(null, null, null, null);
+		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(null, null, null, null, null);
 		GiftCertificate entity = new GiftCertificate(ENTITY_ID, ENTITY_NAME, ENTITY_DESC, ENTITY_PRICE, ENTITY_DURATION,
 				ENTITY_CREATE_DATE, ENTITY_LAST_UPDATE_DATE);
 		Merger<GiftCertificate, GiftCertificateUpdateDTO> merger =
@@ -33,7 +33,7 @@ public class GiftCertificateUpdateDtoIntoGiftCertificateMergerTest {
 
 	@Test
 	public void mergeShouldReturnNewEntityWhenPassedNonEmptyDto() {
-		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(null, DTO_DESC, null, null);
+		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(null, DTO_DESC, null, null, null);
 		GiftCertificate entity = new GiftCertificate(ENTITY_ID, ENTITY_NAME, ENTITY_DESC, ENTITY_PRICE, ENTITY_DURATION,
 				ENTITY_CREATE_DATE, ENTITY_LAST_UPDATE_DATE);
 		Merger<GiftCertificate, GiftCertificateUpdateDTO> merger =
