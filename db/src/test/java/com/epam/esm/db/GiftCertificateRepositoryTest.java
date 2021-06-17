@@ -150,7 +150,7 @@ public class GiftCertificateRepositoryTest {
 	@Test
 	public void addTagShouldNotThrowExceptionWhenPassedNotAssociatedIds() {
 		assertDoesNotThrow(() -> {
-			giftCertificateRepository.addTag(NOT_ASSOCIATED_CERTIFICATE_ID, NOT_ASSOCIATED_TAG_ID);
+			giftCertificateRepository.addTagToCertificate(NOT_ASSOCIATED_CERTIFICATE_ID, NOT_ASSOCIATED_TAG_ID);
 			List<Tag> tags = tagRepository.getTagsByCertificate(NOT_ASSOCIATED_CERTIFICATE_ID);
 			assertTrue(tags.stream().anyMatch(t -> t.getId() == NOT_ASSOCIATED_TAG_ID));
 		});
@@ -159,7 +159,7 @@ public class GiftCertificateRepositoryTest {
 	@Test
 	public void removeTagShouldNotThrowExceptionWhenPassedNotAssociatedIds() {
 		assertDoesNotThrow(() -> {
-			giftCertificateRepository.removeTag(ASSOCIATED_CERTIFICATE_ID, ASSOCIATED_TAG_ID);
+			giftCertificateRepository.removeTagFromCertificate(ASSOCIATED_CERTIFICATE_ID, ASSOCIATED_TAG_ID);
 			List<Tag> tags = tagRepository.getTagsByCertificate(ASSOCIATED_CERTIFICATE_ID);
 			assertTrue(tags.stream().noneMatch(t -> t.getId() == ASSOCIATED_TAG_ID));
 		});

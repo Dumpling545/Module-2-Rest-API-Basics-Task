@@ -67,7 +67,7 @@ public interface GiftCertificateRepository {
 	 * @param tagId
 	 * 		id of provided tag
 	 */
-	void addTag(int certificateId, int tagId);
+	void addTagToCertificate(int certificateId, int tagId);
 
 	/**
 	 * Removes provided tag from provided certificate
@@ -77,5 +77,5 @@ public interface GiftCertificateRepository {
 	 * @param tagId
 	 * 		id of provided tag
 	 */
-	void removeTag(int certificateId, int tagId);
+	void removeTagFromCertificate(int certificateId, int tagId);
 }

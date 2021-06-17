@@ -275,8 +275,8 @@ public class GiftCertificateServiceImplTest {
 						certToOutputDtoConverter);
 		assertDoesNotThrow(() -> {
 			service.updateCertificate(CERT_ID, dto);
-			Mockito.verify(giftCertificateRepository, Mockito.times(addedTagsCount)).addTag(eq(CERT_ID), anyInt());
-			Mockito.verify(giftCertificateRepository, Mockito.times(removedTagsCount)).removeTag(eq(CERT_ID), anyInt());
+			Mockito.verify(giftCertificateRepository, Mockito.times(addedTagsCount)).addTagToCertificate(eq(CERT_ID), anyInt());
+			Mockito.verify(giftCertificateRepository, Mockito.times(removedTagsCount)).removeTagFromCertificate(eq(CERT_ID), anyInt());
 		});
 	}
 

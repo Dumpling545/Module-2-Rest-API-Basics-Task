@@ -204,7 +204,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	}
 
 	@Override
-	public void addTag(int certificateId, int tagId) {
+	public void addTagToCertificate(int certificateId, int tagId) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put(tagIdParamKey, tagId);
 		parameters.put(giftCertificateIdParamKey, certificateId);
@@ -212,7 +212,7 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	}
 
 	@Override
-	public void removeTag(int certificateId, int tagId) {
+	public void removeTagFromCertificate(int certificateId, int tagId) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put(tagIdParamKey, tagId);
 		parameters.put(giftCertificateIdParamKey, certificateId);

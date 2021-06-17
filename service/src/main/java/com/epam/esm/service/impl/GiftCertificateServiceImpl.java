@@ -94,7 +94,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		GiftCertificate cert = certSupplier.get();
 		//add tags to certificate
 		for (TagDTO tagDTO : tagDTOs) {
-			giftCertificateRepository.addTag(cert.getId(), tagDTO.getId());
+			giftCertificateRepository.addTagToCertificate(cert.getId(), tagDTO.getId());
 		}
 		//convert certificate entity to dto
 		GiftCertificateOutputDTO outputDTO = certToOutputDtoConverter.convert(cert);
@@ -155,7 +155,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 			//remove tags
 			for (String tagName : tagNamesToRemove) {
 				int tagId = mapCurrentTagNamesToIds.get(tagName);
-				giftCertificateRepository.removeTag(cert.getId(), tagId);
+				giftCertificateRepository.removeTagFromCertificate(cert.getId(), tagId);
 			}
 			//merge updated dto and current certificate into new certificate
 			GiftCertificate updatedCert = updateDtoIntoCertMerger.merge(cert, dto);
