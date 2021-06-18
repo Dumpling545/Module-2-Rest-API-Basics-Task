@@ -4,7 +4,6 @@ import com.epam.esm.db.GiftCertificateRepository;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.SortOption;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -77,8 +76,8 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 
 	public JdbcGiftCertificateRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource) {
 		this.jdbcOperations = jdbcOperations;
-		simpleJdbcInsert =
-				new SimpleJdbcInsert(dataSource).withTableName(CERT_TABLE_NAME).usingGeneratedKeyColumns(ID_COLUMN);
+		simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(CERT_TABLE_NAME)
+				.usingGeneratedKeyColumns(ID_COLUMN);
 	}
 
 	private GiftCertificate mapCertificate(ResultSet rs, int row) throws SQLException {
@@ -100,9 +99,8 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 		parameters.put(CREATE_DATE_COLUMN, timestamp);
 		parameters.put(LAST_UPDATE_DATE_COLUMN, timestamp);
 		int id = simpleJdbcInsert.executeAndReturnKey(parameters).intValue();
-		GiftCertificate giftCertificate =
-				new GiftCertificate(id, certificate.getName(), certificate.getDescription(), certificate.getPrice(),
-						certificate.getDuration(), localDateTime, localDateTime);
+		GiftCertificate giftCertificate = new GiftCertificate(id, certificate.getName(), certificate.getDescription(),
+				certificate.getPrice(), certificate.getDuration(), localDateTime, localDateTime);
 		return giftCertificate;
 	}
 

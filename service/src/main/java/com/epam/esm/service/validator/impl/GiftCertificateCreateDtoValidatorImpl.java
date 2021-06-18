@@ -50,8 +50,8 @@ public class GiftCertificateCreateDtoValidatorImpl implements Validator<GiftCert
 			throw new InvalidCertificateException(nullNameMessage, InvalidCertificateException.Reason.INVALID_NAME);
 		}
 		if (target.getName().length() < minNameLength || target.getName().length() > maxNameLength) {
-			String message =
-					String.format(outOfBoundsNameTemplate, target.getName().length(), minNameLength, maxNameLength);
+			String message = String.format(outOfBoundsNameTemplate, target.getName().length(), minNameLength,
+					maxNameLength);
 			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_NAME);
 		}
 		if (target.getDescription() == null) {

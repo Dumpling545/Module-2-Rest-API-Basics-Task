@@ -40,8 +40,8 @@ public class GiftCertificateUpdateDtoValidatorImpl implements Validator<GiftCert
 	public void validate(GiftCertificateUpdateDTO target) {
 		if (target.getName() != null &&
 				(target.getName().length() < minNameLength || target.getName().length() > maxNameLength)) {
-			String message =
-					String.format(outOfBoundsNameTemplate, target.getName().length(), minNameLength, maxNameLength);
+			String message = String.format(outOfBoundsNameTemplate, target.getName().length(), minNameLength,
+					maxNameLength);
 			throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_NAME);
 		}
 		if (target.getDescription() != null && (target.getDescription().length() < minDescLength ||

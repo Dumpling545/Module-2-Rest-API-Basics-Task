@@ -12,9 +12,8 @@ public class GiftCertificateCreateDtoToGiftCertificateConverter
 
 	@Override
 	public GiftCertificate convert(GiftCertificateCreateDTO dto) {
-		GiftCertificate certificate =
-				new GiftCertificate(DEFAULT_ID, dto.getName(), dto.getDescription(), dto.getPrice(), dto.getDuration(),
-						null, null);
+		GiftCertificate certificate = new GiftCertificate(DEFAULT_ID, dto.getName(), dto.getDescription(),
+				dto.getPrice(), dto.getDuration(), null, null);
 		return certificate;
 	}
 }

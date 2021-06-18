@@ -116,7 +116,8 @@ public class GiftCertificateCreateDtoValidatorTest {
 
 	private Stream<GiftCertificateCreateDTO> invalidPriceTestSource() {
 		List<GiftCertificateCreateDTO> tests = new ArrayList<>();
-		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE.subtract(DELTA_PRICE), CORRECT_DURATION,
+		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, MIN_PRICE.subtract(DELTA_PRICE),
+				CORRECT_DURATION,
 				Collections.EMPTY_SET));
 		tests.add(new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, MAX_PRICE.add(DELTA_PRICE), CORRECT_DURATION,
 				Collections.EMPTY_SET));
@@ -128,41 +129,40 @@ public class GiftCertificateCreateDtoValidatorTest {
 
 	@Test
 	public void validateShouldNotThrowExceptionWhenPassedCorrectCertificate() {
-		GiftCertificateCreateDTO createDTO =
-				new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
-						Collections.EMPTY_SET);
+		GiftCertificateCreateDTO createDTO = new GiftCertificateCreateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE,
+				CORRECT_DURATION, Collections.EMPTY_SET);
 		assertDoesNotThrow(() -> validator.validate(createDTO));
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidNameTestSource")
 	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidName(GiftCertificateCreateDTO cert) {
-		InvalidCertificateException ex =
-				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
+		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
+				() -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_NAME, ex.getReason());
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidDescriptionTestSource")
 	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidDescription(GiftCertificateCreateDTO cert) {
-		InvalidCertificateException ex =
-				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
+		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
+				() -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_DESCRIPTION, ex.getReason());
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidDurationTestSource")
 	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidDuration(GiftCertificateCreateDTO cert) {
-		InvalidCertificateException ex =
-				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
+		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
+				() -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_DURATION, ex.getReason());
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidPriceTestSource")
 	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidPrice(GiftCertificateCreateDTO cert) {
-		InvalidCertificateException ex =
-				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
+		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
+				() -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_PRICE, ex.getReason());
 	}
 

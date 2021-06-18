@@ -23,8 +23,8 @@ public class GiftCertificateToGiftCertificateOutputDtoConverterTest {
 
 	@Test
 	public void convertShouldReturnDtoWhenPassedCorrectEntity() {
-		GiftCertificate entity =
-				new GiftCertificate(ID, NAME, DESCRIPTION, PRICE, DURATION, CREATE_DATE, LAST_UPDATE_DATE);
+		GiftCertificate entity = new GiftCertificate(ID, NAME, DESCRIPTION, PRICE, DURATION, CREATE_DATE,
+				LAST_UPDATE_DATE);
 		Converter<GiftCertificate, GiftCertificateOutputDTO> converter =
 				new GiftCertificateToGiftCertificateOutputDtoConverter();
 		assertDoesNotThrow(() -> {

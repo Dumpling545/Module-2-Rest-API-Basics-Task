@@ -29,8 +29,8 @@ public class FilterDtoToFilterConverterTest {
 	private static final String DESC_PART = "part2";
 	private static final String CORRECT_SORT_OPTION_STR = "name desc";
 	private static final String INVALID_SORT_OPTION_STR = "price desc";
-	private static final SortOption EXPECTED_SORT_OPTION =
-			new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC);
+	private static final SortOption EXPECTED_SORT_OPTION = new SortOption(SortOption.Field.NAME,
+			SortOption.Direction.DESC);
 	private static final String TEST_EXCEPTION_MESSAGE_TEMPLATE = "Test message %s";
 	private static final String EXPECTED_SORT_OPTION_MESSAGE = "Test message price";
 	private static final String INVALID_FIELD_TOKEN_TEMPLATE_FIELD_NAME = "invalidFieldTokenTemplate";

@@ -61,8 +61,8 @@ public class TagServiceImplTest {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.createTag(Mockito.argThat(arg -> arg.getName().equals(TAG_NAME))))
 				.thenReturn(new Tag(MOCK_DB_ID, TAG_NAME));
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		assertDoesNotThrow(() -> {
 			TagDTO newDto = tagService.createTag(dto);
 			assertNotSame(dto, newDto);
@@ -80,8 +80,8 @@ public class TagServiceImplTest {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.createTag(Mockito.argThat(arg -> arg.getName().equals(TAG_NAME))))
 				.thenReturn(new Tag(MOCK_DB_ID, TAG_NAME));
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		assertThrows(InvalidTagException.class, () -> tagService.createTag(tag));
 	}
 
@@ -92,8 +92,8 @@ public class TagServiceImplTest {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.doThrow(DuplicateKeyException.class).when(tagRepository)
 				.createTag(Mockito.argThat(t -> t.getName().equals(TAG_NAME)));
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		ReflectionTestUtils.setField(tagService, ALREADY_EXISTS_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagService.createTag(tag));
 		assertEquals(InvalidTagException.Reason.ALREADY_EXISTS, ex.getReason());
@@ -106,8 +106,8 @@ public class TagServiceImplTest {
 		Tag tagFromDb = new Tag(MOCK_DB_ID, TAG_NAME);
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.getTagById(Mockito.eq(MOCK_DB_ID))).thenReturn(Optional.of(tagFromDb));
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		assertDoesNotThrow(() -> {
 			TagDTO res = tagService.getTag(MOCK_DB_ID);
 			assertEquals(MOCK_DB_ID, res.getId());
@@ -120,8 +120,8 @@ public class TagServiceImplTest {
 		Validator<TagDTO> tagValidator = Mockito.mock(Validator.class);
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.getTagById(Mockito.eq(MOCK_DB_ID))).thenReturn(Optional.empty());
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		ReflectionTestUtils.setField(tagService, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagService.getTag(MOCK_DB_ID));
 		assertEquals(InvalidTagException.Reason.NOT_FOUND, ex.getReason());
@@ -133,8 +133,8 @@ public class TagServiceImplTest {
 		Validator<TagDTO> tagValidator = Mockito.mock(Validator.class);
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.deleteTag(Mockito.eq(MOCK_DB_ID))).thenReturn(true);
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		assertDoesNotThrow(() -> tagService.deleteTag(MOCK_DB_ID));
 	}
 
@@ -143,8 +143,8 @@ public class TagServiceImplTest {
 		Validator<TagDTO> tagValidator = Mockito.mock(Validator.class);
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.deleteTag(Mockito.eq(MOCK_DB_ID))).thenReturn(false);
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		ReflectionTestUtils.setField(tagService, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagService.deleteTag(MOCK_DB_ID));
 		assertEquals(InvalidTagException.Reason.NOT_FOUND, ex.getReason());
@@ -166,8 +166,8 @@ public class TagServiceImplTest {
 		expectedOutput.add(dto2);
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.getAllTags()).thenReturn(tags);
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		assertDoesNotThrow(() -> {
 			List<TagDTO> tagDTOs = tagService.getAllTags();
 			assertEquals(expectedOutput, tagDTOs);
@@ -189,8 +189,8 @@ public class TagServiceImplTest {
 		expectedOutput.add(dto2);
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository.getTagsByCertificate(Mockito.eq(EXISTING_CERT_ID))).thenReturn(tags);
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		assertDoesNotThrow(() -> {
 			Set<TagDTO> tagDTOs = tagService.getTagsByCertificate(EXISTING_CERT_ID);
 			assertEquals(expectedOutput, tagDTOs);
@@ -201,8 +201,8 @@ public class TagServiceImplTest {
 	public void getTagsFromNameSetShouldReturnEmptyTagDtoSetWhenPassedEmptyNameSet() {
 		Validator<TagDTO> tagValidator = Mockito.mock(Validator.class);
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		TagService tagService =
-				new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter, tagToTagDtoConverter);
+		TagService tagService = new TagServiceImpl(tagRepository, tagValidator, tagDtoToTagConverter,
+				tagToTagDtoConverter);
 		assertDoesNotThrow(() -> {
 			Set<TagDTO> set = tagService.getTagsFromNameSet(new HashSet<String>());
 			assertEquals(EMPTY_SET, set);

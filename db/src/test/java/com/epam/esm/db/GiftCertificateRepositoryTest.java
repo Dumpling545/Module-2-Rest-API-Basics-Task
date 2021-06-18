@@ -75,9 +75,8 @@ public class GiftCertificateRepositoryTest {
 
 	@Test
 	public void createCertificateShouldReturnNewEntityWhenPassedCorrectInput() {
-		GiftCertificate certificate =
-				new GiftCertificate(NON_EXISTING_ID, NAME_TO_BE_CREATED, DESCRIPTION_TO_BE_CREATED, PRICE_TO_BE_CREATED,
-						DURATION_TO_BE_CREATED, null, null);
+		GiftCertificate certificate = new GiftCertificate(NON_EXISTING_ID, NAME_TO_BE_CREATED,
+				DESCRIPTION_TO_BE_CREATED, PRICE_TO_BE_CREATED, DURATION_TO_BE_CREATED, null, null);
 		GiftCertificate created = giftCertificateRepository.createCertificate(certificate);
 		assertNotEquals(EXISTING_ID_1, created.getId());
 		assertNotNull(created.getCreateDate());
@@ -124,8 +123,8 @@ public class GiftCertificateRepositoryTest {
 
 	@Test
 	public void updateCertificateShouldReturnTrueWhenPassedCorrectInput() {
-		GiftCertificate giftCertificate =
-				new GiftCertificate(EXISTING_ID_2, NEW_NAME_2, NEW_DESC_2, NEW_PRICE_2, NEW_DURATION_2, null, null);
+		GiftCertificate giftCertificate = new GiftCertificate(EXISTING_ID_2, NEW_NAME_2, NEW_DESC_2, NEW_PRICE_2,
+				NEW_DURATION_2, null, null);
 		boolean updated = giftCertificateRepository.updateCertificate(giftCertificate);
 		assertTrue(updated);
 		Optional<GiftCertificate> fetchAfter = giftCertificateRepository.getCertificateById(EXISTING_ID_2);

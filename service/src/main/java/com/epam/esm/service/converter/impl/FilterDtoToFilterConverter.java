@@ -66,8 +66,8 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 		if (filterDTO.getTagName() != null) {
 			tagValidator.validate(new TagDTO(DEFAULT_ID, filterDTO.getTagName()));
 		}
-		Filter filter =
-				new Filter(filterDTO.getNamePart(), filterDTO.getDescriptionPart(), filterDTO.getTagName(), sortOption);
+		Filter filter = new Filter(filterDTO.getNamePart(), filterDTO.getDescriptionPart(), filterDTO.getTagName(),
+				sortOption);
 		return filter;
 	}
 

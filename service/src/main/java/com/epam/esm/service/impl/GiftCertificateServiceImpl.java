@@ -131,8 +131,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		GiftCertificateOutputDTO dto =
-				optionalCert.map(certToOutputDtoConverter::convert).orElseThrow(() -> createNotFoundException(id));
+		GiftCertificateOutputDTO dto = optionalCert.map(certToOutputDtoConverter::convert)
+				.orElseThrow(() -> createNotFoundException(id));
 		dto.getTags().addAll(tags);
 		return dto;
 	}
@@ -150,8 +150,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 				//get all tags, currently associated to provided certificate
 				Set<TagDTO> currentTagsOfCertificate = tagService.getTagsByCertificate(cert.getId());
 				//collect map from previous set with tag names as keys, and tag ids as values
-				Map<String, Integer> mapCurrentTagNamesToIds =
-						currentTagsOfCertificate.stream().collect(Collectors.toMap(t -> t.getName(), t -> t.getId()));
+				Map<String, Integer> mapCurrentTagNamesToIds = currentTagsOfCertificate.stream()
+						.collect(Collectors.toMap(t -> t.getName(), t -> t.getId()));
 				//get tag names needed to be added to certificate
 				Set<String> tagNamesToAdd = SetUtils.difference(dto.getTagNames(), mapCurrentTagNamesToIds.keySet());
 				//add tags

@@ -113,9 +113,8 @@ public class GiftCertificateUpdateDtoValidatorTest {
 
 	@Test
 	public void validateShouldNotThrowExceptionWhenPassedCorrectNonEmptyCertificate() {
-		GiftCertificateUpdateDTO dto =
-				new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE, CORRECT_DURATION,
-						Collections.EMPTY_SET);
+		GiftCertificateUpdateDTO dto = new GiftCertificateUpdateDTO(CORRECT_NAME, CORRECT_DESC, CORRECT_PRICE,
+				CORRECT_DURATION, Collections.EMPTY_SET);
 		assertDoesNotThrow(() -> validator.validate(dto));
 	}
 
@@ -128,24 +127,24 @@ public class GiftCertificateUpdateDtoValidatorTest {
 	@ParameterizedTest
 	@MethodSource("invalidNameTestSource")
 	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidName(GiftCertificateUpdateDTO cert) {
-		InvalidCertificateException ex =
-				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
+		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
+				() -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_NAME, ex.getReason());
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidDescriptionTestSource")
 	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidDescription(GiftCertificateUpdateDTO cert) {
-		InvalidCertificateException ex =
-				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
+		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
+				() -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_DESCRIPTION, ex.getReason());
 	}
 
 	@ParameterizedTest
 	@MethodSource("invalidDurationTestSource")
 	public void validateShouldThrowExceptionWhenPassedCertificateWithInvalidDuration(GiftCertificateUpdateDTO cert) {
-		InvalidCertificateException ex =
-				assertThrows(InvalidCertificateException.class, () -> validator.validate(cert));
+		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
+				() -> validator.validate(cert));
 		assertEquals(InvalidCertificateException.Reason.INVALID_DURATION, ex.getReason());
 	}
 

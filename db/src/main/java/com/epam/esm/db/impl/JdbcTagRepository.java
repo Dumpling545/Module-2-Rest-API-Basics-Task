@@ -44,8 +44,8 @@ public class JdbcTagRepository implements TagRepository {
 
 	public JdbcTagRepository(NamedParameterJdbcOperations jdbcOperations, DataSource dataSource) {
 		this.jdbcOperations = jdbcOperations;
-		simpleJdbcInsert =
-				new SimpleJdbcInsert(dataSource).withTableName(TAG_TABLE_NAME).usingGeneratedKeyColumns(ID_COLUMN);
+		simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(TAG_TABLE_NAME)
+				.usingGeneratedKeyColumns(ID_COLUMN);
 	}
 
 	private Tag mapTag(ResultSet rs, int row) throws SQLException {
