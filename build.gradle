@@ -2,7 +2,6 @@ buildscript {
     ext {
         apacheCommonsCollectionsVersion = '4.4'
         apacheCommonsLangVersion = '3.12.0'
-        aspectjVersion = '1.9.7.M3'
         h2DatabaseVersion = '1.4.200'
         hikariConnectionPoolVersion = '4.0.3'
         jacksonVersion = '2.12.3'

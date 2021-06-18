@@ -6,6 +6,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.Filter;
+import javax.servlet.ServletRegistration;
 
 public class GiftCertificateWebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 	@Override
@@ -26,6 +27,11 @@ public class GiftCertificateWebAppInitializer extends AbstractAnnotationConfigDi
 	@Override
 	protected Filter[] getServletFilters() {
 		return new Filter[]{new CharacterEncodingFilter("UTF-8", true)};
+	}
+
+	@Override
+	protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+		registration.setInitParameter("throwExceptionIfNoHandlerFound", "true");
 	}
 
 }

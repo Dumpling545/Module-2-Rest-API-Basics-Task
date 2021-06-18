@@ -44,7 +44,6 @@ public class JdbcGiftCertificateRepository implements GiftCertificateRepository 
 	private final static String TAG_ID_PARAM_KEY = "tag_id";
 	private final static String TAG_NAME_PARAM_KEY = "tag_name";
 	//SQL Template Queries
-	@Value("${}")
 	private final static String GET_ALL_CERTIFICATES_SQL =
 			"SELECT gc.id, gc.name, gc.description, gc.duration, gc.price, gc.create_date, gc.last_update_date " +
 					"FROM gift_certificate gc";

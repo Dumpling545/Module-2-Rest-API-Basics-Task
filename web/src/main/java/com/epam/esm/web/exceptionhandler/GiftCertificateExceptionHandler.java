@@ -1,10 +1,10 @@
 package com.epam.esm.web.exceptionhandler;
 
-import com.epam.esm.model.dto.Error;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -12,63 +12,59 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@Order(Ordered.HIGHEST_PRECEDENCE)
+import java.util.Locale;
+
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
+@Order(HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class GiftCertificateExceptionHandler {
 	private static final Logger logger = LogManager.getLogger();
-	@Value("${cert.error-message.not-found}")
-	private String certNotFoundMsg;
-	@Value("${cert.error-message.invalid-name}")
-	private String certInvalidNameMsg;
-	@Value("${cert.error-message.invalid-desc}")
-	private String certInvalidDescMsg;
-	@Value("${cert.error-message.invalid-duration}")
-	private String certInvalidDurationMsg;
-	@Value("${cert.error-message.invalid-price}")
-	private String certInvalidPriceMsg;
-	@Value("${cert.error-message.invalid-sort}")
-	private String certInvalidSortMsg;
 	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
-	@Value("${common.error-message.service}")
-	private String serviceMsg;
 	private ExceptionHelper helper;
+	private MessageSource messageSource;
 
-	public GiftCertificateExceptionHandler(ExceptionHelper helper) {
+	public GiftCertificateExceptionHandler(ExceptionHelper helper, MessageSource messageSource) {
 		this.helper = helper;
+		this.messageSource = messageSource;
 	}
 
 	@ExceptionHandler(InvalidCertificateException.class)
-	public ResponseEntity<Error> handleException(InvalidCertificateException ex) {
-		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-		String message = serviceMsg;
+	public ResponseEntity<Object> handleException(InvalidCertificateException ex, Locale locale) {
+		HttpStatus status;
+		String message;
 		switch (ex.getReason()) {
 			case INVALID_NAME:
 				status = HttpStatus.BAD_REQUEST;
-				message = certInvalidNameMsg;
+				message = messageSource.getMessage("cert.error-message.invalid-name", null, locale);
 				break;
 			case INVALID_DESCRIPTION:
 				status = HttpStatus.BAD_REQUEST;
-				message = certInvalidDescMsg;
+				message = messageSource.getMessage("cert.error-message.invalid-desc", null, locale);
 				break;
 			case INVALID_DURATION:
 				status = HttpStatus.BAD_REQUEST;
-				message = certInvalidDurationMsg;
+				message = messageSource.getMessage("cert.error-message.invalid-duration", null, locale);
 				break;
 			case INVALID_PRICE:
 				status = HttpStatus.BAD_REQUEST;
-				message = certInvalidPriceMsg;
+				message = messageSource.getMessage("cert.error-message.invalid-price", null, locale);
 				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
-				message = String.format(certNotFoundMsg, ex.getCertificateId());
+				message = messageSource.getMessage("cert.error-message.not-found",
+						new Object[]{ex.getCertificateId()}, locale);
 				break;
 			case INVALID_SORT_BY:
 				status = HttpStatus.BAD_REQUEST;
-				message = certInvalidSortMsg;
+				message = messageSource.getMessage("cert.error-message.invalid-sort", null, locale);
 				break;
+			default:
+				status = HttpStatus.INTERNAL_SERVER_ERROR;
+				message = messageSource.getMessage("cert.error-message.common", null, locale);
 		}
-		logger.error("", ex);
+		logger.error("Handled in the InvalidCertificateException handler", ex);
 		return helper.handle(status, message, certPostfix);
 	}
 }
