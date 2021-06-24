@@ -5,11 +5,8 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.SortOption;
 import com.epam.esm.model.entity.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoField;
@@ -23,10 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DatabaseTestConfig.class)
-@ActiveProfiles("test")
+@JdbcTest
 public class GiftCertificateRepositoryTest {
 	private static final int NON_EXISTING_ID = -1;
 	private static final int EXISTING_ID_1 = 1;

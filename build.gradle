@@ -1,4 +1,3 @@
-
 buildscript {
     ext {
         apacheCommonsCollectionsVersion = '4.4'
@@ -9,13 +8,12 @@ plugins {
     id 'org.springframework.boot' version '2.6.0-SNAPSHOT'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
-
 version = '0.0.1-SNAPSHOT'
 
-allprojects {
+subprojects {
     group = 'com.epam.esm'
     apply plugin: 'org.springframework.boot'
-    apply plugin:  'io.spring.dependency-management'
+    apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java-library'
     configurations {
         compileOnly {
@@ -35,8 +33,12 @@ allprojects {
         implementation 'org.springframework.boot:spring-boot-starter'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
-
     test {
         useJUnitPlatform()
+    }
+    configurations {
+        all {
+            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        }
     }
 }

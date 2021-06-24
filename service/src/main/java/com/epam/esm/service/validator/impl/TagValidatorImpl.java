@@ -13,9 +13,9 @@ public class TagValidatorImpl implements Validator<TagDTO> {
 	private int minNameLength;
 	@Value("${tag.validation.name.length.max}")
 	private int maxNameLength;
-	@Value("${tag.validation.exception.name.null}")
+	@Value("${tag.exception.name.null}")
 	private String nullNameMessage;
-	@Value("${tag.validation.exception.name.out-of-bounds}")
+	@Value("${tag.exception.name.out-of-bounds}")
 	private String outOfBoundsNameTemplate;
 
 

@@ -11,7 +11,9 @@ dependencies {
 
     testImplementation 'org.apache.commons:commons-lang3'
 }
-
-test {
-    useJUnitPlatform()
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
 }
