@@ -5,12 +5,11 @@ repositories {
 dependencies {
     api project(':db')
 
+    implementation 'org.springframework:spring-tx'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: apacheCommonsCollectionsVersion
-    implementation group: 'org.springframework', name: 'spring-tx', version: springVersion
     implementation project(':model')
 
-    testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: apacheCommonsLangVersion
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation 'org.apache.commons:commons-lang3'
 }
 
 test {

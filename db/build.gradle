@@ -1,8 +1,7 @@
 dependencies {
-    implementation group: 'org.postgresql', name: 'postgresql', version: postgresqlDriverVersion
-    implementation group: 'org.springframework', name: 'spring-jdbc', version: springVersion
-    implementation group: 'com.zaxxer', name: 'HikariCP', version: hikariConnectionPoolVersion
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation project(':model')
 
-    testImplementation group: 'com.h2database', name: 'h2', version: h2DatabaseVersion
+    testImplementation 'com.h2database:h2'
 }
