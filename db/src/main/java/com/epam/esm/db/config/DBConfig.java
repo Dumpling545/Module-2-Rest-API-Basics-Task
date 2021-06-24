@@ -16,8 +16,8 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = {"com.epam.esm.db"})
 public class DBConfig {
-	private static final String PRODUCTION_DB_PROPERTIES = "/hikari-production.properties";
-	private static final String DEVELOPMENT_DB_PROPERTIES = "/hikari-development.properties";
+	private static final String PRODUCTION_DB_PROPERTIES = "/application-production.properties";
+	private static final String DEVELOPMENT_DB_PROPERTIES = "/application-development.properties";
 
 	@Bean
 	public NamedParameterJdbcTemplate namedParameterJdbcTemplate(DataSource dataSource) {

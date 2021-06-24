@@ -1,3 +1,4 @@
+SET MODE PostgreSQL;
 --
 -- PostgreSQL database dump
 --

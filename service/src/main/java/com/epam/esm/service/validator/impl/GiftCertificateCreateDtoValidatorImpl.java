@@ -10,21 +10,21 @@ import java.math.BigDecimal;
 
 @Component
 public class GiftCertificateCreateDtoValidatorImpl implements Validator<GiftCertificateCreateDTO> {
-	@Value("${cert.name.length.min}")
+	@Value("${cert.validation.name.length.min}")
 	private int minNameLength;
-	@Value("${cert.name.length.max}")
+	@Value("${cert.validation.name.length.max}")
 	private int maxNameLength;
-	@Value("${cert.desc.length.min}")
+	@Value("${cert.validation.desc.length.min}")
 	private int minDescLength;
-	@Value("${cert.desc.length.max}")
+	@Value("${cert.validation.desc.length.max}")
 	private int maxDescLength;
-	@Value("${cert.duration.min}")
+	@Value("${cert.validation.duration.min}")
 	private int minDuration;
-	@Value("${cert.duration.max}")
+	@Value("${cert.validation.duration.max}")
 	private int maxDuration;
-	@Value("${cert.price.min}")
+	@Value("${cert.validation.price.min}")
 	private BigDecimal minPrice;
-	@Value("${cert.price.max}")
+	@Value("${cert.validation.price.max}")
 	private BigDecimal maxPrice;
 
 	@Value("${cert.exception.name.null}")

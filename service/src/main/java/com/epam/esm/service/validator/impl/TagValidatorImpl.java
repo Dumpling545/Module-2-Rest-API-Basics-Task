@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TagValidatorImpl implements Validator<TagDTO> {
 
-	@Value("${tag.name.length.min}")
+	@Value("${tag.validation.name.length.min}")
 	private int minNameLength;
-	@Value("${tag.name.length.max}")
+	@Value("${tag.validation.name.length.max}")
 	private int maxNameLength;
-	@Value("${tag.exception.name.null}")
+	@Value("${tag.validation.exception.name.null}")
 	private String nullNameMessage;
-	@Value("${tag.exception.name.out-of-bounds}")
+	@Value("${tag.validation.exception.name.out-of-bounds}")
 	private String outOfBoundsNameTemplate;
 
 
