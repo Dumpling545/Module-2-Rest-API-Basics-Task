@@ -6,10 +6,7 @@ dependencies {
     api project(':db')
 
     implementation 'org.springframework:spring-tx'
-    implementation group: 'org.apache.commons', name: 'commons-collections4', version: apacheCommonsCollectionsVersion
     implementation project(':model')
-
-    testImplementation 'org.apache.commons:commons-lang3'
 }
 bootJar {
     enabled = false

@@ -15,7 +15,6 @@ import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.merger.Merger;
 import com.epam.esm.service.validator.Validator;
-import org.apache.commons.collections4.SetUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -87,13 +87,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		}
 		//get tags that are already exists in database
 		Set<TagDTO> existingTagDTOs = tagService.getTagsFromNameSet(tagNames);
-		Set<String> existingTagNames = existingTagDTOs.stream().map(t -> t.getName()).collect(Collectors.toSet());
+		Set<String> existingTagNames = existingTagDTOs.stream().map(TagDTO::getName).collect(Collectors.toSet());
 		//get tag names that are not in database yet
-		Set<String> newTagNames = SetUtils.difference(tagNames, existingTagNames);
+		Set<String> newTagNames = tagNames.stream().filter(s -> !existingTagNames.contains(s))
+				.collect(Collectors.toSet());
 		//create new tags and form Set from them
 		Set<TagDTO> newlyCreatedTagDTOs = createTagsFromNameSet(newTagNames);
 		//create Set from both sets
-		Set<TagDTO> tagDTOs = SetUtils.union(existingTagDTOs, newlyCreatedTagDTOs);
+		Set<TagDTO> tagDTOs = Stream.concat(existingTagDTOs.stream(), newlyCreatedTagDTOs.stream())
+				.collect(Collectors.toSet());
 		//convert certificate to entity & create it
 		GiftCertificate cert = certSupplier.get();
 		//add tags to certificate
@@ -151,13 +153,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 				Set<TagDTO> currentTagsOfCertificate = tagService.getTagsByCertificate(cert.getId());
 				//collect map from previous set with tag names as keys, and tag ids as values
 				Map<String, Integer> mapCurrentTagNamesToIds = currentTagsOfCertificate.stream()
-						.collect(Collectors.toMap(t -> t.getName(), t -> t.getId()));
+						.collect(Collectors.toMap(TagDTO::getName, TagDTO::getId));
 				//get tag names needed to be added to certificate
-				Set<String> tagNamesToAdd = SetUtils.difference(dto.getTagNames(), mapCurrentTagNamesToIds.keySet());
+				Set<String> tagNamesToAdd = dto.getTagNames().stream()
+						.filter(s -> !mapCurrentTagNamesToIds.containsKey(s)).collect(Collectors.toSet());
 				//add tags
 				createAndAddTagsToCertificate(tagNamesToAdd, () -> cert);
 				//get tags names needed to be removed from certificate
-				Set<String> tagNamesToRemove = SetUtils.difference(mapCurrentTagNamesToIds.keySet(), dto.getTagNames());
+				Set<String> tagNamesToRemove = mapCurrentTagNamesToIds.keySet().stream()
+						.filter(s -> !dto.getTagNames().contains(s)).collect(Collectors.toSet());
 				//remove tags
 				for (String tagName : tagNamesToRemove) {
 					int tagId = mapCurrentTagNamesToIds.get(tagName);
