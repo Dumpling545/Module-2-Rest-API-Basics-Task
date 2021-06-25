@@ -1,8 +1,8 @@
 package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.InvalidTagException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
@@ -19,7 +19,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @RestControllerAdvice
 public class TagExceptionHandler {
 
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LoggerFactory.getLogger(TagExceptionHandler.class);
 	@Value("${tag.error-info.postfix}")
 	private int tagPostfix;
 	private ExceptionHelper helper;

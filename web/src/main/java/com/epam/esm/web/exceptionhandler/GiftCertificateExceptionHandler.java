@@ -1,8 +1,8 @@
 package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.InvalidCertificateException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
@@ -18,7 +18,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Order(HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class GiftCertificateExceptionHandler {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LoggerFactory.getLogger(GiftCertificateExceptionHandler.class);
 	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
 	private ExceptionHelper helper;
