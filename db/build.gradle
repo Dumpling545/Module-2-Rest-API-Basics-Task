@@ -4,6 +4,7 @@ dependencies {
     implementation project(':model')
 
     testImplementation 'com.h2database:h2'
+    testImplementation project(':config')
 }
 
 bootJar {

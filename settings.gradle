@@ -20,4 +20,5 @@ include 'model'
 include 'db'
 include 'service'
 include 'web'
+include 'config'
 
