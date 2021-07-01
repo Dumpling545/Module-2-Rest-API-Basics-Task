@@ -74,10 +74,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		//get tag names that are not in database yet
 		Set<String> newTagNames = tagNames.stream().filter(s -> !existingTagNames.contains(s))
 				.collect(Collectors.toSet());
-		//convert to tags existing tags
+		//convert  existing tag dtos to tags
 		Set<Tag> existingTags =
 				existingTagDTOs.stream().map(tagDtoToTagConverter::convert).collect(Collectors.toSet());
-		//convert to tags new tag names
+		//convert new tag names to tags
 		Set<Tag> newTags = newTagNames.stream().map(tn -> new Tag(null, tn)).collect(Collectors.toSet());
 		Set<Tag> tags = Stream.concat(existingTags.stream(), newTags.stream()).collect(Collectors.toSet());
 		cert.setTags(tags);

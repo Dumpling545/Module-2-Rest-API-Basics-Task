@@ -108,17 +108,4 @@ public class TagServiceImpl implements TagService {
 		Set<TagDTO> dtoSet = tagList.stream().map(tagToTagDtoConverter::convert).collect(Collectors.toSet());
 		return dtoSet;
 	}
-/*
-	@Override
-	public Set<TagDTO> getTagsByCertificate(int certificateId) {
-		List<Tag> tagList = Collections.EMPTY_LIST;
-		try {
-			tagList = tagRepository.getTagsByCertificate(certificateId);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		Set<TagDTO> dtoSet = tagList.stream().map(tagToTagDtoConverter::convert).collect(Collectors.toSet());
-		return dtoSet;
-	}
-	*/
 }

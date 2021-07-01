@@ -56,24 +56,4 @@ public interface GiftCertificateRepository {
 	 * in database by the time of method invocation
 	 */
 	boolean deleteCertificate(int id);
-
-	/**
-	 * Adds provided tag to provided certificate
-	 *
-	 * @param certificateId
-	 * 		id of provided certificate
-	 * @param tagId
-	 * 		id of provided tag
-	 */
-	//void addTagToCertificate(int certificateId, int tagId);
-
-	/**
-	 * Removes provided tag from provided certificate
-	 *
-	 * @param certificateId
-	 * 		id of provided certificate
-	 * @param tagId
-	 * 		id of provided tag
-	 */
-	//void removeTagFromCertificate(int certificateId, int tagId);
 }

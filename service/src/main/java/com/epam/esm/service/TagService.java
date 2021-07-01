@@ -56,5 +56,4 @@ public interface TagService {
 	 * 		id of gift certificate
 	 * @return {@link List} with all Tag objects associated with given gift certificate id from database
 	 */
-	//Set<TagDTO> getTagsByCertificate(int certificateId);
 }
