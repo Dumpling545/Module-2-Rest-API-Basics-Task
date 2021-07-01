@@ -5,15 +5,16 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.service.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 public class GiftCertificateCreateDtoToGiftCertificateConverter
 		implements Converter<GiftCertificateCreateDTO, GiftCertificate> {
-	private final static int DEFAULT_ID = -1;
 
 	@Override
 	public GiftCertificate convert(GiftCertificateCreateDTO dto) {
-		GiftCertificate certificate = new GiftCertificate(DEFAULT_ID, dto.getName(), dto.getDescription(),
-				dto.getPrice(), dto.getDuration(), null, null);
+		GiftCertificate certificate = new GiftCertificate(null, dto.getName(), dto.getDescription(),
+				dto.getPrice(), dto.getDuration(), null, null, new HashSet<>());
 		return certificate;
 	}
 }

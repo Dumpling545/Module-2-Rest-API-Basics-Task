@@ -11,7 +11,7 @@ public class InvalidTagException extends ServiceException {
 	@Getter
 	private final Reason reason;
 	@Getter
-	private int tagId;
+	private Integer tagId;
 	@Getter
 	private String tagName;
 
@@ -46,6 +46,6 @@ public class InvalidTagException extends ServiceException {
 	}
 
 	public enum Reason {
-		INVALID_NAME, NOT_FOUND, ALREADY_EXISTS
+		NOT_FOUND, ALREADY_EXISTS
 	}
 }

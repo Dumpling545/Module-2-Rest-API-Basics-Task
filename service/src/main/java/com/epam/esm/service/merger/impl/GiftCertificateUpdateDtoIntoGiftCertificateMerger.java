@@ -17,7 +17,7 @@ public class GiftCertificateUpdateDtoIntoGiftCertificateMerger
 		Integer duration = merged.getDuration() == null ? base.getDuration() : merged.getDuration();
 		BigDecimal price = merged.getPrice() == null ? base.getPrice() : merged.getPrice();
 		GiftCertificate certificate = new GiftCertificate(base.getId(), name, description, price, duration,
-				base.getCreateDate(), base.getLastUpdateDate());
+				base.getCreateDate(), base.getLastUpdateDate(), base.getTags());
 		return certificate;
 	}
 }

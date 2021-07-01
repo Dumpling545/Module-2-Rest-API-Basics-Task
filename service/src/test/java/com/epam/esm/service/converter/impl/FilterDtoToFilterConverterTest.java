@@ -10,14 +10,11 @@ import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.validator.Validator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -41,7 +38,7 @@ public class FilterDtoToFilterConverterTest {
 				new FilterDTO(NAME_PART, null, null, null), new FilterDTO(null, DESC_PART, null, null),
 				new FilterDTO(null, null, TAG_NAME, null), new FilterDTO(null, null, null, CORRECT_SORT_OPTION_STR));
 	}
-
+/*
 	@ParameterizedTest
 	@MethodSource("correctTestSources")
 	public void convertShouldReturnFilterWhenPassedCorrectFilterDto(FilterDTO dto) {
@@ -57,6 +54,7 @@ public class FilterDtoToFilterConverterTest {
 			}
 		});
 	}
+	*/
 
 	@Test
 	public void convertShouldThrowExceptionWhenPassedFilterDtoWithInvalidTagName() {

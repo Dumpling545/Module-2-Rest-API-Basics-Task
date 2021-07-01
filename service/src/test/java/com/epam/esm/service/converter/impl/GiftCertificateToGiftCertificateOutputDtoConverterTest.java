@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +25,9 @@ public class GiftCertificateToGiftCertificateOutputDtoConverterTest {
 	@Test
 	public void convertShouldReturnDtoWhenPassedCorrectEntity() {
 		GiftCertificate entity = new GiftCertificate(ID, NAME, DESCRIPTION, PRICE, DURATION, CREATE_DATE,
-				LAST_UPDATE_DATE);
+				LAST_UPDATE_DATE, new HashSet<>());
 		Converter<GiftCertificate, GiftCertificateOutputDTO> converter =
-				new GiftCertificateToGiftCertificateOutputDtoConverter();
+				new GiftCertificateToGiftCertificateOutputDtoConverter(null);
 		assertDoesNotThrow(() -> {
 			GiftCertificateOutputDTO dto = converter.convert(entity);
 			assertEquals(ID, dto.getId());

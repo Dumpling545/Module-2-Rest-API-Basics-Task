@@ -1,14 +1,18 @@
 package com.epam.esm.service.converter.impl;
 
+import com.epam.esm.db.TagRepository;
 import com.epam.esm.model.dto.FilterDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.SortOption;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.converter.Converter;
 import com.epam.esm.service.exception.InvalidCertificateException;
-import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.exception.InvalidTagException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> {
@@ -24,11 +28,13 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 	private String invalidFieldTokenTemplate;
 	@Value("${cert.exception.sort-by.invalid-number-of-tokens}")
 	private String invalidNumberOfTokensTemplate;
+	@Value("${tag.exception.not-found}")
+	private String notFoundExceptionTemplate;
 
-	private Validator<TagDTO> tagValidator;
+	private TagRepository tagRepository;
 
-	public FilterDtoToFilterConverter(Validator<TagDTO> tagValidator) {
-		this.tagValidator = tagValidator;
+	public FilterDtoToFilterConverter(TagRepository tagRepository) {
+		this.tagRepository = tagRepository;
 	}
 
 	private SortOption.Field field(String field) {
@@ -63,10 +69,15 @@ public class FilterDtoToFilterConverter implements Converter<FilterDTO, Filter> 
 			SortOption.Direction direction = direction(tokens[DIRECTION_TOKEN_INDEX]);
 			sortOption = new SortOption(field, direction);
 		}
+		Tag tag = null;
 		if (filterDTO.getTagName() != null) {
-			tagValidator.validate(new TagDTO(DEFAULT_ID, filterDTO.getTagName()));
+			Optional<Tag> tagOptional = tagRepository.getTagByName(filterDTO.getTagName());
+			tag = tagOptional.orElseThrow(() ->{
+				String message = String.format(notFoundExceptionTemplate, "name=" + filterDTO.getTagName());
+				return new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, filterDTO.getTagName());
+			});
 		}
-		Filter filter = new Filter(filterDTO.getNamePart(), filterDTO.getDescriptionPart(), filterDTO.getTagName(),
+		Filter filter = new Filter(filterDTO.getNamePart(), filterDTO.getDescriptionPart(), tag,
 				sortOption);
 		return filter;
 	}
