@@ -44,10 +44,8 @@ public interface GiftCertificateRepository {
 	 * @param certificate
 	 * 		object that used as filter through {@link GiftCertificate#getId()} property and as update source through other
 	 * 		properties (dates are ignored).
-	 * @return true if certificate with given id successfully updated; false if certificate with such id does not exist
-	 * in database by the time of method invocation
 	 */
-	boolean updateCertificate(GiftCertificate certificate);
+	void updateCertificate(GiftCertificate certificate);
 
 	/**
 	 * Deletes certificate with given id from database
@@ -67,7 +65,7 @@ public interface GiftCertificateRepository {
 	 * @param tagId
 	 * 		id of provided tag
 	 */
-	void addTagToCertificate(int certificateId, int tagId);
+	//void addTagToCertificate(int certificateId, int tagId);
 
 	/**
 	 * Removes provided tag from provided certificate
@@ -77,5 +75,5 @@ public interface GiftCertificateRepository {
 	 * @param tagId
 	 * 		id of provided tag
 	 */
-	void removeTagFromCertificate(int certificateId, int tagId);
+	//void removeTagFromCertificate(int certificateId, int tagId);
 }
