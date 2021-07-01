@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -32,6 +33,8 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
@@ -53,16 +56,24 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 		this.helper = helper;
 		this.messageSource = messageSource;
 	}
-
-	private int resolvePostfix(HandlerMethod handlerMethod) {
-		Class controller = handlerMethod.getMethod().getDeclaringClass();
+	private int resolvePostfix(Class controllerClass) {
 		int postfix = commonPostfix;
-		if (controller.equals(TagController.class)) {
+		if (controllerClass.equals(TagController.class)) {
 			postfix = tagPostfix;
-		} else if (controller.equals(GiftCertificateController.class)) {
+		} else if (controllerClass.equals(GiftCertificateController.class)) {
 			postfix = certPostfix;
 		}
 		return postfix;
+	}
+
+	private int resolvePostfix(HandlerMethod handlerMethod) {
+		Class controllerClass = handlerMethod.getMethod().getDeclaringClass();
+		return resolvePostfix(controllerClass);
+	}
+
+	private int resolvePostfix(Method method) {
+		Class controllerClass = method.getDeclaringClass();
+		return resolvePostfix(controllerClass);
 	}
 
 	@ExceptionHandler(ServiceException.class)
@@ -177,9 +188,8 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                              HttpHeaders headers, HttpStatus status,
 	                                                              WebRequest request) {
 		logger.error("Handled in the MethodArgumentNotValidException handler", ex);
-		String message = messageSource.getMessage("common.error-message.method-argument-not-valid",
-				null, request.getLocale());
-		return helper.handle(status, headers, message, commonPostfix);
+		List<String> messages = ex.getAllErrors().stream().map(ObjectError::getDefaultMessage).toList();
+		return helper.handleUnformatted(status, headers, messages, resolvePostfix(ex.getParameter().getMethod()));
 	}
 
 	@Override

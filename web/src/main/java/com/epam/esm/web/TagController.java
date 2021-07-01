@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class TagController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> createTag(@RequestBody TagDTO tagDTO, UriComponentsBuilder ucb) {
+	public ResponseEntity<Object> createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
 		TagDTO dto = tagService.createTag(tagDTO);
 		HttpHeaders headers = new HttpHeaders();
 		URI locationUri = ucb.path("/tags/").path(String.valueOf(dto.getId())).build().toUri();

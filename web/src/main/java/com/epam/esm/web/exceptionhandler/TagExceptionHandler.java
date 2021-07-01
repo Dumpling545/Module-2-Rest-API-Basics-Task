@@ -35,11 +35,6 @@ public class TagExceptionHandler {
 		HttpStatus status;
 		String message;
 		switch (ex.getReason()) {
-			case INVALID_NAME:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("tag.error-message.invalid-name",
-						new Object[]{ex.getTagName()}, locale);
-				break;
 			case ALREADY_EXISTS:
 				status = HttpStatus.CONFLICT;
 				message = messageSource.getMessage("tag.error-message.already-exists",
@@ -47,8 +42,9 @@ public class TagExceptionHandler {
 				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
+				String identifier = (ex.getTagId() != null) ? "id=" + ex.getTagId() : "name=" + ex.getTagName();
 				message = messageSource.getMessage("tag.error-message.not-found",
-						new Object[]{ex.getTagId()}, locale);
+						new Object[]{identifier}, locale);
 				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;

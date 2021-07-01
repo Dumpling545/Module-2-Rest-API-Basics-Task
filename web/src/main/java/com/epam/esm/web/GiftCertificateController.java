@@ -8,6 +8,7 @@ import com.epam.esm.service.GiftCertificateService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
+import javax.validation.Validator;
 import java.net.URI;
 import java.util.List;
 
@@ -47,7 +50,7 @@ public class GiftCertificateController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> createCertificate(@RequestBody GiftCertificateCreateDTO certDTO,
+	public ResponseEntity<Object> createCertificate(@RequestBody @Valid GiftCertificateCreateDTO certDTO,
 	                                                UriComponentsBuilder ucb) {
 		GiftCertificateOutputDTO dto = certService.createCertificate(certDTO);
 		HttpHeaders headers = new HttpHeaders();
@@ -59,7 +62,7 @@ public class GiftCertificateController {
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Object> updateCertificate(@PathVariable("id") int id,
-	                                                @RequestBody GiftCertificateUpdateDTO certDTO,
+	                                                @RequestBody @Valid GiftCertificateUpdateDTO certDTO,
 	                                                UriComponentsBuilder ucb) {
 		certService.updateCertificate(id, certDTO);
 		HttpHeaders headers = new HttpHeaders();

@@ -34,22 +34,6 @@ public class GiftCertificateExceptionHandler {
 		HttpStatus status;
 		String message;
 		switch (ex.getReason()) {
-			case INVALID_NAME:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-name", null, locale);
-				break;
-			case INVALID_DESCRIPTION:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-desc", null, locale);
-				break;
-			case INVALID_DURATION:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-duration", null, locale);
-				break;
-			case INVALID_PRICE:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-price", null, locale);
-				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
 				message = messageSource.getMessage("cert.error-message.not-found",
