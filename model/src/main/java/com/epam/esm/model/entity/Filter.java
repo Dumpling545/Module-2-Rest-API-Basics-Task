@@ -10,6 +10,6 @@ import lombok.Value;
 public class Filter {
 	String namePart;
 	String descriptionPart;
-	String tagName;
+	Tag tag;
 	SortOption sortBy;
 }
