@@ -28,6 +28,15 @@ public interface TagService {
 	TagDTO getTag(int id);
 
 	/**
+	 * Retrieves tag object by given name
+	 *
+	 * @param tagName
+	 * 		if of tag to be retrieved
+	 * @return tag matching provided name
+	 */
+	TagDTO getTag(String tagName);
+
+	/**
 	 * Deletes tag object from database
 	 *
 	 * @param id
@@ -48,12 +57,4 @@ public interface TagService {
 	 * @return {@link List} of tags
 	 */
 	Set<TagDTO> getTagsFromNameSet(Set<String> tagNames);
-
-	/**
-	 * Retrieves all tags associated with provided gift certificate
-	 *
-	 * @param certificateId
-	 * 		id of gift certificate
-	 * @return {@link List} with all Tag objects associated with given gift certificate id from database
-	 */
 }

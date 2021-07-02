@@ -3,9 +3,13 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor 'org.mapstruct:mapstruct-processor:' + mapStructVersion
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:' + lombokMapStructBindingVersion
+
     api project(':db')
 
     implementation 'org.springframework:spring-tx'
+    implementation 'org.mapstruct:mapstruct:' + mapStructVersion
     implementation project(':model')
 }
 bootJar {

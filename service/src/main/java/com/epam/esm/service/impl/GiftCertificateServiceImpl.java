@@ -11,16 +11,18 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.converter.Converter;
+import com.epam.esm.service.converter.FilterConverter;
+import com.epam.esm.service.converter.GiftCertificateConverter;
+import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.exception.ServiceException;
-import com.epam.esm.service.merger.Merger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,42 +33,34 @@ import java.util.stream.Stream;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-	private static final int DEFAULT_ID = -1;
 	private TagService tagService;
 	private GiftCertificateRepository giftCertificateRepository;
-	private Merger<GiftCertificate, GiftCertificateUpdateDTO> updateDtoIntoCertMerger;
-	private Converter<FilterDTO, Filter> dtoToFilterConverter;
-	private Converter<GiftCertificateCreateDTO, GiftCertificate> createDtoToCertConverter;
-	private Converter<GiftCertificate, GiftCertificateOutputDTO> certToOutputDtoConverter;
 	@Value("${cert.exception.not-found}")
 	private String notFoundExceptionTemplate;
-	private Converter<TagDTO, Tag> tagDtoToTagConverter;
-	private Converter<Tag, TagDTO> tagToTagDtoConverter;
+	private GiftCertificateConverter giftCertificateConverter;
+	private TagConverter tagConverter;
+	private FilterConverter filterConverter;
 	public GiftCertificateServiceImpl(TagService tagService,
 	                                  GiftCertificateRepository giftCertificateRepository,
-	                                  Merger<GiftCertificate, GiftCertificateUpdateDTO> updateDtoIntoCertMerger,
-	                                  Converter<FilterDTO, Filter> dtoToFilterConverter,
-	                                  Converter<GiftCertificateCreateDTO, GiftCertificate> createDtoToCertConverter,
-	                                  Converter<GiftCertificate, GiftCertificateOutputDTO> certToOutputDtoConverter,
-	                                  Converter<TagDTO, Tag> tagDtoToTagConverter,
-	                                  Converter<Tag, TagDTO> tagToTagDtoConverter) {
+	                                  GiftCertificateConverter giftCertificateConverter,
+	                                  TagConverter tagConverter,
+	                                  FilterConverter filterConverter) {
 		this.tagService = tagService;
 		this.giftCertificateRepository = giftCertificateRepository;
-		this.updateDtoIntoCertMerger = updateDtoIntoCertMerger;
-		this.dtoToFilterConverter = dtoToFilterConverter;
-		this.createDtoToCertConverter = createDtoToCertConverter;
-		this.certToOutputDtoConverter = certToOutputDtoConverter;
-		this.tagDtoToTagConverter = tagDtoToTagConverter;
-		this.tagToTagDtoConverter = tagToTagDtoConverter;
+		this.giftCertificateConverter = giftCertificateConverter;
+		this.tagConverter = tagConverter;
+		this.filterConverter = filterConverter;
 	}
+
 	private InvalidCertificateException createNotFoundException(int id) {
 		String identifier = "id=" + id;
 		String message = String.format(notFoundExceptionTemplate, identifier);
 		return new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND, id);
 	}
-	private void prepareTagsForCreateUpdate(GiftCertificate cert, Set<String> tagNames) {
-		if(tagNames == null){
-			return;
+
+	private Set<Tag> prepareTagsForCreateUpdate(Set<String> tagNames) {
+		if (tagNames == null) {
+			return Collections.EMPTY_SET;
 		}
 		//get tags that are already exists in database
 		Set<TagDTO> existingTagDTOs = tagService.getTagsFromNameSet(tagNames);
@@ -76,24 +70,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 				.collect(Collectors.toSet());
 		//convert  existing tag dtos to tags
 		Set<Tag> existingTags =
-				existingTagDTOs.stream().map(tagDtoToTagConverter::convert).collect(Collectors.toSet());
+				existingTagDTOs.stream().map(tagConverter::convert).collect(Collectors.toSet());
 		//convert new tag names to tags
-		Set<Tag> newTags = newTagNames.stream().map(tn -> new Tag(null, tn)).collect(Collectors.toSet());
+		Set<Tag> newTags = newTagNames.stream().map(tn -> Tag.builder().name(tn).build()).collect(Collectors.toSet());
 		Set<Tag> tags = Stream.concat(existingTags.stream(), newTags.stream()).collect(Collectors.toSet());
-		cert.setTags(tags);
+		return tags;
 	}
 
 	@Transactional
 	public GiftCertificateOutputDTO createCertificate(GiftCertificateCreateDTO dto) {
-		GiftCertificate input = createDtoToCertConverter.convert(dto);
-		prepareTagsForCreateUpdate(input, dto.getTagNames());
+		Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
+		GiftCertificate input = giftCertificateConverter.convert(dto, tags);
 		GiftCertificate output;
 		try {
 			output = giftCertificateRepository.createCertificate(input);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		GiftCertificateOutputDTO outputDTO = certToOutputDtoConverter.convert(output);
+		GiftCertificateOutputDTO outputDTO = giftCertificateConverter.convert(output);
 		return outputDTO;
 	}
 
@@ -105,7 +99,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		GiftCertificateOutputDTO dto = optionalCert.map(certToOutputDtoConverter::convert)
+		GiftCertificateOutputDTO dto = optionalCert.map(giftCertificateConverter::convert)
 				.orElseThrow(() -> createNotFoundException(id));
 		return dto;
 	}
@@ -115,8 +109,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		try {
 			Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(id);
 			GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(id));
-			GiftCertificate updatedCert = updateDtoIntoCertMerger.merge(cert, dto);
-			prepareTagsForCreateUpdate(updatedCert, dto.getTagNames());
+			Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
+			GiftCertificate updatedCert = giftCertificateConverter.convert(cert, dto, tags);
 			if (!updatedCert.equals(cert)) {
 				giftCertificateRepository.updateCertificate(updatedCert);
 			}
@@ -140,12 +134,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
 	@Override
 	public List<GiftCertificateOutputDTO> getCertificates(FilterDTO filterDto) {
-		Filter filter = dtoToFilterConverter.convert(filterDto);
+		Tag tag = null;
+		if(filterDto.getTagName() != null){
+			tag = tagConverter.convert(tagService.getTag(filterDto.getTagName()));
+		}
+		Filter filter = filterConverter.convert(filterDto, tag);
 		List<GiftCertificateOutputDTO> outputDTOList = new ArrayList<>();
 		try {
 			List<GiftCertificate> certs = giftCertificateRepository.getCertificatesByFilter(filter);
 			for (GiftCertificate cert : certs) {
-				GiftCertificateOutputDTO outputDTO = certToOutputDtoConverter.convert(cert);
+				GiftCertificateOutputDTO outputDTO = giftCertificateConverter.convert(cert);
 				outputDTOList.add(outputDTO);
 			}
 		} catch (DataAccessException ex) {

@@ -1,5 +1,7 @@
 package com.epam.esm.model.dto;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 
 import javax.validation.constraints.DecimalMax;
@@ -29,7 +31,8 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_TAG_NAME_LENGTH;
  * DTO object encapsulating information for creation of Gift Certificates. Used for Web Layer -> Service layer
  * communication
  */
-@Value
+@Data
+@Builder
 public class GiftCertificateCreateDTO {
 	@NotNull(message = "{cert.validation-message.name-not-empty}")
 	@Size(min = MIN_CERT_NAME_LENGTH, max = MAX_CERT_NAME_LENGTH, message = "{cert.validation-message.name-size}")
