@@ -47,15 +47,6 @@ public interface TagRepository {
 	 */
 	List<Tag> getAllTags();
 	/**
-	 * Retrieves all tags associated with provided gift certificate
-	 *
-	 * @param certificateId
-	 * 		id of gift certificate
-	 * @return {@link List} with all Tag objects associated with given gift certificate id from database
-	 */
-	//List<Tag> getTagsByCertificate(int certificateId);
-
-	/**
 	 * Retrieves all tags which names included in provided set from database
 	 *
 	 * @param tagNames
