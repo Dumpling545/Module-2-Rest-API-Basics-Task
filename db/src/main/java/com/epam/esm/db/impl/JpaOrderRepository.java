@@ -8,6 +8,7 @@ import com.epam.esm.model.entity.Order_;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,7 +32,8 @@ public class JpaOrderRepository implements OrderRepository {
 	public JpaOrderRepository(DatabaseHelper databaseHelper) {
 		this.databaseHelper = databaseHelper;
 	}
-	@Override
+
+	@Transactional
 	public Order createOrder(Order order) {
 		LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
 		order.setPurchaseDate(localDateTime);
