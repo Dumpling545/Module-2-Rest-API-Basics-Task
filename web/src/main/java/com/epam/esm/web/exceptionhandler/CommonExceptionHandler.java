@@ -2,7 +2,9 @@ package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.web.GiftCertificateController;
+import com.epam.esm.web.OrderController;
 import com.epam.esm.web.TagController;
+import com.epam.esm.web.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -47,6 +49,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	private int certPostfix;
 	@Value("${tag.error-info.postfix}")
 	private int tagPostfix;
+	@Value("${order.error-info.postfix}")
+	private int orderPostfix;
+	@Value("${user.error-info.postfix}")
+	private int userPostfix;
 	@Value("${common.error-info.postfix}")
 	private int commonPostfix;
 	private ExceptionHelper helper;
@@ -62,6 +68,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 			postfix = tagPostfix;
 		} else if (controllerClass.equals(GiftCertificateController.class)) {
 			postfix = certPostfix;
+		} else if (controllerClass.equals(OrderController.class)) {
+			postfix = orderPostfix;
+		} else if (controllerClass.equals(UserController.class)) {
+			postfix = userPostfix;
 		}
 		return postfix;
 	}
