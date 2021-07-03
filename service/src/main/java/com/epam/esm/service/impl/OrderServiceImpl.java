@@ -50,8 +50,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional(isolation = REPEATABLE_READ)
 	public OrderDTO createOrder(OrderDTO dto) {
-		GiftCertificateOutputDTO certDto = giftCertificateService.getCertificate(dto.getId());
+		GiftCertificateOutputDTO certDto = giftCertificateService.getCertificate(dto.getGiftCertificateId());
 		Order order = orderConverter.convert(dto, certDto.getPrice());
+		order.setId(null);
 		try {
 			Order newOrder = orderRepository.createOrder(order);
 			return orderConverter.convert(newOrder);

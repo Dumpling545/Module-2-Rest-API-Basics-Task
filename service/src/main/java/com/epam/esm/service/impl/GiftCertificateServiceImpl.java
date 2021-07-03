@@ -81,6 +81,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	public GiftCertificateOutputDTO createCertificate(GiftCertificateCreateDTO dto) {
 		Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
 		GiftCertificate input = giftCertificateConverter.convert(dto, tags);
+		input.setId(null);
 		GiftCertificate output;
 		try {
 			output = giftCertificateRepository.createCertificate(input);

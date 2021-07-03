@@ -37,6 +37,7 @@ public class TagServiceImpl implements TagService {
 	@Override
 	public TagDTO createTag(TagDTO tagDto) {
 		Tag tag = tagConverter.convert(tagDto);
+		tag.setId(null);
 		try {
 			Tag newTag = tagRepository.createTag(tag);
 			return tagConverter.convert(newTag);

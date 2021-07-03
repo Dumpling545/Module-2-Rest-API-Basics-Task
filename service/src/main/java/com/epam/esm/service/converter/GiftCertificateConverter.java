@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Mapper(componentModel="spring", uses = TagConverter.class)
 public interface GiftCertificateConverter {
-	@Mapping(target = "id", ignore = true)
 	GiftCertificate convert(GiftCertificateCreateDTO createDto, Set<Tag> tags);
 	@Mapping(source = "updateDto.name", target = "name", defaultExpression = "java(base.getName())")
 	@Mapping(source = "updateDto.description", target = "description", defaultExpression = "java(base.getDescription())")

@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user")
+@Table(name = "cert_user")
 public class User {
 	private static final Logger logger = LoggerFactory.getLogger(User.class);
 	@Id

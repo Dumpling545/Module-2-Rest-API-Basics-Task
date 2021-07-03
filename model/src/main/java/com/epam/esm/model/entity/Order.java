@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "order")
+@Table(name = "cert_order")
 public class Order {
 	private static final Logger logger = LoggerFactory.getLogger(Order.class);
 	@Id

@@ -41,14 +41,14 @@ ALTER TABLE public.tag_gift_certificate
     ON DELETE CASCADE
     ON UPDATE NO ACTION;
     
-CREATE TABLE IF NOT EXISTS public.user
+CREATE TABLE IF NOT EXISTS public.cert_user
 (
     id bigserial NOT NULL,
     user_name character varying(100) UNIQUE NOT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS public.order
+CREATE TABLE IF NOT EXISTS public.cert_order
 (
     id bigserial NOT NULL,
     user_id bigserial NOT NULL,
@@ -58,13 +58,13 @@ CREATE TABLE IF NOT EXISTS public.order
     PRIMARY KEY (id)
 );
 
-ALTER TABLE public.order
+ALTER TABLE public.cert_order
     ADD FOREIGN KEY (user_id)
-    REFERENCES public.user (id)
+    REFERENCES public.cert_user (id)
     ON DELETE CASCADE
     ON UPDATE NO ACTION;
     
-ALTER TABLE public.order
+ALTER TABLE public.cert_order
     ADD FOREIGN KEY (gift_certificate_id)
     REFERENCES public.gift_certificate (id)
     ON DELETE CASCADE
