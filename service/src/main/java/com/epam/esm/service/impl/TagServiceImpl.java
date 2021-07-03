@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class TagServiceImpl implements TagService {
 	private String notFoundExceptionTemplate;
 
 
-	public TagServiceImpl(TagRepository tagRepository, TagConverter tagConverter){
+	public TagServiceImpl(TagRepository tagRepository, TagConverter tagConverter) {
 		this.tagRepository = tagRepository;
 		this.tagConverter = tagConverter;
 	}
@@ -49,36 +50,35 @@ public class TagServiceImpl implements TagService {
 		}
 	}
 
-	@Override
-	public TagDTO getTag(int id) {
+	private TagDTO getSingleTag(Supplier<Optional<Tag>> tagOptionalSupplier, Supplier<String> tagDescriptionSupplier) {
 		Optional<Tag> tagOptional = Optional.empty();
 		try {
-			tagOptional = tagRepository.getTagById(id);
+			tagOptional = tagOptionalSupplier.get();
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
 		TagDTO tagDTO = tagOptional.map(tagConverter::convert).orElseThrow(() -> {
-			String identifier = "id=" + id;
+			String identifier = tagDescriptionSupplier.get();
 			String message = String.format(notFoundExceptionTemplate, identifier);
-			return new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, id);
+			return new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, identifier);
 		});
 		return tagDTO;
 	}
 
 	@Override
+	public TagDTO getTag(int id) {
+		return getSingleTag(() -> tagRepository.getTagById(id), () -> "id=" + id);
+	}
+
+	@Override
 	public TagDTO getTag(String tagName) {
-		Optional<Tag> tagOptional = Optional.empty();
-		try {
-			tagOptional = tagRepository.getTagByName(tagName);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		TagDTO tagDTO = tagOptional.map(tagConverter::convert).orElseThrow(() -> {
-			String identifier = "name=" + tagName;
-			String message = String.format(notFoundExceptionTemplate, identifier);
-			return new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, tagName);
-		});
-		return tagDTO;
+		return getSingleTag(() -> tagRepository.getTagByName(tagName), () -> "name=" + tagName);
+	}
+
+	@Override
+	public TagDTO getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId) {
+		return getSingleTag(() -> tagRepository.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(userId),
+				() -> "userId=" + userId);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class TagServiceImpl implements TagService {
 		if (!deleted) {
 			String identifier = "id=" + id;
 			String message = String.format(notFoundExceptionTemplate, identifier);
-			throw new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, id);
+			throw new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, identifier);
 		}
 	}
 

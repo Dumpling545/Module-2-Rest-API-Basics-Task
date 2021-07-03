@@ -65,4 +65,6 @@ public interface TagRepository {
 	 */
 	boolean deleteTag(int id);
 
+	Optional<Tag> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId);
+
 }

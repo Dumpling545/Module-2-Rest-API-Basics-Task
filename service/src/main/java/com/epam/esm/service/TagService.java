@@ -1,8 +1,11 @@
 package com.epam.esm.service;
 
 import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.entity.Tag;
 
+import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -57,4 +60,6 @@ public interface TagService {
 	 * @return {@link List} of tags
 	 */
 	Set<TagDTO> getTagsFromNameSet(Set<String> tagNames);
+
+	TagDTO getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId);
 }

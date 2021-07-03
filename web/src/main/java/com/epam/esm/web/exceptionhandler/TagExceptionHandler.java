@@ -38,13 +38,13 @@ public class TagExceptionHandler {
 			case ALREADY_EXISTS:
 				status = HttpStatus.CONFLICT;
 				message = messageSource.getMessage("tag.error-message.already-exists",
-						new Object[]{ex.getTagName()}, locale);
+						new Object[]{ex.getTagDescription()}, locale);
 				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
-				String identifier = (ex.getTagId() != null) ? "id=" + ex.getTagId() : "name=" + ex.getTagName();
+				String tagDescription = ex.getTagDescription();
 				message = messageSource.getMessage("tag.error-message.not-found",
-						new Object[]{identifier}, locale);
+						new Object[]{tagDescription}, locale);
 				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -97,7 +97,7 @@ public class TagServiceImplTest {
 		ReflectionTestUtils.setField(tagService, ALREADY_EXISTS_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagService.createTag(tag));
 		assertEquals(InvalidTagException.Reason.ALREADY_EXISTS, ex.getReason());
-		assertEquals(TAG_NAME, ex.getTagName());
+		assertEquals(TAG_NAME, ex.getTagDescription());
 	}
 
 	@Test

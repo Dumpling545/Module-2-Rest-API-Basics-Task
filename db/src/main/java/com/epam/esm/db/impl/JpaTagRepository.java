@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,6 +22,13 @@ import java.util.function.Function;
 
 @Repository
 public class JpaTagRepository implements TagRepository {
+	private static final String GET_MOST_WIDELY_USED_TAG_WITH_HIGHEST_COST =
+			"SELECT tag.* FROM tag " +
+					"INNER JOIN tag_gift_certificate ON tag_gift_certificate.tag_id=tag.id " +
+					"INNER JOIN cert_order ON cert_order.gift_certificate_id=tag_gift_certificate.gift_certificate_id " +
+					"WHERE user_id=:userId GROUP BY tag.id, tag.name " +
+					"ORDER BY COUNT(cert_order.id) DESC, SUM(cert_order.cost) DESC LIMIT 1";
+	private static final String USER_ID_PARAM_KEY = "userId";
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -61,6 +69,7 @@ public class JpaTagRepository implements TagRepository {
 		Function<TypedQuery<Tag>, List<Tag>> resultProducer = TypedQuery::getResultList;
 		return databaseHelper.execute(Tag.class, entityManager, queryConfigurator, resultProducer);
 	}
+
 	@Override
 	public List<Tag> getTagsFromNameSet(Set<String> tagNames) {
 		TriConsumer<CriteriaBuilder, CriteriaQuery<Tag>, Root<Tag>> queryConfigurator = (cb, cq, r) -> {
@@ -78,5 +87,12 @@ public class JpaTagRepository implements TagRepository {
 			entityManager.remove(tag);
 		}
 		return found;
+	}
+
+	@Override
+	public Optional<Tag> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId) {
+		Query query = entityManager.createNativeQuery(GET_MOST_WIDELY_USED_TAG_WITH_HIGHEST_COST, Tag.class);
+		query.setParameter(USER_ID_PARAM_KEY, userId);
+		return ((List<Tag>) query.getResultList()).stream().findFirst();
 	}
 }
