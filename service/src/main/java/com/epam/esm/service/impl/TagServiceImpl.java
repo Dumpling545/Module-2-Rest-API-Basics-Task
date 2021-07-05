@@ -7,6 +7,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,20 +21,16 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
-	private TagRepository tagRepository;
-	private TagConverter tagConverter;
 	@Value("${tag.exception.already-exists}")
 	private String alreadyExistsExceptionTemplate;
 	@Value("${tag.exception.not-found}")
 	private String notFoundExceptionTemplate;
 
-
-	public TagServiceImpl(TagRepository tagRepository, TagConverter tagConverter) {
-		this.tagRepository = tagRepository;
-		this.tagConverter = tagConverter;
-	}
+	private final TagRepository tagRepository;
+	private final TagConverter tagConverter;
 
 	@Override
 	public TagDTO createTag(TagDTO tagDto) {

@@ -7,6 +7,9 @@ import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.GiftCertificate_;
 import com.epam.esm.model.entity.SortOption;
+import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.Tag_;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -30,16 +34,14 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Repository
+@RequiredArgsConstructor
 public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private DatabaseHelper databaseHelper;
+	private final DatabaseHelper databaseHelper;
 	private static final String LOAD_GRAPH_HINT_KEY = "javax.persistence.loadgraph";
-
-	public JpaGiftCertificateRepository(DatabaseHelper databaseHelper) {
-		this.databaseHelper = databaseHelper;
-	}
+	private static final String FULL_CERTIFICATE_ENTITY_GRAPH_NAME = "full-certificate-entity-graph";
 
 	@Transactional
 	public GiftCertificate createCertificate(GiftCertificate certificate) {
@@ -47,21 +49,17 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 		certificate.setCreateDate(localDateTime);
 		certificate.setLastUpdateDate(localDateTime);
 		entityManager.persist(certificate);
+		entityManager.flush();
 		entityManager.clear();
 		return certificate;
-	}
-
-	private EntityGraph<GiftCertificate> produceEntityGraph(EntityManager entityManager) {
-		EntityGraph<GiftCertificate> entityGraph = entityManager.createEntityGraph(GiftCertificate.class);
-		entityGraph.addSubgraph(GiftCertificate_.tags);
-		return entityGraph;
 	}
 
 	@Override
 	public Optional<GiftCertificate> getCertificateById(int id) {
 		HashMap<String, Object> params = new HashMap<>();
-		params.put(LOAD_GRAPH_HINT_KEY, produceEntityGraph(entityManager));
+		params.put(LOAD_GRAPH_HINT_KEY, entityManager.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME));
 		GiftCertificate certificate = entityManager.find(GiftCertificate.class, id, params);
+		entityManager.clear();
 		return Optional.ofNullable(certificate);
 	}
 
@@ -83,8 +81,18 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	                                    CriteriaQuery<GiftCertificate> criteriaQuery,
 	                                    Root<GiftCertificate> root) {
 		List<Predicate> restrictions = new ArrayList<>();
-		if (filter.getTag() != null) {
-			restrictions.add(criteriaBuilder.isMember(filter.getTag(), root.get(GiftCertificate_.tags)));
+		if (filter.getTags() != null) {
+			TriConsumer<CriteriaBuilder, CriteriaQuery<Integer>, Root<GiftCertificate>> queryConfigurator =
+					(cb, cq, r) -> {
+						Join<GiftCertificate, Tag> tagJoin = r.join(GiftCertificate_.tags);
+						cq.select(r.get(GiftCertificate_.id)).distinct(true);
+						List<Integer> tagIds = filter.getTags().stream().map(Tag::getId).toList();
+						cq.where(tagJoin.get(Tag_.id).in(tagIds)).groupBy(r.get(GiftCertificate_.id));
+						cq.having(cb.equal(cb.count(tagJoin.get(Tag_.id)), tagIds.size()));
+					};
+			List<Integer> certIds = databaseHelper.execute(Integer.class, GiftCertificate.class, entityManager,
+					queryConfigurator, TypedQuery::getResultList, false);
+			restrictions.add(root.get(GiftCertificate_.id).in(certIds));
 		}
 		if (filter.getNamePart() != null && !filter.getNamePart().isBlank()) {
 			Expression<Integer> locateNamePart = criteriaBuilder
@@ -96,7 +104,7 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 					.locate(root.get(GiftCertificate_.description), filter.getDescriptionPart());
 			restrictions.add(criteriaBuilder.greaterThan(locateDescPart, 0));
 		}
-		criteriaQuery.select(root).where(restrictions.toArray(new Predicate[0]));
+		criteriaQuery.select(root).distinct(true).where(restrictions.toArray(new Predicate[0]));
 		if (filter.getSortBy() != null) {
 			Order order = createOrderFromSortOption(filter.getSortBy(), criteriaBuilder, root);
 			criteriaQuery.orderBy(order);
@@ -105,17 +113,18 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 
 	@Override
 	public List<GiftCertificate> getCertificatesByFilter(Filter filter) {
-		TriConsumer<CriteriaBuilder, CriteriaQuery<GiftCertificate>, Root<GiftCertificate>> queryConfigurator =
-				(cb, cq, r) -> configureQueryByFilter(filter, cb, cq, r);
-		List<GiftCertificate> result = databaseHelper.execute(GiftCertificate.class, entityManager, queryConfigurator,
-				this::produceEntityGraph, TypedQuery::getResultList);
-		return result;
+		return databaseHelper.execute(GiftCertificate.class, entityManager,
+				(cb, cq, r) -> configureQueryByFilter(filter, cb, cq, r),
+				(em) -> (EntityGraph<GiftCertificate>) em.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME),
+				TypedQuery::getResultList);
 	}
 
 	@Transactional
 	public void updateCertificate(GiftCertificate certificate) {
 		certificate.setLastUpdateDate(LocalDateTime.now(ZoneOffset.UTC));
 		entityManager.merge(certificate);
+		entityManager.flush();
+		entityManager.clear();
 	}
 
 	@Transactional
@@ -125,6 +134,8 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 		if (found) {
 			entityManager.remove(giftCertificate);
 		}
+		entityManager.flush();
+		entityManager.clear();
 		return found;
 	}
 }

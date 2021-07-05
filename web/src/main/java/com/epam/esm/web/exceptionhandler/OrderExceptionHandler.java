@@ -1,6 +1,7 @@
 package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.InvalidOrderException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,18 +19,14 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 @Order(HIGHEST_PRECEDENCE)
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class OrderExceptionHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrderExceptionHandler.class);
 	@Value("${order.error-info.postfix}")
 	private int orderPostfix;
-	private ExceptionHelper helper;
-	private MessageSource messageSource;
-
-	public OrderExceptionHandler(ExceptionHelper helper, MessageSource messageSource) {
-		this.helper = helper;
-		this.messageSource = messageSource;
-	}
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
 
 	@ExceptionHandler(InvalidOrderException.class)
 	public ResponseEntity<Object> handleException(InvalidOrderException ex, Locale locale) {

@@ -3,6 +3,8 @@ package com.epam.esm.model.entity;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 /**
  * Entity object encapsulating information about Gift Certificate filters. Used for Service Layer <-> Repository layer
  * communication
@@ -10,8 +12,8 @@ import lombok.Data;
 @Data
 @Builder
 public class Filter {
-	String namePart;
-	String descriptionPart;
-	Tag tag;
-	SortOption sortBy;
+	private String namePart;
+	private String descriptionPart;
+	private Set<Tag> tags;
+	private SortOption sortBy;
 }

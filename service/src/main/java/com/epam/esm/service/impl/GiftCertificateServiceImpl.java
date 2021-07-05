@@ -16,6 +16,9 @@ import com.epam.esm.service.converter.GiftCertificateConverter;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,34 +26,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.EMPTY_LIST;
+
 
 @Service
+@RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-	private TagService tagService;
-	private GiftCertificateRepository giftCertificateRepository;
 	@Value("${cert.exception.not-found}")
 	private String notFoundExceptionTemplate;
-	private GiftCertificateConverter giftCertificateConverter;
-	private TagConverter tagConverter;
-	private FilterConverter filterConverter;
-	public GiftCertificateServiceImpl(TagService tagService,
-	                                  GiftCertificateRepository giftCertificateRepository,
-	                                  GiftCertificateConverter giftCertificateConverter,
-	                                  TagConverter tagConverter,
-	                                  FilterConverter filterConverter) {
-		this.tagService = tagService;
-		this.giftCertificateRepository = giftCertificateRepository;
-		this.giftCertificateConverter = giftCertificateConverter;
-		this.tagConverter = tagConverter;
-		this.filterConverter = filterConverter;
-	}
+
+	private final TagService tagService;
+	private final GiftCertificateRepository giftCertificateRepository;
+	private final GiftCertificateConverter giftCertificateConverter;
+	private final TagConverter tagConverter;
+	private final FilterConverter filterConverter;
 
 	private InvalidCertificateException createNotFoundException(int id) {
 		String identifier = "id=" + id;
@@ -105,13 +102,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		return dto;
 	}
 
+
 	@Transactional
 	public void updateCertificate(int id, GiftCertificateUpdateDTO dto) {
 		try {
 			Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(id);
 			GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(id));
 			Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
-			GiftCertificate updatedCert = giftCertificateConverter.convert(cert, dto, tags);
+			GiftCertificate updatedCert = cert.toBuilder().tags(new HashSet<>(cert.getTags())).build();
+			giftCertificateConverter.mergeGiftCertificate(updatedCert, dto, tags);
 			if (!updatedCert.equals(cert)) {
 				giftCertificateRepository.updateCertificate(updatedCert);
 			}
@@ -135,11 +134,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
 	@Override
 	public List<GiftCertificateOutputDTO> getCertificates(FilterDTO filterDto) {
-		Tag tag = null;
-		if(filterDto.getTagName() != null){
-			tag = tagConverter.convert(tagService.getTag(filterDto.getTagName()));
+		Set<Tag> tags = null;
+		if (filterDto.getTagNames() != null) {
+			Set<TagDTO> tagDTOs = tagService.getTagsFromNameSet(filterDto.getTagNames());
+			if (filterDto.getTagNames().size() != tagDTOs.size()) {
+				return EMPTY_LIST;
+			}
+			tags = tagDTOs.stream().map(tagConverter::convert).collect(Collectors.toSet());
 		}
-		Filter filter = filterConverter.convert(filterDto, tag);
+		Filter filter = filterConverter.convert(filterDto, tags);
 		List<GiftCertificateOutputDTO> outputDTOList = new ArrayList<>();
 		try {
 			List<GiftCertificate> certs = giftCertificateRepository.getCertificatesByFilter(filter);

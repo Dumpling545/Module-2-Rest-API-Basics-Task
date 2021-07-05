@@ -12,6 +12,7 @@ import com.epam.esm.service.converter.UserConverter;
 import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.InvalidUserException;
 import com.epam.esm.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	private UserRepository userRepository;
-	private UserConverter userConverter;
 	@Value("${user.exception.not-found}")
 	private String notFoundExceptionTemplate;
 
-	public UserServiceImpl(UserRepository userRepository, UserConverter userConverter) {
-		this.userRepository = userRepository;
-		this.userConverter = userConverter;
-	}
+	private final UserRepository userRepository;
+	private final  UserConverter userConverter;
 
 	@Override
 	public UserDTO getUser(int id) {

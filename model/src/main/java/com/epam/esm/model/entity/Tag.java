@@ -32,9 +32,9 @@ public class Tag {
 	@Id
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	@Column(nullable = false, unique = true)
-	String name;
+	private String name;
 	@PrePersist
 	public void onPrePersist(){
 		logger.info(toString() + " to be persisted");

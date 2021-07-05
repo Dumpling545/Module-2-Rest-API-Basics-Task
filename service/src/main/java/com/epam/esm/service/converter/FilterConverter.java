@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Mapper(componentModel="spring")
 public abstract class FilterConverter {
@@ -29,7 +30,7 @@ public abstract class FilterConverter {
 	private String invalidNumberOfTokensTemplate;
 
 	@Mapping(target = "sortBy", source = "dto.sortBy")
-	public abstract Filter convert(FilterDTO dto, Tag tag);
+	public abstract Filter convert(FilterDTO dto, Set<Tag> tags);
 
 	public SortOption convert(String sortBy){
 		SortOption sortOption = null;

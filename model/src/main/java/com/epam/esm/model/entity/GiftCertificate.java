@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
@@ -31,43 +33,57 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "gift_certificate")
+@NamedEntityGraph(
+		name = "full-certificate-entity-graph",
+		attributeNodes = {
+				@NamedAttributeNode(GiftCertificate_.NAME),
+				@NamedAttributeNode(GiftCertificate_.DESCRIPTION),
+				@NamedAttributeNode(GiftCertificate_.PRICE),
+				@NamedAttributeNode(GiftCertificate_.DURATION),
+				@NamedAttributeNode(GiftCertificate_.CREATE_DATE),
+				@NamedAttributeNode(GiftCertificate_.LAST_UPDATE_DATE),
+				@NamedAttributeNode(GiftCertificate_.TAGS)
+		}
+)
 public class GiftCertificate {
 	private static final Logger logger = LoggerFactory.getLogger(GiftCertificate.class);
 	@Id
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	@Column(nullable = false)
-	String name;
+	private String name;
 	@Column(nullable = false)
-	String description;
+	private String description;
 	@Column(nullable = false)
-	BigDecimal price;
+	private BigDecimal price;
 	@Column(nullable = false)
-	Integer duration;
+	private Integer duration;
 	@Column(name = "create_date", nullable = false)
-	LocalDateTime createDate;
+	private LocalDateTime createDate;
 	@Column(name = "last_update_date", nullable = false)
-	LocalDateTime lastUpdateDate;
+	private LocalDateTime lastUpdateDate;
 	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE})
 	@JoinTable(name = "tag_gift_certificate",
 			joinColumns = @JoinColumn(name = "gift_certificate_id"),
 			inverseJoinColumns = @JoinColumn(name = "tag_id"))
-	Set<Tag> tags;
+	private Set<Tag> tags;
 
 	@PrePersist
-	public void onPrePersist(){
+	public void onPrePersist() {
 		logger.info(toString() + " to be persisted");
 	}
+
 	@PreRemove
-	public void onPreRemove(){
+	public void onPreRemove() {
 		logger.info(toString() + " to be removed");
 	}
+
 	@PreUpdate
-	public void onPreUpdate(){
+	public void onPreUpdate() {
 		logger.info(toString() + " to be updated");
 	}
 }

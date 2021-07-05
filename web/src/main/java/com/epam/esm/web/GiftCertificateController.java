@@ -5,6 +5,7 @@ import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.service.GiftCertificateService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +24,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/gift-certificates")
+@RequiredArgsConstructor
 public class GiftCertificateController {
-	private GiftCertificateService certService;
-
-	public GiftCertificateController(GiftCertificateService certService) {
-		this.certService = certService;
-	}
-
+	private final GiftCertificateService certService;
+	
 	@GetMapping(value = "/{id}")
 	public GiftCertificateOutputDTO getCertificate(@PathVariable("id") int id) {
 		return certService.getCertificate(id);
@@ -41,12 +40,12 @@ public class GiftCertificateController {
 	@GetMapping
 	public List<GiftCertificateOutputDTO> filteredCertificates(@RequestParam(required = false) String namePart,
 	                                                           @RequestParam(required = false) String descriptionPart,
-	                                                           @RequestParam(required = false) String tagName,
+	                                                           @RequestParam(required = false) Set<String> tagNames,
 	                                                           @RequestParam(required = false) String sortOption) {
 		FilterDTO filterDTO = FilterDTO.builder()
 				.namePart(namePart)
 				.descriptionPart(descriptionPart)
-				.tagName(tagName)
+				.tagNames(tagNames)
 				.sortBy(sortOption).build();
 		return certService.getCertificates(filterDTO);
 	}

@@ -2,6 +2,7 @@ package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.InvalidOrderException;
 import com.epam.esm.service.exception.InvalidUserException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,17 +19,13 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 @Order(HIGHEST_PRECEDENCE)
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class UserExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(UserExceptionHandler.class);
 	@Value("${user.error-info.postfix}")
 	private int userPostfix;
-	private ExceptionHelper helper;
-	private MessageSource messageSource;
-
-	public UserExceptionHandler(ExceptionHelper helper, MessageSource messageSource) {
-		this.helper = helper;
-		this.messageSource = messageSource;
-	}
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
 
 	@ExceptionHandler(InvalidUserException.class)
 	public ResponseEntity<Object> handleException(InvalidUserException ex, Locale locale) {

@@ -33,15 +33,15 @@ public class Order {
 	@Id
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	@Column(name = "user_id", nullable = false)
-	Integer userId;
+	private Integer userId;
 	@Column(name = "gift_certificate_id", nullable = false)
-	Integer giftCertificateId;
+	private Integer giftCertificateId;
 	@Column(nullable = false)
-	BigDecimal cost;
+	private BigDecimal cost;
 	@Column(name = "purchase_date", nullable = false)
-	LocalDateTime purchaseDate;
+	private LocalDateTime purchaseDate;
 	@PrePersist
 	public void onPrePersist(){
 		logger.info(toString() + " to be persisted");

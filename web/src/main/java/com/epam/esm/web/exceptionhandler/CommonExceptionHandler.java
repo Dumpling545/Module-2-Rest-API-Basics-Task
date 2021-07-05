@@ -5,6 +5,7 @@ import com.epam.esm.web.GiftCertificateController;
 import com.epam.esm.web.OrderController;
 import com.epam.esm.web.TagController;
 import com.epam.esm.web.UserController;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -43,6 +44,7 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 @Order(LOWEST_PRECEDENCE)
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(CommonExceptionHandler.class);
 	@Value("${cert.error-info.postfix}")
@@ -55,13 +57,9 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	private int userPostfix;
 	@Value("${common.error-info.postfix}")
 	private int commonPostfix;
-	private ExceptionHelper helper;
-	private MessageSource messageSource;
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
 
-	public CommonExceptionHandler(ExceptionHelper helper, MessageSource messageSource) {
-		this.helper = helper;
-		this.messageSource = messageSource;
-	}
 	private int resolvePostfix(Class controllerClass) {
 		int postfix = commonPostfix;
 		if (controllerClass.equals(TagController.class)) {

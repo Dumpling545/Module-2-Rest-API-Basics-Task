@@ -2,7 +2,8 @@ package com.epam.esm.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
+
+import java.util.Set;
 
 /**
  * DTO object encapsulating information about Gift Certificate filters. Used for Web Layer <-> Service layer
@@ -13,6 +14,6 @@ import lombok.Value;
 public class FilterDTO {
 	String namePart;
 	String descriptionPart;
-	String tagName;
+	Set<String> tagNames;
 	String sortBy;
 }

@@ -5,6 +5,7 @@ import com.epam.esm.db.helper.DatabaseHelper;
 import com.epam.esm.db.helper.TriConsumer;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.Tag_;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 @Repository
+@RequiredArgsConstructor
 public class JpaTagRepository implements TagRepository {
 	private static final String GET_MOST_WIDELY_USED_TAG_WITH_HIGHEST_COST =
 			"SELECT tag.* FROM tag " +
@@ -32,15 +34,12 @@ public class JpaTagRepository implements TagRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private DatabaseHelper databaseHelper;
-
-	public JpaTagRepository(DatabaseHelper databaseHelper) {
-		this.databaseHelper = databaseHelper;
-	}
+	private final DatabaseHelper databaseHelper;
 
 	@Transactional
 	public Tag createTag(Tag tag) {
 		entityManager.persist(tag);
+		entityManager.flush();
 		entityManager.clear();
 		return tag;
 	}
@@ -86,6 +85,8 @@ public class JpaTagRepository implements TagRepository {
 		if (found) {
 			entityManager.remove(tag);
 		}
+		entityManager.flush();
+		entityManager.clear();
 		return found;
 	}
 
@@ -93,6 +94,8 @@ public class JpaTagRepository implements TagRepository {
 	public Optional<Tag> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId) {
 		Query query = entityManager.createNativeQuery(GET_MOST_WIDELY_USED_TAG_WITH_HIGHEST_COST, Tag.class);
 		query.setParameter(USER_ID_PARAM_KEY, userId);
-		return ((List<Tag>) query.getResultList()).stream().findFirst();
+		Optional<Tag> result = ((List<Tag>) query.getResultList()).stream().findFirst();
+		entityManager.clear();
+		return result;
 	}
 }

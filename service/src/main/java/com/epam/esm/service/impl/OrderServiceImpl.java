@@ -18,6 +18,7 @@ import com.epam.esm.service.exception.InvalidOrderException;
 import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.InvalidUserException;
 import com.epam.esm.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,21 +33,18 @@ import java.util.function.Supplier;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-	private OrderRepository orderRepository;
-	private GiftCertificateService giftCertificateService;
 	@Value("${order.exception.not-found}")
 	private String orderNotFoundExceptionTemplate;
 	@Value("${user.exception.not-found}")
 	private String userNotFoundExceptionTemplate;
-	private OrderConverter orderConverter;
 
-	public OrderServiceImpl(GiftCertificateService giftCertificateService, OrderRepository orderRepository, OrderConverter orderConverter) {
-		this.giftCertificateService = giftCertificateService;
-		this.orderRepository = orderRepository;
-		this.orderConverter = orderConverter;
-	}
+	private final GiftCertificateService giftCertificateService;
+	private final OrderConverter orderConverter;
+	private final OrderRepository orderRepository;
+
 
 	@Transactional(isolation = REPEATABLE_READ)
 	public OrderDTO createOrder(OrderDTO dto) {

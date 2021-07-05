@@ -5,6 +5,7 @@ import com.epam.esm.db.helper.DatabaseHelper;
 import com.epam.esm.db.helper.TriConsumer;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -18,16 +19,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Repository
+@RequiredArgsConstructor
 public class JpaUserRepository implements UserRepository {
 
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private DatabaseHelper databaseHelper;
-
-	public JpaUserRepository(DatabaseHelper databaseHelper) {
-		this.databaseHelper = databaseHelper;
-	}
+	private final DatabaseHelper databaseHelper;
 
 	@Override
 	public Optional<User> getUserById(int id) {

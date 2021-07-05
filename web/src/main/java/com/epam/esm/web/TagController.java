@@ -2,6 +2,7 @@ package com.epam.esm.web;
 
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.service.TagService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tags")
+@RequiredArgsConstructor
 public class TagController {
-	private TagService tagService;
-
-	public TagController(TagService tagService) {
-		this.tagService = tagService;
-	}
+	private final TagService tagService;
 
 	@GetMapping("/{id}")
 	public TagDTO getTag(@PathVariable("id") int id) {

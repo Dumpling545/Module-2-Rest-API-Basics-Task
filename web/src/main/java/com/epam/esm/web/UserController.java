@@ -5,6 +5,7 @@ import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
-	private UserService userService;
-	private OrderService orderService;
+	private final UserService userService;
+	private final OrderService orderService;
 
-	public UserController(UserService userService, OrderService orderService) {
-		this.userService = userService;
-		this.orderService = orderService;
-	}
 	@GetMapping
 	public List<UserDTO> allUsers() {
 		return userService.getAllUsers();

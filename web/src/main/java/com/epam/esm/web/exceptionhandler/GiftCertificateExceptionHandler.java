@@ -1,6 +1,7 @@
 package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.InvalidCertificateException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,17 +18,13 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 @Order(HIGHEST_PRECEDENCE)
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GiftCertificateExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(GiftCertificateExceptionHandler.class);
 	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
-	private ExceptionHelper helper;
-	private MessageSource messageSource;
-
-	public GiftCertificateExceptionHandler(ExceptionHelper helper, MessageSource messageSource) {
-		this.helper = helper;
-		this.messageSource = messageSource;
-	}
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
 
 	@ExceptionHandler(InvalidCertificateException.class)
 	public ResponseEntity<Object> handleException(InvalidCertificateException ex, Locale locale) {

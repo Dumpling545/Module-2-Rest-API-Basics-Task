@@ -28,9 +28,9 @@ public class User {
 	@Id
 	@Column(nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	private Integer id;
 	@Column(name = "user_name", nullable = false, unique = true)
-	String userName;
+	private String userName;
 	@PrePersist
 	public void onPrePersist(){
 		logger.info(toString() + " to be persisted");

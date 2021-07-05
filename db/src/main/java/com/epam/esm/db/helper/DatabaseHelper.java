@@ -12,25 +12,43 @@ import java.util.function.Function;
 
 @Component
 public class DatabaseHelper {
-	public <E, R> R execute(Class<E> entityClass, EntityManager entityManager,
-	                        TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> queryConfigurator,
-	                        Function<TypedQuery<E>, R> resultProducer) {
-		return execute(entityClass, entityManager, queryConfigurator, null, resultProducer);
+
+	public <Q, O> O execute(Class<Q> queryClass, EntityManager entityManager,
+	                        TriConsumer<CriteriaBuilder, CriteriaQuery<Q>, Root<Q>> queryConfigurator,
+	                        Function<TypedQuery<Q>, O> resultProducer) {
+		return execute(queryClass, entityManager, queryConfigurator, null, resultProducer);
 	}
-	public <E, R> R execute(Class<E> entityClass, EntityManager entityManager,
-	                        TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> queryConfigurator,
-	                        Function<EntityManager, EntityGraph<E>> entityGraphProducer,
-	                        Function<TypedQuery<E>, R> resultProducer) {
+
+	public <Q, O> O execute(Class<Q> queryClass, EntityManager entityManager,
+	                        TriConsumer<CriteriaBuilder, CriteriaQuery<Q>, Root<Q>> queryConfigurator,
+	                        Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
+	                        Function<TypedQuery<Q>, O> resultProducer) {
+		return execute(queryClass, queryClass, entityManager, queryConfigurator, entityGraphProducer, resultProducer,
+				true);
+	}
+
+	public <Q, R, O> O execute(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
+	                           TriConsumer<CriteriaBuilder, CriteriaQuery<Q>, Root<R>> queryConfigurator,
+	                           Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
+		return execute(queryClass, rootClass, entityManager, queryConfigurator, null, outputProducer, clearContext);
+	}
+
+	public <Q, R, O> O execute(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
+	                           TriConsumer<CriteriaBuilder, CriteriaQuery<Q>, Root<R>> queryConfigurator,
+	                           Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
+	                           Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-		Root<E> root = criteriaQuery.from(entityClass);
+		CriteriaQuery<Q> criteriaQuery = criteriaBuilder.createQuery(queryClass);
+		Root<R> root = criteriaQuery.from(rootClass);
 		queryConfigurator.accept(criteriaBuilder, criteriaQuery, root);
-		TypedQuery<E> typedQuery = entityManager.createQuery(criteriaQuery);
-		if(entityGraphProducer != null){
+		TypedQuery<Q> typedQuery = entityManager.createQuery(criteriaQuery);
+		if (entityGraphProducer != null) {
 			typedQuery.setHint("javax.persistence.loadgraph", entityGraphProducer.apply(entityManager));
 		}
-		R result = resultProducer.apply(typedQuery);
-		entityManager.clear();
+		O result = outputProducer.apply(typedQuery);
+		if (clearContext) {
+			entityManager.clear();
+		}
 		return result;
 	}
 }

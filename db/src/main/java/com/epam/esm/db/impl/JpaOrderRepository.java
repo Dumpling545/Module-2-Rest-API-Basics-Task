@@ -7,6 +7,7 @@ import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Order_;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,21 +24,20 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Repository
+@RequiredArgsConstructor
+
 public class JpaOrderRepository implements OrderRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private DatabaseHelper databaseHelper;
-
-	public JpaOrderRepository(DatabaseHelper databaseHelper) {
-		this.databaseHelper = databaseHelper;
-	}
+	private final DatabaseHelper databaseHelper;
 
 	@Transactional
 	public Order createOrder(Order order) {
 		LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
 		order.setPurchaseDate(localDateTime);
 		entityManager.persist(order);
+		entityManager.flush();
 		entityManager.clear();
 		return order;
 	}
