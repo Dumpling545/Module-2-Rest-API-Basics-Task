@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class OrderDTO {
-	Integer id;
+	private Integer id;
 	@NotNull(message = "{order.validation-message.user-id-not-empty}")
-	Integer userId;
+	private Integer userId;
 	@NotNull(message = "{order.validation-message.gift-certificate-id-not-empty}")
-	Integer giftCertificateId;
-	BigDecimal cost;
-	LocalDateTime purchaseDate;
+	private Integer giftCertificateId;
+	private BigDecimal cost;
+	private LocalDateTime purchaseDate;
 }

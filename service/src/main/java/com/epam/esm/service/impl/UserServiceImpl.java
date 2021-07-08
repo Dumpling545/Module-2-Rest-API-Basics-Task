@@ -1,15 +1,14 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.db.TagRepository;
 import com.epam.esm.db.UserRepository;
-import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.UserDTO;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.converter.TagConverter;
+import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.UserConverter;
-import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.InvalidUserException;
 import com.epam.esm.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,7 +25,8 @@ public class UserServiceImpl implements UserService {
 	private String notFoundExceptionTemplate;
 
 	private final UserRepository userRepository;
-	private final  UserConverter userConverter;
+	private final UserConverter userConverter;
+	private final PagedResultConverter<User, UserDTO> pagedResultConverter;
 
 	@Override
 	public UserDTO getUser(int id) {
@@ -47,14 +45,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserDTO> getAllUsers() {
-		List<User> userList = Collections.EMPTY_LIST;
+	public PagedResultDTO<UserDTO> getAllUsers(PageDTO page) {
+		PagedResult<User> pagedResult;
 		try {
-			userList = userRepository.getAllUsers();
+			pagedResult = userRepository.getAllUsers(page.getOffset(), page.getPageSize());
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		List<UserDTO> dtoList = userList.stream().map(userConverter::convert).toList();
-		return dtoList;
+		return pagedResultConverter.convert(pagedResult, page, userConverter::convert);
 	}
 }

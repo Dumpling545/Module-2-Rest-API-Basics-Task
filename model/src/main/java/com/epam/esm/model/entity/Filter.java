@@ -14,6 +14,6 @@ import java.util.Set;
 public class Filter {
 	private String namePart;
 	private String descriptionPart;
-	private Set<Tag> tags;
+	private Set<String> tagNames;
 	private SortOption sortBy;
 }

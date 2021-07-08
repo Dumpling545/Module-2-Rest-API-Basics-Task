@@ -5,27 +5,22 @@ import com.epam.esm.db.helper.DatabaseHelper;
 import com.epam.esm.db.helper.TriConsumer;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Order_;
-import com.epam.esm.model.entity.Tag;
-import com.epam.esm.model.entity.User;
+import com.epam.esm.model.entity.PagedResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Repository
 @RequiredArgsConstructor
-
 public class JpaOrderRepository implements OrderRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -50,20 +45,19 @@ public class JpaOrderRepository implements OrderRepository {
 	}
 
 	@Override
-	public List<Order> getAllOrders() {
-		TriConsumer<CriteriaBuilder, CriteriaQuery<Order>, Root<Order>> queryConfigurator = (cb, cq, r) -> {
+	public PagedResult<Order> getAllOrders(int offset, int limit) {
+		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r);
 		};
-		Function<TypedQuery<Order>, List<Order>> resultProducer = TypedQuery::getResultList;
-		return databaseHelper.execute(Order.class, entityManager, queryConfigurator, resultProducer);
+		return databaseHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
 	}
 
 	@Override
-	public List<Order> getOrdersByUserId(int userId) {
-		TriConsumer<CriteriaBuilder, CriteriaQuery<Order>, Root<Order>> queryConfigurator = (cb, cq, r) -> {
+	public PagedResult<Order> getOrdersByUserId(int userId, int offset, int limit) {
+		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r).where(cb.equal(r.get(Order_.userId), userId));
 		};
-		Function<TypedQuery<Order>, List<Order>> resultProducer = TypedQuery::getResultList;
-		return databaseHelper.execute(Order.class, entityManager, queryConfigurator, resultProducer);
+		return databaseHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
 	}
+
 }

@@ -1,16 +1,18 @@
 package com.epam.esm.service;
 
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
-import com.epam.esm.model.entity.Tag;
+import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Query;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
  * Interface of service for manipulating Tag DTO objects
  */
+@Validated
 public interface TagService {
 	/**
 	 * Creates tag object
@@ -50,7 +52,7 @@ public interface TagService {
 	/**
 	 * Retrieves all existing tags from database
 	 */
-	List<TagDTO> getAllTags();
+	PagedResultDTO<TagDTO> getAllTags(@Valid PageDTO page);
 
 	/**
 	 * Retrieves all tags which names included in provided set from database

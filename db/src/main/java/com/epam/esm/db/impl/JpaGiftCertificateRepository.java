@@ -2,10 +2,10 @@ package com.epam.esm.db.impl;
 
 import com.epam.esm.db.GiftCertificateRepository;
 import com.epam.esm.db.helper.DatabaseHelper;
-import com.epam.esm.db.helper.TriConsumer;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.GiftCertificate_;
+import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.SortOption;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.Tag_;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
+import javax.persistence.GenerationType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -63,6 +64,27 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 		return Optional.ofNullable(certificate);
 	}
 
+	@Override
+	public PagedResult<GiftCertificate> getCertificatesByFilter(Filter filter, int offset, int limit) {
+		PagedResult<Integer> filteredIdsResult = databaseHelper.fetchPagedResult(Integer.class, GiftCertificate.class,
+				entityManager,
+				(cb, cq, r) -> configureQueryByFilter(filter, cb, cq, r),
+				offset, limit);
+		List<GiftCertificate> certificates = databaseHelper.fetch(GiftCertificate.class, entityManager,
+				(cb, cq, r) -> {
+					cq.select(r).where(r.get(GiftCertificate_.id).in(filteredIdsResult.getPage()))
+							.orderBy(createOrderFromSortOption(filter.getSortBy(), cb, r));
+				},
+				(em) -> (EntityGraph<GiftCertificate>) em.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME),
+				TypedQuery::getResultList);
+		PagedResult<GiftCertificate> pagedResult = PagedResult.<GiftCertificate>builder()
+				.first(filteredIdsResult.isFirst())
+				.last(filteredIdsResult.isLast())
+				.page(certificates)
+				.build();
+		return pagedResult;
+	}
+
 	private Order createOrderFromSortOption(SortOption sortOption, CriteriaBuilder criteriaBuilder,
 	                                        Root<GiftCertificate> root) {
 		Function<Expression<?>, Order> direction = switch (sortOption.getDirection()) {
@@ -78,21 +100,15 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	}
 
 	private void configureQueryByFilter(Filter filter, CriteriaBuilder criteriaBuilder,
-	                                    CriteriaQuery<GiftCertificate> criteriaQuery,
+	                                    CriteriaQuery criteriaQuery,
 	                                    Root<GiftCertificate> root) {
 		List<Predicate> restrictions = new ArrayList<>();
-		if (filter.getTags() != null) {
-			TriConsumer<CriteriaBuilder, CriteriaQuery<Integer>, Root<GiftCertificate>> queryConfigurator =
-					(cb, cq, r) -> {
-						Join<GiftCertificate, Tag> tagJoin = r.join(GiftCertificate_.tags);
-						cq.select(r.get(GiftCertificate_.id)).distinct(true);
-						List<Integer> tagIds = filter.getTags().stream().map(Tag::getId).toList();
-						cq.where(tagJoin.get(Tag_.id).in(tagIds)).groupBy(r.get(GiftCertificate_.id));
-						cq.having(cb.equal(cb.count(tagJoin.get(Tag_.id)), tagIds.size()));
-					};
-			List<Integer> certIds = databaseHelper.execute(Integer.class, GiftCertificate.class, entityManager,
-					queryConfigurator, TypedQuery::getResultList, false);
-			restrictions.add(root.get(GiftCertificate_.id).in(certIds));
+		if (filter.getTagNames() != null) {
+			Join<GiftCertificate, Tag> tagJoin = root.join(GiftCertificate_.tags);
+			criteriaQuery.groupBy(root.get(GiftCertificate_.id));
+			criteriaQuery.having(criteriaBuilder
+					.equal(criteriaBuilder.count(tagJoin.get(Tag_.id)), filter.getTagNames().size()));
+			restrictions.add(tagJoin.get(Tag_.name).in(filter.getTagNames()));
 		}
 		if (filter.getNamePart() != null && !filter.getNamePart().isBlank()) {
 			Expression<Integer> locateNamePart = criteriaBuilder
@@ -104,19 +120,11 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 					.locate(root.get(GiftCertificate_.description), filter.getDescriptionPart());
 			restrictions.add(criteriaBuilder.greaterThan(locateDescPart, 0));
 		}
-		criteriaQuery.select(root).distinct(true).where(restrictions.toArray(new Predicate[0]));
+		criteriaQuery.select(root.get(GiftCertificate_.id)).where(restrictions.toArray(new Predicate[0]));
 		if (filter.getSortBy() != null) {
 			Order order = createOrderFromSortOption(filter.getSortBy(), criteriaBuilder, root);
 			criteriaQuery.orderBy(order);
 		}
-	}
-
-	@Override
-	public List<GiftCertificate> getCertificatesByFilter(Filter filter) {
-		return databaseHelper.execute(GiftCertificate.class, entityManager,
-				(cb, cq, r) -> configureQueryByFilter(filter, cb, cq, r),
-				(em) -> (EntityGraph<GiftCertificate>) em.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME),
-				TypedQuery::getResultList);
 	}
 
 	@Transactional

@@ -19,5 +19,10 @@ public final class ValidationConstraints {
 	public static final int MIN_CERT_DURATION = 1;
 	public static final int MAX_CERT_DURATION = 3650;
 
+	public static final int MIN_PAGE_NUMBER = 1;
+
+	public static final int MIN_PAGE_SIZE = 5;
+	public static final int MAX_PAGE_SIZE = 100;
+
 
 }

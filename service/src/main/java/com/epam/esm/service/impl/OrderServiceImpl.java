@@ -1,21 +1,17 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.db.GiftCertificateRepository;
 import com.epam.esm.db.OrderRepository;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.OrderDTO;
-import com.epam.esm.model.dto.TagDTO;
-import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.entity.Order;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.TagService;
-import com.epam.esm.service.converter.GiftCertificateConverter;
 import com.epam.esm.service.converter.OrderConverter;
-import com.epam.esm.service.exception.InvalidCertificateException;
+import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.exception.InvalidOrderException;
-import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.InvalidUserException;
 import com.epam.esm.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +21,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -44,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 	private final GiftCertificateService giftCertificateService;
 	private final OrderConverter orderConverter;
 	private final OrderRepository orderRepository;
-
+	private final PagedResultConverter<Order, OrderDTO> pagedResultConverter;
 
 	@Transactional(isolation = REPEATABLE_READ)
 	public OrderDTO createOrder(OrderDTO dto) {
@@ -64,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderDTO getOrder(int id) {
-		Optional<Order> optionalOrder = Optional.empty();
+		Optional<Order> optionalOrder;
 		try {
 			optionalOrder = orderRepository.getOrderById(id);
 		} catch (DataAccessException ex) {
@@ -78,24 +73,24 @@ public class OrderServiceImpl implements OrderService {
 				});
 		return dto;
 	}
-	private List<OrderDTO> getOrderDTOList(Supplier<List<Order>> orderListSupplier){
-		List<Order> orderList = Collections.EMPTY_LIST;
+	private PagedResultDTO<OrderDTO> getOrderDTOList(Supplier<PagedResult<Order>> orderListSupplier,
+	                                                 PageDTO pageDTO){
+		PagedResult<Order> pagedResult;
 		try {
-			orderList = orderListSupplier.get();
+			pagedResult = orderListSupplier.get();
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		List<OrderDTO> dtoList = orderList.stream().map(orderConverter::convert).toList();
-		return dtoList;
+		return pagedResultConverter.convert(pagedResult, pageDTO, orderConverter::convert);
 	}
 
 	@Override
-	public List<OrderDTO> getAllOrders() {
-		return getOrderDTOList(orderRepository::getAllOrders);
+	public PagedResultDTO<OrderDTO> getAllOrders(PageDTO pageDTO) {
+		return getOrderDTOList(() -> orderRepository.getAllOrders(pageDTO.getOffset(), pageDTO.getPageSize()), pageDTO);
 	}
 
 	@Override
-	public List<OrderDTO> getOrdersByUser(int userId) {
-		return getOrderDTOList(()->orderRepository.getOrdersByUserId(userId));
+	public PagedResultDTO<OrderDTO> getOrdersByUser(int userId, PageDTO pageDTO) {
+		return getOrderDTOList(()->orderRepository.getOrdersByUserId(userId, pageDTO.getOffset(), pageDTO.getPageSize()), pageDTO);
 	}
 }

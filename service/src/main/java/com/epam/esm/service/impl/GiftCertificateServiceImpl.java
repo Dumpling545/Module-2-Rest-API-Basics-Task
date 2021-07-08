@@ -5,14 +5,18 @@ import com.epam.esm.model.dto.FilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.converter.FilterConverter;
 import com.epam.esm.service.converter.GiftCertificateConverter;
+import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.exception.ServiceException;
@@ -23,17 +27,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.Collections.EMPTY_LIST;
 
 
 @Service
@@ -48,6 +50,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	private final GiftCertificateConverter giftCertificateConverter;
 	private final TagConverter tagConverter;
 	private final FilterConverter filterConverter;
+	private final PagedResultConverter<GiftCertificate, GiftCertificateOutputDTO> pagedResultConverter;
 
 	private InvalidCertificateException createNotFoundException(int id) {
 		String identifier = "id=" + id;
@@ -132,27 +135,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		}
 	}
 
+	private static  final Logger logger = LoggerFactory.getLogger(GiftCertificateServiceImpl.class);
 	@Override
-	public List<GiftCertificateOutputDTO> getCertificates(FilterDTO filterDto) {
-		Set<Tag> tags = null;
-		if (filterDto.getTagNames() != null) {
-			Set<TagDTO> tagDTOs = tagService.getTagsFromNameSet(filterDto.getTagNames());
-			if (filterDto.getTagNames().size() != tagDTOs.size()) {
-				return EMPTY_LIST;
-			}
-			tags = tagDTOs.stream().map(tagConverter::convert).collect(Collectors.toSet());
-		}
-		Filter filter = filterConverter.convert(filterDto, tags);
-		List<GiftCertificateOutputDTO> outputDTOList = new ArrayList<>();
+	public PagedResultDTO<GiftCertificateOutputDTO> getCertificates(FilterDTO filterDTO,
+	                                                                PageDTO pageDTO) {
+		logger.info(pageDTO.toString());
+		Filter filter = filterConverter.convert(filterDTO);
+		PagedResult<GiftCertificate> pagedResult;
 		try {
-			List<GiftCertificate> certs = giftCertificateRepository.getCertificatesByFilter(filter);
-			for (GiftCertificate cert : certs) {
-				GiftCertificateOutputDTO outputDTO = giftCertificateConverter.convert(cert);
-				outputDTOList.add(outputDTO);
-			}
+			pagedResult = giftCertificateRepository
+					.getCertificatesByFilter(filter, pageDTO.getOffset(), pageDTO.getPageSize());
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		return outputDTOList;
+		return pagedResultConverter.convert(pagedResult, pageDTO, giftCertificateConverter::convert);
 	}
 }

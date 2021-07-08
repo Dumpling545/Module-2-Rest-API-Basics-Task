@@ -2,6 +2,7 @@ package com.epam.esm.db;
 
 
 import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.PagedResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public interface TagRepository {
 	 *
 	 * @return {@link List} with all Tag objects from database
 	 */
-	List<Tag> getAllTags();
+	PagedResult<Tag> getAllTags(int offset, int limit);
 	/**
 	 * Retrieves all tags which names included in provided set from database
 	 *

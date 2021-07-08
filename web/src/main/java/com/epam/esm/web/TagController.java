@@ -1,5 +1,6 @@
 package com.epam.esm.web;
 
+import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,9 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
+import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
+
 @RestController
 @RequestMapping("/tags")
 @RequiredArgsConstructor
@@ -38,8 +42,16 @@ public class TagController {
 	}
 
 	@GetMapping
-	public List<TagDTO> allTags() {
-		return tagService.getAllTags();
+	public List<TagDTO> allTags(
+			@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
+					int pageNumber,
+			@RequestParam(defaultValue = MIN_PAGE_SIZE + "")
+					int pageSize) {
+		PageDTO pageDTO = PageDTO.builder()
+				.pageNumber(pageNumber)
+				.pageSize(pageSize)
+				.build();
+		return tagService.getAllTags(pageDTO).getPage();
 	}
 
 	@PostMapping

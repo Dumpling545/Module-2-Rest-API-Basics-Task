@@ -36,6 +36,9 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
@@ -90,6 +93,14 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 		logger.error("Handled in the ServiceException handler", ex);
 		String message = messageSource.getMessage("common.error-message.service", null, locale);
 		return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR, message, postfix);
+	}
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Object> handleException(ConstraintViolationException ex, HandlerMethod handlerMethod, Locale locale) {
+		logger.error("Handled in the ConstraintViolationException handler", ex);
+		List<String> messages = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
+		return helper.handleUnformatted(HttpStatus.BAD_REQUEST,
+				messages,
+				resolvePostfix(handlerMethod));
 	}
 
 

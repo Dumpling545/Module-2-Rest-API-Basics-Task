@@ -2,7 +2,6 @@ package com.epam.esm.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -16,8 +15,8 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_TAG_NAME_LENGTH;
 @Data
 @Builder
 public class TagDTO {
-	Integer id;
+	private Integer id;
 	@NotNull(message = "{tag.validation-message.name-not-empty}")
 	@Size(min = MIN_TAG_NAME_LENGTH, max = MAX_TAG_NAME_LENGTH, message="{tag.validation-message.name-size}")
-	String name;
+	private String name;
 }

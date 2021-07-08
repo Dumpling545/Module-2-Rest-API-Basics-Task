@@ -18,11 +18,15 @@ public class ExceptionHelper {
 		return status.value() * 100 + postfix;
 	}
 
+	public ResponseEntity<Object> handleUnformatted(HttpStatus status, List<String> messages, int postfix) {
+		return handleUnformatted(status, new HttpHeaders(), messages, postfix);
+	}
+
 	public ResponseEntity<Object> handleUnformatted(HttpStatus status, HttpHeaders headers, List<String> messages,
 	                                                int postfix) {
 		int errorCode = getErrorCode(status, postfix);
 		Error error = new Error(errorCode, messages);
-		ResponseEntity<Object> responseEntity = ResponseEntity.status(status)
+		ResponseEntity<Object> responseEntity = ResponseEntity.status(status).headers(headers)
 				.contentType(MediaType.APPLICATION_JSON).body(error);
 		return responseEntity;
 	}
@@ -32,7 +36,7 @@ public class ExceptionHelper {
 		int errorCode = getErrorCode(status, postfix);
 		String message = String.format(messageTemplate, args);
 		Error error = new Error(errorCode, Collections.singletonList(message));
-		ResponseEntity<Object> responseEntity = ResponseEntity.status(status)
+		ResponseEntity<Object> responseEntity = ResponseEntity.status(status).headers(headers)
 				.contentType(MediaType.APPLICATION_JSON).body(error);
 		return responseEntity;
 	}

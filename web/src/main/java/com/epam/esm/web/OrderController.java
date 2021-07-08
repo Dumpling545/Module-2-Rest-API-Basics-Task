@@ -1,8 +1,7 @@
 package com.epam.esm.web;
 
 import com.epam.esm.model.dto.OrderDTO;
-import com.epam.esm.model.dto.TagDTO;
-import com.epam.esm.model.dto.UserDTO;
+import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,12 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
+import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 
 @RestController
 @RequestMapping("/orders")
@@ -32,8 +35,15 @@ public class OrderController {
 	}
 
 	@GetMapping
-	public List<OrderDTO> allOrders() {
-		return orderService.getAllOrders();
+	public List<OrderDTO> allOrders(@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
+			                                int pageNumber,
+	                                @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
+			                                int pageSize) {
+		PageDTO pageDTO = PageDTO.builder()
+				.pageNumber(pageNumber)
+				.pageSize(pageSize)
+				.build();
+		return orderService.getAllOrders(pageDTO).getPage();
 	}
 
 	@PostMapping

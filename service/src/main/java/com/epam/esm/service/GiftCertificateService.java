@@ -4,12 +4,16 @@ import com.epam.esm.model.dto.FilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
+import javax.validation.Valid;
 
 /**
  * Interface of service for manipulating Service DTO objects
  */
+@Validated
 public interface GiftCertificateService {
 	/**
 	 * Creates certificate, corresponding tags and relationship between them in database
@@ -54,5 +58,5 @@ public interface GiftCertificateService {
 	 * 		object that will be used to filter certificates. Null fields does not participate in filtering
 	 * @return list of filtered certificate DTOs
 	 */
-	List<GiftCertificateOutputDTO> getCertificates(FilterDTO filter);
+	PagedResultDTO<GiftCertificateOutputDTO> getCertificates(@Valid FilterDTO filter, @Valid PageDTO page);
 }

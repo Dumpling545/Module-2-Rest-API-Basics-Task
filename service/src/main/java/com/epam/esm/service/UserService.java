@@ -1,9 +1,12 @@
 package com.epam.esm.service;
 
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.UserDTO;
-import java.util.List;
+
+import javax.validation.Valid;
 
 public interface UserService {
 	UserDTO getUser(int id);
-	List<UserDTO> getAllUsers();
+	PagedResultDTO<UserDTO> getAllUsers(@Valid PageDTO page);
 }

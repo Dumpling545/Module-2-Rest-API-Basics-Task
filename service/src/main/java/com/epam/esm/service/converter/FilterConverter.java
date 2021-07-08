@@ -30,7 +30,7 @@ public abstract class FilterConverter {
 	private String invalidNumberOfTokensTemplate;
 
 	@Mapping(target = "sortBy", source = "dto.sortBy")
-	public abstract Filter convert(FilterDTO dto, Set<Tag> tags);
+	public abstract Filter convert(FilterDTO dto);
 
 	public SortOption convert(String sortBy){
 		SortOption sortOption = null;

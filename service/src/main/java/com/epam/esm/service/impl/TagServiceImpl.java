@@ -1,9 +1,13 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.db.TagRepository;
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
+import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.ServiceException;
@@ -31,6 +35,7 @@ public class TagServiceImpl implements TagService {
 
 	private final TagRepository tagRepository;
 	private final TagConverter tagConverter;
+	private final PagedResultConverter<Tag, TagDTO> pagedResultConverter;
 
 	@Override
 	public TagDTO createTag(TagDTO tagDto) {
@@ -94,15 +99,14 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public List<TagDTO> getAllTags() {
-		List<Tag> tagList = Collections.EMPTY_LIST;
+	public PagedResultDTO<TagDTO> getAllTags(PageDTO pageDTO) {
+		PagedResult<Tag> pagedResult;
 		try {
-			tagList = tagRepository.getAllTags();
+			pagedResult = tagRepository.getAllTags(pageDTO.getOffset(), pageDTO.getPageSize());
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		List<TagDTO> dtoList = tagList.stream().map(tagConverter::convert).toList();
-		return dtoList;
+		return pagedResultConverter.convert(pagedResult, pageDTO, tagConverter::convert);
 	}
 
 	@Override
@@ -110,7 +114,7 @@ public class TagServiceImpl implements TagService {
 		if (tagNames.size() == 0) {
 			return Collections.EMPTY_SET;
 		}
-		List<Tag> tagList = Collections.EMPTY_LIST;
+		List<Tag> tagList;
 		try {
 			tagList = tagRepository.getTagsFromNameSet(tagNames);
 		} catch (DataAccessException ex) {
