@@ -5,9 +5,12 @@ import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +27,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Set;
 
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
@@ -35,21 +37,23 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 @RequiredArgsConstructor
 public class GiftCertificateController {
 	private final GiftCertificateService certService;
+	private final ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO, GiftCertificateController>
+			assembler;
 
 	@GetMapping(value = "/{id}")
-	public GiftCertificateOutputDTO getCertificate(@PathVariable("id") int id) {
-		return certService.getCertificate(id);
+	public ResponseEntity<EntityModel> getCertificate(@PathVariable("id") Integer id) {
+		return ResponseEntity.ok(assembler.toModel(certService.getCertificate(id)));
 	}
 
 	@GetMapping
-	public List<GiftCertificateOutputDTO> filteredCertificates(@RequestParam(required = false) String namePart,
-	                                                           @RequestParam(required = false) String descriptionPart,
-	                                                           @RequestParam(required = false) Set<String> tagNames,
-	                                                           @RequestParam(required = false) String sortOption,
-	                                                           @RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
-			                                                           int pageNumber,
-	                                                           @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
-			                                                           int pageSize) {
+	public ResponseEntity<CollectionModel> filteredCertificates(@RequestParam(required = false) String namePart,
+	                                                            @RequestParam(required = false) String descriptionPart,
+	                                                            @RequestParam(required = false) Set<String> tagNames,
+	                                                            @RequestParam(required = false) String sortOption,
+	                                                            @RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
+			                                                            Integer pageNumber,
+	                                                            @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
+			                                                            Integer pageSize) {
 		FilterDTO filterDTO = FilterDTO.builder()
 				.namePart(namePart)
 				.descriptionPart(descriptionPart)
@@ -59,35 +63,33 @@ public class GiftCertificateController {
 				.pageNumber(pageNumber)
 				.pageSize(pageSize)
 				.build();
-		return certService.getCertificates(filterDTO, pageDTO).getPage();
+		PagedResultDTO<GiftCertificateOutputDTO> pagedResultDTO = certService.getCertificates(filterDTO, pageDTO);
+		CollectionModel<EntityModel<GiftCertificateOutputDTO>> model =
+				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
+						(c, p) -> c.filteredCertificates(namePart, descriptionPart, tagNames, sortOption, p, pageSize));
+		return ResponseEntity.ok(model);
 	}
 
 	@PostMapping
 	public ResponseEntity<Object> createCertificate(@RequestBody @Valid GiftCertificateCreateDTO certDTO,
 	                                                UriComponentsBuilder ucb) {
 		GiftCertificateOutputDTO dto = certService.createCertificate(certDTO);
-		HttpHeaders headers = new HttpHeaders();
 		URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(dto.getId())).build().toUri();
-		headers.setLocation(locationUri);
-		ResponseEntity<Object> entity = new ResponseEntity<Object>(headers, HttpStatus.CREATED);
-		return entity;
+		return ResponseEntity.created(locationUri).build();
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Object> updateCertificate(@PathVariable("id") int id,
+	public ResponseEntity<Object> updateCertificate(@PathVariable("id") Integer id,
 	                                                @RequestBody @Valid GiftCertificateUpdateDTO certDTO,
 	                                                UriComponentsBuilder ucb) {
 		certService.updateCertificate(id, certDTO);
-		HttpHeaders headers = new HttpHeaders();
 		URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(id)).build().toUri();
-		headers.setLocation(locationUri);
-		ResponseEntity<Object> entity = new ResponseEntity<Object>(headers, HttpStatus.NO_CONTENT);
-		return entity;
+		return ResponseEntity.noContent().location(locationUri).build();
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping(value = "/{id}")
-	public void deleteCertificate(@PathVariable("id") int id) {
+	public void deleteCertificate(@PathVariable("id") Integer id) {
 		certService.deleteCertificate(id);
 	}
 }

@@ -35,7 +35,7 @@ public class TagServiceImpl implements TagService {
 
 	private final TagRepository tagRepository;
 	private final TagConverter tagConverter;
-	private final PagedResultConverter<Tag, TagDTO> pagedResultConverter;
+	private final PagedResultConverter pagedResultConverter;
 
 	@Override
 	public TagDTO createTag(TagDTO tagDto) {
@@ -106,7 +106,7 @@ public class TagServiceImpl implements TagService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		return pagedResultConverter.convert(pagedResult, pageDTO, tagConverter::convert);
+		return pagedResultConverter.convertToTagPage(pagedResult);
 	}
 
 	@Override

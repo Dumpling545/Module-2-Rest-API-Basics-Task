@@ -21,7 +21,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -39,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 	private final GiftCertificateService giftCertificateService;
 	private final OrderConverter orderConverter;
 	private final OrderRepository orderRepository;
-	private final PagedResultConverter<Order, OrderDTO> pagedResultConverter;
+	private final PagedResultConverter pagedResultConverter;
 
 	@Transactional(isolation = REPEATABLE_READ)
 	public OrderDTO createOrder(OrderDTO dto) {
@@ -73,24 +72,25 @@ public class OrderServiceImpl implements OrderService {
 				});
 		return dto;
 	}
-	private PagedResultDTO<OrderDTO> getOrderDTOList(Supplier<PagedResult<Order>> orderListSupplier,
-	                                                 PageDTO pageDTO){
+
+	private PagedResultDTO<OrderDTO> getOrderDTOList(Supplier<PagedResult<Order>> orderListSupplier) {
 		PagedResult<Order> pagedResult;
 		try {
 			pagedResult = orderListSupplier.get();
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		return pagedResultConverter.convert(pagedResult, pageDTO, orderConverter::convert);
+		return pagedResultConverter.convertToOrderPage(pagedResult);
 	}
 
 	@Override
 	public PagedResultDTO<OrderDTO> getAllOrders(PageDTO pageDTO) {
-		return getOrderDTOList(() -> orderRepository.getAllOrders(pageDTO.getOffset(), pageDTO.getPageSize()), pageDTO);
+		return getOrderDTOList(() -> orderRepository.getAllOrders(pageDTO.getOffset(), pageDTO.getPageSize()));
 	}
 
 	@Override
 	public PagedResultDTO<OrderDTO> getOrdersByUser(int userId, PageDTO pageDTO) {
-		return getOrderDTOList(()->orderRepository.getOrdersByUserId(userId, pageDTO.getOffset(), pageDTO.getPageSize()), pageDTO);
+		return getOrderDTOList(
+				() -> orderRepository.getOrdersByUserId(userId, pageDTO.getOffset(), pageDTO.getPageSize()));
 	}
 }

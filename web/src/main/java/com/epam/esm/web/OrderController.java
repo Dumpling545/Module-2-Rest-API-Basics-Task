@@ -1,9 +1,16 @@
 package com.epam.esm.web;
 
+import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
@@ -28,22 +34,27 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 @RequiredArgsConstructor
 public class OrderController {
 	private final OrderService orderService;
+	private final ExtendedRepresentationModelAssembler<OrderDTO, OrderController> assembler;
 
 	@GetMapping("/{id}")
-	public OrderDTO getOrder(@PathVariable("id") int id) {
-		return orderService.getOrder(id);
+	public ResponseEntity<EntityModel> getOrder(@PathVariable("id") Integer id) {
+		return ResponseEntity.ok(assembler.toModel(orderService.getOrder(id)));
 	}
 
 	@GetMapping
-	public List<OrderDTO> allOrders(@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
-			                                int pageNumber,
-	                                @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
-			                                int pageSize) {
+	public ResponseEntity<CollectionModel> allOrders(@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
+			                                                 Integer pageNumber,
+	                                                 @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
+			                                                 Integer pageSize) {
 		PageDTO pageDTO = PageDTO.builder()
 				.pageNumber(pageNumber)
 				.pageSize(pageSize)
 				.build();
-		return orderService.getAllOrders(pageDTO).getPage();
+		PagedResultDTO<OrderDTO> pagedResultDTO = orderService.getAllOrders(pageDTO);
+		CollectionModel<EntityModel<OrderDTO>> model =
+				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
+						(c, p) -> c.allOrders(p, pageSize));
+		return ResponseEntity.ok(model);
 	}
 
 	@PostMapping

@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserConverter userConverter;
-	private final PagedResultConverter<User, UserDTO> pagedResultConverter;
+	private final PagedResultConverter pagedResultConverter;
 
 	@Override
 	public UserDTO getUser(int id) {
@@ -52,6 +52,6 @@ public class UserServiceImpl implements UserService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		return pagedResultConverter.convert(pagedResult, page, userConverter::convert);
+		return pagedResultConverter.convertToUserPage(pagedResult);
 	}
 }

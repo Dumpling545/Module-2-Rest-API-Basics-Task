@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.GenerationType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -47,9 +46,10 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	@Transactional
 	public GiftCertificate createCertificate(GiftCertificate certificate) {
 		LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
+		certificate.setId(null);
 		certificate.setCreateDate(localDateTime);
 		certificate.setLastUpdateDate(localDateTime);
-		entityManager.persist(certificate);
+		entityManager.merge(certificate);
 		entityManager.flush();
 		entityManager.clear();
 		return certificate;
@@ -72,8 +72,10 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 				offset, limit);
 		List<GiftCertificate> certificates = databaseHelper.fetch(GiftCertificate.class, entityManager,
 				(cb, cq, r) -> {
-					cq.select(r).where(r.get(GiftCertificate_.id).in(filteredIdsResult.getPage()))
-							.orderBy(createOrderFromSortOption(filter.getSortBy(), cb, r));
+					cq.select(r).where(r.get(GiftCertificate_.id).in(filteredIdsResult.getPage()));
+					if (filter.getSortBy() != null) {
+						cq.orderBy(createOrderFromSortOption(filter.getSortBy(), cb, r));
+					}
 				},
 				(em) -> (EntityGraph<GiftCertificate>) em.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME),
 				TypedQuery::getResultList);

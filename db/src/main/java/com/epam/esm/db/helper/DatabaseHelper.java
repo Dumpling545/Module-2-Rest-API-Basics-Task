@@ -67,7 +67,7 @@ public class DatabaseHelper {
 				(tq) -> tq.setFirstResult(offset).setMaxResults(limit + 1).getResultList(), false);
 		PagedResult<Q> pagedResult = PagedResult.<Q>builder()
 				.first(offset == 0)
-				.last(result.size() == limit + 1)
+				.last(result.size() <= limit)
 				.page(result.subList(0, Math.min(limit, result.size()))).build();
 		return pagedResult;
 	}

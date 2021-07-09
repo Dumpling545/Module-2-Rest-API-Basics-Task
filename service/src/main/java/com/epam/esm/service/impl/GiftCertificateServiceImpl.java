@@ -50,7 +50,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 	private final GiftCertificateConverter giftCertificateConverter;
 	private final TagConverter tagConverter;
 	private final FilterConverter filterConverter;
-	private final PagedResultConverter<GiftCertificate, GiftCertificateOutputDTO> pagedResultConverter;
+	private final PagedResultConverter pagedResultConverter;
 
 	private InvalidCertificateException createNotFoundException(int id) {
 		String identifier = "id=" + id;
@@ -148,6 +148,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		return pagedResultConverter.convert(pagedResult, pageDTO, giftCertificateConverter::convert);
+		return pagedResultConverter.convertToCertificatePage(pagedResult);
 	}
 }
