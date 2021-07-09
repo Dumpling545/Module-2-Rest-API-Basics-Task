@@ -6,6 +6,10 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * Entity object encapsulating resulting list and pagination info.
+ * Used for Service layer <- Repository layer communication
+ */
 @Data
 @Builder
 @AllArgsConstructor

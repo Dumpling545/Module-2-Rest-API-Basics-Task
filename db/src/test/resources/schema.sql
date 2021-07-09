@@ -47,18 +47,14 @@ CREATE TABLE IF NOT EXISTS public.cert_order
     gift_certificate_id bigserial NOT NULL,
     cost real NOT NULL,
     purchase_date timestamp without time zone NOT NULL,
+    CONSTRAINT fk_cert_order_user
+            FOREIGN KEY(user_id)
+            REFERENCES cert_user(id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_cert_order_gift_certificate
+            FOREIGN KEY(gift_certificate_id)
+            REFERENCES gift_certificate(id)
+            ON DELETE CASCADE,
     PRIMARY KEY (id)
 );
-
-ALTER TABLE public.cert_order
-    ADD FOREIGN KEY (user_id)
-    REFERENCES public.cert_user (id)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION;
-
-ALTER TABLE public.cert_order
-    ADD FOREIGN KEY (gift_certificate_id)
-    REFERENCES public.gift_certificate (id)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION;
 

@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -49,8 +50,9 @@ public interface TagService {
 	 */
 	void deleteTag(int id);
 
-	/**
-	 * Retrieves all existing tags from database
+	/** Retrieves all existing tags from database
+	 * @param page paging info
+	 * @return paged list of tags
 	 */
 	PagedResultDTO<TagDTO> getAllTags(@Valid PageDTO page);
 
@@ -63,5 +65,16 @@ public interface TagService {
 	 */
 	Set<TagDTO> getTagsFromNameSet(Set<String> tagNames);
 
+	/**
+	 * Retrieves tag with maximal number of associations among all certificates purchased by specified user. If there
+	 * are more than 1 user matching, tag with maximal aggregate cost of all orders is chosen.
+	 * <br>
+	 * NOTE: Associations with certificates counted on per-order basis (1 order - 1 association for each tag associated
+	 * with purchased certificate).
+	 *
+	 * @param userId
+	 * 		-- id of user
+	 * @return  corresponding tag object
+	 */
 	TagDTO getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId);
 }

@@ -26,8 +26,8 @@ public interface TagRepository {
 	 *
 	 * @param id
 	 * 		id of tag to be retrieved
-	 * @return {@link Optional} of tag containing corresponding tag object, if tag with such id exists in database;
-	 * empty {@link Optional} otherwise
+	 * @return {@link Optional} containing corresponding tag object, if tag with such id exists in database; empty
+	 * {@link Optional} otherwise
 	 */
 	Optional<Tag> getTagById(int id);
 
@@ -44,9 +44,14 @@ public interface TagRepository {
 	/**
 	 * Retrieves all tags in database
 	 *
-	 * @return {@link List} with all Tag objects from database
+	 * @param offset
+	 * 		how many elements to skip
+	 * @param limit
+	 * 		how many elements to retrieve
+	 * @return paged list of tags
 	 */
 	PagedResult<Tag> getAllTags(int offset, int limit);
+
 	/**
 	 * Retrieves all tags which names included in provided set from database
 	 *
@@ -66,6 +71,18 @@ public interface TagRepository {
 	 */
 	boolean deleteTag(int id);
 
+	/**
+	 * Retrieves tag with maximal number of associations among all certificates purchased by specified user. If there
+	 * are more than 1 user matching, tag with maximal aggregate cost of all orders is chosen.
+	 * <br>
+	 * NOTE: Associations with certificates counted on per-order basis (1 order - 1 association for each tag associated
+	 * with purchased certificate).
+	 *
+	 * @param userId
+	 * 		-- id of user
+	 * @return {@link Optional} containing corresponding tag object, if tag with such id exists in database; empty
+	 * {@link Optional} otherwise
+	 */
 	Optional<Tag> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId);
 
 }

@@ -72,6 +72,7 @@ public class OrderRepositoryTest {
 	@Test
 	public void getOrderByIdShouldReturnOptionalWithOrderWhenPassedExistingOrderId() {
 		Optional<Order> optional = orderRepository.getOrderById(existingOrder1.getId());
+		assertTrue(optional.isPresent());
 		assertOrdersEqual(existingOrder1, optional.get());
 	}
 

@@ -7,6 +7,7 @@ import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,6 +26,7 @@ public class JpaUserRepository implements UserRepository {
 	private final DatabaseHelper databaseHelper;
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<User> getUserById(int id) {
 		User user = entityManager.find(User.class, id);
 		entityManager.clear();
@@ -32,6 +34,7 @@ public class JpaUserRepository implements UserRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PagedResult<User> getAllUsers(int offset, int limit) {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<User>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r);

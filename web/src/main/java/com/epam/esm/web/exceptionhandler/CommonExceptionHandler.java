@@ -44,6 +44,10 @@ import java.util.Locale;
 
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
+/**
+ * Exception handler for common exceptions, will be invoked only if there's
+ * no matched exception handler methods in other handler classes
+ */
 @Order(LOWEST_PRECEDENCE)
 @RestControllerAdvice
 @RequiredArgsConstructor

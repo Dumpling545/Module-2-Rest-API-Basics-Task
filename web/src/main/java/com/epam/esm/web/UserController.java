@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 
+/**
+ * Controller handling requests to 'user' resource
+ */
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor

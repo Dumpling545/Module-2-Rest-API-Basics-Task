@@ -1,5 +1,8 @@
 package com.epam.esm.model.dto;
 
+/**
+ * Helper class containing constraints for Java Validation API
+ */
 public final class ValidationConstraints {
 	private ValidationConstraints(){}
 	public static final int MIN_TAG_NAME_LENGTH = 3;

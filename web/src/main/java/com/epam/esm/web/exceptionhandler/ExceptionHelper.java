@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Helper class aimed to reduce boilerplate code while constructing {@link Error} objects
+ */
 @Component
 public class ExceptionHelper {
 

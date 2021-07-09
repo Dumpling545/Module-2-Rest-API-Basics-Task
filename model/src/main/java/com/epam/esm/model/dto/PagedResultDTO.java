@@ -7,7 +7,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * DTO object encapsulating resulting list. Used for Web Layer <-> Service layer communication
+ * DTO object encapsulating resulting list for any service method
+ * and pagination info. Used for Web Layer <- Service layer communication
  */
 @Data
 @Builder

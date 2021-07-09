@@ -12,6 +12,9 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Helper class performing queries aimed to reduce JPA boilerplate code
+ */
 @Component
 public class DatabaseHelper {
 

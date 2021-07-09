@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-
+/**
+ * Exception handler for exceptions associated with users
+ */
 @Order(HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 @RequiredArgsConstructor

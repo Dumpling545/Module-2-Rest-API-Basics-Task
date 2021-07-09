@@ -38,6 +38,7 @@ public class JpaOrderRepository implements OrderRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Order> getOrderById(int id) {
 		Order order = entityManager.find(Order.class, id);
 		entityManager.clear();
@@ -45,6 +46,7 @@ public class JpaOrderRepository implements OrderRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PagedResult<Order> getAllOrders(int offset, int limit) {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r);
@@ -53,6 +55,7 @@ public class JpaOrderRepository implements OrderRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PagedResult<Order> getOrdersByUserId(int userId, int offset, int limit) {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r).where(cb.equal(r.get(Order_.userId), userId));

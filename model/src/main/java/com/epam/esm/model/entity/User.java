@@ -17,6 +17,9 @@ import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+/**
+ * Entity object encapsulating information about User. Used for Service Layer <-> Repository layer communication
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -11,7 +11,10 @@ import static com.epam.esm.model.dto.ValidationConstraints.MAX_PAGE_SIZE;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 
-
+/**
+ * DTO object encapsulating information about page for any GET endpoints that should return lists.
+ * Used for Web Layer -> Service layer communication
+ */
 @Data
 @Builder
 public class PageDTO {

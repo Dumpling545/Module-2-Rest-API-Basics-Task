@@ -58,6 +58,7 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<GiftCertificate> getCertificateById(int id) {
 		HashMap<String, Object> params = new HashMap<>();
 		params.put(LOAD_GRAPH_HINT_KEY, entityManager.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME));
@@ -67,6 +68,7 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PagedResult<GiftCertificate> getCertificatesByFilter(Filter filter, int offset, int limit) {
 		PagedResult<Integer> filteredIdsResult = databaseHelper.fetchPagedResult(Integer.class, GiftCertificate.class,
 				entityManager,

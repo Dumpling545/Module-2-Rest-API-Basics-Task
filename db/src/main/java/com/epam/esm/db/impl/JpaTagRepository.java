@@ -46,6 +46,7 @@ public class JpaTagRepository implements TagRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Tag> getTagById(int id) {
 		Tag tag = entityManager.find(Tag.class, id);
 		entityManager.clear();
@@ -73,6 +74,7 @@ public class JpaTagRepository implements TagRepository {
 
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Tag> getTagsFromNameSet(Set<String> tagNames) {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Tag>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r).where(r.get(Tag_.name).in(tagNames));
@@ -94,6 +96,7 @@ public class JpaTagRepository implements TagRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Tag> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId) {
 		Query query = entityManager.createNativeQuery(GET_MOST_WIDELY_USED_TAG_WITH_HIGHEST_COST, Tag.class);
 		query.setParameter(USER_ID_PARAM_KEY, userId);

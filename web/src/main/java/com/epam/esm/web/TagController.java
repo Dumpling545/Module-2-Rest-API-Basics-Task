@@ -28,6 +28,9 @@ import java.net.URI;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 
+/**
+ * Controller handling requests to 'tag' resource
+ */
 @RestController
 @RequestMapping("/tags")
 @RequiredArgsConstructor

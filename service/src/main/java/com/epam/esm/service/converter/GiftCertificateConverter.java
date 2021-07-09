@@ -11,7 +11,10 @@ import org.mapstruct.MappingTarget;
 import java.util.Set;
 
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
-
+/**
+ * Interface mapping certificate entities and DTOs. Used by MapStruct to generate actual mapper class
+ *  @see <a href="https://mapstruct.org/">MapStruct library</a>
+ */
 @Mapper(componentModel="spring", uses = TagConverter.class, nullValuePropertyMappingStrategy = IGNORE)
 public interface GiftCertificateConverter {
 	GiftCertificate convert(GiftCertificateCreateDTO createDto, Set<Tag> tags);

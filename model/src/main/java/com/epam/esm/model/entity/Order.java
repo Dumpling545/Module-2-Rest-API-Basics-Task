@@ -19,6 +19,10 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Entity object encapsulating information about Order. Used for Service Layer <-> Repository layer
+ * communication
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

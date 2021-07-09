@@ -12,6 +12,11 @@ import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import org.mapstruct.Mapper;
 
+/**
+ * Interface mapping pagedResult (containing retrieved paged list and boolean flags)
+ * entities and DTOs. Used by MapStruct to generate actual mapper class
+ *  @see <a href="https://mapstruct.org/">MapStruct library</a>
+ */
 @Mapper(componentModel="spring")
 public interface PagedResultConverter {
 	PagedResultDTO<GiftCertificateOutputDTO> convertToCertificatePage(PagedResult<GiftCertificate> pagedResult);

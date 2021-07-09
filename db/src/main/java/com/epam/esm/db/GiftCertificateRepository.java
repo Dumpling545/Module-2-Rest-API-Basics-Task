@@ -30,11 +30,12 @@ public interface GiftCertificateRepository {
 	Optional<GiftCertificate> getCertificateById(int id);
 
 	/**
-	 * Retrieves all certificates filtered by provided filter object
-	 *
+	 * 	Retrieves all certificates filtered by provided filter object
 	 * @param filter
-	 * 		filter object used for filtering
-	 * @return filtered list of certificates
+	 *      filter object used for filtering
+	 * @param offset how many elements to skip
+	 * @param limit how many elements to retrieve
+	 * @return filtered and paged list of certificates
 	 */
 	PagedResult<GiftCertificate> getCertificatesByFilter(Filter filter, int offset, int limit);
 

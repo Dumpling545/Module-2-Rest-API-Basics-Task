@@ -2,6 +2,11 @@ package com.epam.esm.service.exception;
 
 import lombok.Getter;
 
+/**
+ * Exception indicating problems with user objects -- user input does not satisfy constraints or client request is invalid due
+ * to current state of specified user object in database. User friendly specifics about exception can be retrieved using {@link
+ * InvalidUserException#getReason()}
+ */
 public class InvalidUserException extends ServiceException {
 	@Getter
 	private final Reason reason;
