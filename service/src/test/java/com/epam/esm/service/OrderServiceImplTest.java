@@ -2,13 +2,13 @@ package com.epam.esm.service;
 
 import com.epam.esm.db.OrderRepository;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
+import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
-import com.epam.esm.model.dto.OrderDTO;
-import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Order;
-import com.epam.esm.service.converter.PagedResultConverter;
+import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.service.converter.OrderConverter;
+import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.exception.InvalidOrderException;
 import com.epam.esm.service.exception.InvalidUserException;
 import com.epam.esm.service.impl.OrderServiceImpl;

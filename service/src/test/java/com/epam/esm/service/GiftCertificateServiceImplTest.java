@@ -168,58 +168,6 @@ public class GiftCertificateServiceImplTest {
 	{
 		ReflectionTestUtils.setField(giftCertificateConverter, "tagConverter", tagConverter, TagConverter.class);
 	}
-
-	/*
-	private void initTagServiceForGetTagsFromNameSetMethod() {
-		Mockito.when(tagService.getTagsFromNameSet(Mockito.any())).then(answer -> {
-			Set<String> nameSet = answer.getArgument(0);
-			Set<TagDTO> tagSet = new HashSet<>();
-			if (nameSet.contains(DB_TAG_NAME_1)) {
-				tagSet.add(new TagDTO(DB_ID_1, DB_TAG_NAME_1));
-			}
-			if (nameSet.contains(DB_TAG_NAME_2)) {
-				tagSet.add(new TagDTO(DB_ID_2, DB_TAG_NAME_2));
-			}
-			if (tagSet.size() == 0) {
-				tagSet = Collections.EMPTY_SET;
-			}
-			return tagSet;
-		});
-	}
-
-
-	private void initCertificateRepository() {
-		Mockito.when(giftCertificateRepository.createCertificate(Mockito.any())).then(answer -> {
-			GiftCertificate cert = answer.getArgument(0);
-			GiftCertificate output = new GiftCertificate(CERT_ID, cert.getName(), cert.getDescription(),
-					cert.getPrice(), cert.getDuration(), CERT_CREATE_DATE, CERT_LAST_UPDATE_DATE);
-			return output;
-		});
-		Mockito.when(giftCertificateRepository.getCertificateById(Mockito.eq(CERT_ID))).thenReturn(Optional.of(
-				new GiftCertificate(CERT_ID, CERT_NAME, CERT_DESC, CERT_PRICE, CERT_DURATION, CERT_CREATE_DATE,
-						CERT_LAST_UPDATE_DATE)));
-		Mockito.when(giftCertificateRepository.getCertificateById(Mockito.eq(NON_EXISTING_ID)))
-				.thenReturn(Optional.empty());
-		Mockito.when(giftCertificateRepository.deleteCertificate(Mockito.eq(CERT_ID))).thenReturn(true);
-		Mockito.when(giftCertificateRepository.deleteCertificate(Mockito.eq(NON_EXISTING_ID))).thenReturn(false);
-		Mockito.when(giftCertificateRepository.updateCertificate(Mockito.argThat(a -> a.getId() == CERT_ID)))
-				.thenReturn(true);
-	}
-
-	private void initConverters() {
-		Mockito.when(createDtoToCertConverter.convert(Mockito.any())).then(answer -> {
-			GiftCertificateCreateDTO dto = (GiftCertificateCreateDTO) answer.getArgument(0);
-			return new GiftCertificate(DEFAULT_ID, dto.getName(), dto.getDescription(), dto.getPrice(),
-					dto.getDuration(), null, null);
-		});
-		Mockito.when(certToOutputDtoConverter.convert(Mockito.any())).then(answer -> {
-			GiftCertificate entity = (GiftCertificate) answer.getArgument(0);
-			return new GiftCertificateOutputDTO(entity.getId(), entity.getName(), entity.getDescription(),
-					entity.getPrice(), entity.getDuration(), entity.getCreateDate(), entity.getLastUpdateDate(),
-					new HashSet<>());
-		});
-	}
-*/
 	public Stream<Arguments> createTestSources() {
 		TagService tagServiceWithEmptyNameSet = Mockito.mock(TagService.class);
 		TagService tagServiceReturningTwoExistingTagsSet = Mockito.mock(TagService.class);

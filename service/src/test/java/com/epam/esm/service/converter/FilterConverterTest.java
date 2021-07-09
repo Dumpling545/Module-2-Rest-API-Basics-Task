@@ -1,18 +1,14 @@
 package com.epam.esm.service.converter;
 
 import com.epam.esm.model.dto.FilterDTO;
-import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.SortOption;
-import com.epam.esm.service.converter.FilterConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.Validator;
 import org.mapstruct.factory.Mappers;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Random;

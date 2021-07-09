@@ -3,8 +3,6 @@ package com.epam.esm.db;
 import com.epam.esm.GiftCertificateSystemApplication;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.PagedResult;
-import com.epam.esm.model.entity.Order;
-import com.epam.esm.model.entity.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
