@@ -1,6 +1,5 @@
 package com.epam.esm.web;
 
-import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
@@ -9,8 +8,6 @@ import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -38,7 +38,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;

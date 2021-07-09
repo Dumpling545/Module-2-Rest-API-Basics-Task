@@ -2,8 +2,6 @@ package com.epam.esm.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;

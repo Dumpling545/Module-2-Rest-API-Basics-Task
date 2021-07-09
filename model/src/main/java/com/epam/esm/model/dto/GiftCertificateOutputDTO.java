@@ -1,8 +1,6 @@
 package com.epam.esm.model.dto;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;

@@ -1,9 +1,6 @@
 package com.epam.esm.db.helper;
 
 import com.epam.esm.model.entity.PagedResult;
-import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityGraph;
@@ -37,7 +34,6 @@ public class DatabaseHelper {
 	                         Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
 		return fetch(queryClass, rootClass, entityManager, queryConfigurator, null, outputProducer, clearContext);
 	}
-	private static final Logger logger = LoggerFactory.getLogger(DatabaseHelper.class);
 	public <Q, R, O> O fetch(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
 	                         TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
 	                         Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
@@ -51,7 +47,6 @@ public class DatabaseHelper {
 			typedQuery.setHint("javax.persistence.loadgraph", entityGraphProducer.apply(entityManager));
 		}
 		O result = outputProducer.apply(typedQuery);
-		logger.info(typedQuery.unwrap(Query.class).getQueryString());
 		if (clearContext) {
 			entityManager.clear();
 		}

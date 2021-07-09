@@ -1,6 +1,5 @@
 package com.epam.esm.web.exceptionhandler;
 
-import com.epam.esm.service.exception.InvalidOrderException;
 import com.epam.esm.service.exception.InvalidUserException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

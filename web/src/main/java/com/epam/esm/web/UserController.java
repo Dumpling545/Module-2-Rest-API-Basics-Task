@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 

@@ -6,7 +6,6 @@ import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.Set;

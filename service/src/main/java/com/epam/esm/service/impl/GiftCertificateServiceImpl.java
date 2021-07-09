@@ -10,8 +10,8 @@ import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.GiftCertificate;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.PagedResult;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.converter.FilterConverter;
@@ -21,15 +21,11 @@ import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -135,11 +131,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		}
 	}
 
-	private static  final Logger logger = LoggerFactory.getLogger(GiftCertificateServiceImpl.class);
 	@Override
 	public PagedResultDTO<GiftCertificateOutputDTO> getCertificates(FilterDTO filterDTO,
 	                                                                PageDTO pageDTO) {
-		logger.info(pageDTO.toString());
 		Filter filter = filterConverter.convert(filterDTO);
 		PagedResult<GiftCertificate> pagedResult;
 		try {

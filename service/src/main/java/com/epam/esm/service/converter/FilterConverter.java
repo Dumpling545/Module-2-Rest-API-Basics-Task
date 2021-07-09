@@ -1,18 +1,12 @@
 package com.epam.esm.service.converter;
 
-import com.epam.esm.db.TagRepository;
 import com.epam.esm.model.dto.FilterDTO;
 import com.epam.esm.model.entity.Filter;
 import com.epam.esm.model.entity.SortOption;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.exception.InvalidCertificateException;
-import com.epam.esm.service.exception.InvalidTagException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.util.Optional;
-import java.util.Set;
 
 @Mapper(componentModel="spring")
 public abstract class FilterConverter {

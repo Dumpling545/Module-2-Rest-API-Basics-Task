@@ -1,7 +1,6 @@
 package com.epam.esm.web.assembler;
 
 import com.epam.esm.model.dto.OrderDTO;
-import com.epam.esm.web.GiftCertificateController;
 import com.epam.esm.web.OrderController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
