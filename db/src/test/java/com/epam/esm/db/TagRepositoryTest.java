@@ -1,92 +1,96 @@
 package com.epam.esm.db;
 
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
+import com.epam.esm.GiftCertificateSystemApplication;
+import com.epam.esm.model.entity.PagedResult;
+import com.epam.esm.model.entity.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@Sql({"schema.sql", "test-data.sql"})
-@TestInstance(Lifecycle.PER_CLASS)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@ExtendWith({SpringExtension.class})
+@SpringBootTest(classes = GiftCertificateSystemApplication.class)
+@AutoConfigureTestDatabase
 public class TagRepositoryTest {
-	/*
-	private static final int EXISTING_TAG_ID_1 = 1;
-	private static final String EXISTING_TAG_NAME_1 = "tag1";
-	private static final int EXISTING_TAG_ID_2 = 2;
-	private static final String EXISTING_TAG_NAME_2 = "tag2";
-	private static final int EXISTING_TAG_ID_3 = 3;
-	private static final String EXISTING_TAG_NAME_3 = "tag3";
-	private static final int EXISTING_TAG_ID_4 = 4;
-	private static final String EXISTING_TAG_NAME_4 = "tag4";
-	private static final int EXISTING_TAG_ID_8 = 8;
-	private static final String EXISTING_TAG_NAME_8 = "tag8";
-	private static final int EXISTING_TAG_ID_9 = 9;
-	private static final String EXISTING_TAG_NAME_9 = "tag9";
-	private static final int EXISTING_TAG_ID_10 = 10;
-	private static final String EXISTING_TAG_NAME_10 = "tag10";
-	private static final int EXISTING_CERT_ID_1 = 1;
-	private static final int NON_EXISTING_TAG_ID = -1;
-	private static final int NON_EXISTING_CERTIFICATE_ID = -1;
-	private static final String NON_EXISTING_TAG_NAME = "tag0";
-	private static final String NON_EXISTING_TAG_NAME_TO_BE_CREATED = "tag100";
+	private static final Tag existingTag1 = new Tag(1, "tag1");
+	private static final Tag existingTag2 = new Tag(2, "tag2");
+	private static final Tag existingTag3 = new Tag(3, "tag3");
+	private static final Tag existingTagWithoutId = new Tag(null, "tag4");
+	private static final Tag existingTag8 = new Tag(8, "tag8");
+	private static final Tag nonExistingTag = new Tag(-1, "tag0");
+	private static final Tag nonExistingTagToBeCreated = new Tag(null, "tag1900");
+	private static final int ALL_TAGS_EXISTING_OFFSET = 0;
+	private static final int ALL_TAGS_EXISTING_LIMIT = 5;
+	private static final int ALL_TAGS_NON_EXISTING_OFFSET = 100;
+	private static final int ALL_TAGS_NON_EXISTING_LIMIT = 5;
+	private static final int EXISTING_USER_ID = 1;
 	@Autowired
 	TagRepository tagRepository;
-	private List<Tag> expectedTagListOfCertificateOne = new ArrayList<>();
 
-	@BeforeAll
-	public void initExpectedTagListOfCertificateOne() {
-		expectedTagListOfCertificateOne.add(new Tag(EXISTING_TAG_ID_8, EXISTING_TAG_NAME_8));
-		expectedTagListOfCertificateOne.add(new Tag(EXISTING_TAG_ID_9, EXISTING_TAG_NAME_9));
-		expectedTagListOfCertificateOne.add(new Tag(EXISTING_TAG_ID_10, EXISTING_TAG_NAME_10));
+	@Test
+	public void getAllTagsShouldReturnNonEmptyListWhenPassedExistingOffsetAndLimit() {
+		PagedResult<Tag> tags = tagRepository.getAllTags(ALL_TAGS_EXISTING_OFFSET, ALL_TAGS_EXISTING_LIMIT);
+		assertFalse(tags.getPage().isEmpty());
+	}
+	@Test
+	public void getAllTagsShouldReturnEmptyListWhenPassedNonExistingOffsetAndLimit() {
+		PagedResult<Tag> tags = tagRepository.getAllTags(ALL_TAGS_NON_EXISTING_OFFSET, ALL_TAGS_NON_EXISTING_LIMIT);
+		assertTrue(tags.getPage().isEmpty());
 	}
 
 	@Test
 	public void getTagByNameShouldReturnOptionalWithTagWhenPassedExistingTagName() {
-		Optional<Tag> optional = tagRepository.getTagByName(EXISTING_TAG_NAME_1);
-		Tag expected = new Tag(EXISTING_TAG_ID_1, EXISTING_TAG_NAME_1);
-		assertEquals(expected, optional.get());
+		Optional<Tag> optional = tagRepository.getTagByName(existingTag1.getName());
+		assertEquals(existingTag1, optional.get());
 	}
 
 	@Test
 	public void getTagByNameShouldReturnEmptyOptionalWhenPassedNonExistingTagName() {
-		Optional<Tag> optional = tagRepository.getTagByName(NON_EXISTING_TAG_NAME);
+		Optional<Tag> optional = tagRepository.getTagByName(nonExistingTag.getName());
 		assertTrue(optional.isEmpty());
 	}
 
 	@Test
 	public void deleteTagShouldReturnTrueWhenPassedExistingTagId() {
-		boolean deleted = tagRepository.deleteTag(EXISTING_TAG_ID_2);
+		boolean deleted = tagRepository.deleteTag(existingTag2.getId());
 		assertTrue(deleted);
-		Optional fetchedAfterDeletion = tagRepository.getTagById(EXISTING_TAG_ID_2);
+		Optional fetchedAfterDeletion = tagRepository.getTagById(existingTag2.getId());
 		assertTrue(fetchedAfterDeletion.isEmpty());
 	}
 
 	@Test
 	public void deleteTagShouldReturnFalseWhenPassedNonExistingTagId() {
-		boolean deleted = tagRepository.deleteTag(NON_EXISTING_TAG_ID);
+		boolean deleted = tagRepository.deleteTag(nonExistingTag.getId());
 		assertFalse(deleted);
 	}
 
 	@Test
-	public void getTagByIdShouldReturnOptionalWithTagWhenPassedExistingTagName() {
-		Optional<Tag> optional = tagRepository.getTagById(EXISTING_TAG_ID_3);
-		Tag expected = new Tag(EXISTING_TAG_ID_3, EXISTING_TAG_NAME_3);
-		assertEquals(expected, optional.get());
+	public void getTagByIdShouldReturnOptionalWithTagWhenPassedExistingTagId() {
+		Optional<Tag> optional = tagRepository.getTagById(existingTag3.getId());
+		assertEquals(existingTag3, optional.get());
 	}
 
 	@Test
 	public void getTagByNameShouldReturnEmptyOptionalWhenPassedNonExistingTagId() {
-		Optional<Tag> optional = tagRepository.getTagById(NON_EXISTING_TAG_ID);
+		Optional<Tag> optional = tagRepository.getTagById(nonExistingTag.getId());
 		assertTrue(optional.isEmpty());
 	}
 
 	@Test
 	public void createTagShouldReturnTagWhenPassedNonExistingTagName() {
-		Tag tag = new Tag(NON_EXISTING_TAG_ID, NON_EXISTING_TAG_NAME_TO_BE_CREATED);
-		Tag created = tagRepository.createTag(tag);
+		Tag created = tagRepository.createTag(nonExistingTagToBeCreated);
 		assertNotNull(created);
 		Optional<Tag> fetchedAfterCreation = tagRepository.getTagById(created.getId());
 		assertTrue(fetchedAfterCreation.isPresent());
@@ -95,33 +99,21 @@ public class TagRepositoryTest {
 
 	@Test
 	public void createTagShouldThrowExceptionWhenPassedExistingTagName() {
-		Tag tag = new Tag(NON_EXISTING_TAG_ID, EXISTING_TAG_NAME_4);
-		assertThrows(DuplicateKeyException.class, () -> tagRepository.createTag(tag));
-	}
 
-	@Test
-	public void getTagsByCertificateShouldReturnListWhenPassedExistingCertificateId() {
-		List<Tag> tags = tagRepository.getTagsByCertificate(EXISTING_CERT_ID_1);
-		assertEquals(expectedTagListOfCertificateOne, tags);
-	}
-
-	@Test
-	public void getTagsByCertificateShouldReturnEmptyListWhenPassedNonExistingCertificateId() {
-		List<Tag> tags = tagRepository.getTagsByCertificate(NON_EXISTING_CERTIFICATE_ID);
-		assertTrue(tags.isEmpty());
+		assertThrows(DataIntegrityViolationException.class, () -> tagRepository.createTag(existingTagWithoutId));
 	}
 
 	@Test
 	public void getTagsFromNameSetShouldReturnListWhenPassedAtLeastOneExistingTagName() {
-		Set<String> tagNames = new HashSet<>();
-		tagNames.add(EXISTING_TAG_NAME_1);
-		tagNames.add(EXISTING_TAG_NAME_8);
-		tagNames.add(NON_EXISTING_TAG_NAME);
+		Set<String> tagNames = Set.of(existingTag1.getName(), existingTag8.getName(), nonExistingTag.getName());
 		List<Tag> output = tagRepository.getTagsFromNameSet(tagNames);
-		List<Tag> expected = new ArrayList<>();
-		expected.add(new Tag(EXISTING_TAG_ID_1, EXISTING_TAG_NAME_1));
-		expected.add(new Tag(EXISTING_TAG_ID_8, EXISTING_TAG_NAME_8));
+		List<Tag> expected = List.of(existingTag1, existingTag8);
 		assertEquals(expected, output);
 	}
-	 */
+	@Test
+	public void getMostWidelyUsedTagOfUserWithHighestCostOfAllOrdersShouldReturnCorrectTagWhenPassedExistingUser(){
+		Optional<Tag> tag = tagRepository.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(EXISTING_USER_ID);
+		assertTrue(tag.isPresent());
+		assertEquals(existingTag8, tag.get());
+	}
 }

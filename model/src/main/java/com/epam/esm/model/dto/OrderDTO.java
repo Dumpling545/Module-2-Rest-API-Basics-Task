@@ -8,6 +8,9 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * DTO object encapsulating information about Order. Used for Web Layer <-> Service layer communication
+ */
 @Data
 @SuperBuilder
 @NoArgsConstructor

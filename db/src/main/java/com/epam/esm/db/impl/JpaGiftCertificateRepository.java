@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static java.util.Collections.EMPTY_LIST;
+
 @Repository
 @RequiredArgsConstructor
 public class JpaGiftCertificateRepository implements GiftCertificateRepository {
@@ -49,10 +51,10 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 		certificate.setId(null);
 		certificate.setCreateDate(localDateTime);
 		certificate.setLastUpdateDate(localDateTime);
-		entityManager.merge(certificate);
+		GiftCertificate created = entityManager.merge(certificate);
 		entityManager.flush();
 		entityManager.clear();
-		return certificate;
+		return created;
 	}
 
 	@Override
@@ -70,6 +72,11 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 				entityManager,
 				(cb, cq, r) -> configureQueryByFilter(filter, cb, cq, r),
 				offset, limit);
+		PagedResult.PagedResultBuilder<GiftCertificate> builder = PagedResult.builder();
+		builder.first(filteredIdsResult.isFirst()).last(filteredIdsResult.isLast());
+		if(filteredIdsResult.getPage().isEmpty()){
+			return builder.page(EMPTY_LIST).build();
+		}
 		List<GiftCertificate> certificates = databaseHelper.fetch(GiftCertificate.class, entityManager,
 				(cb, cq, r) -> {
 					cq.select(r).where(r.get(GiftCertificate_.id).in(filteredIdsResult.getPage()));
@@ -79,12 +86,7 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 				},
 				(em) -> (EntityGraph<GiftCertificate>) em.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME),
 				TypedQuery::getResultList);
-		PagedResult<GiftCertificate> pagedResult = PagedResult.<GiftCertificate>builder()
-				.first(filteredIdsResult.isFirst())
-				.last(filteredIdsResult.isLast())
-				.page(certificates)
-				.build();
-		return pagedResult;
+		return builder.page(certificates).build();
 	}
 
 	private Order createOrderFromSortOption(SortOption sortOption, CriteriaBuilder criteriaBuilder,
@@ -105,7 +107,7 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	                                    CriteriaQuery criteriaQuery,
 	                                    Root<GiftCertificate> root) {
 		List<Predicate> restrictions = new ArrayList<>();
-		if (filter.getTagNames() != null) {
+		if (filter.getTagNames() != null && !filter.getTagNames().isEmpty()) {
 			Join<GiftCertificate, Tag> tagJoin = root.join(GiftCertificate_.tags);
 			criteriaQuery.groupBy(root.get(GiftCertificate_.id));
 			criteriaQuery.having(criteriaBuilder

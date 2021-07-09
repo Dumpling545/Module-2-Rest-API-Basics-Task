@@ -53,6 +53,7 @@ public class JpaTagRepository implements TagRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Tag> getTagByName(String tagName) {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Tag>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r).where(cb.equal(r.get(Tag_.name), tagName));
@@ -62,6 +63,7 @@ public class JpaTagRepository implements TagRepository {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PagedResult<Tag> getAllTags(int offset, int limit) {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Tag>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r);

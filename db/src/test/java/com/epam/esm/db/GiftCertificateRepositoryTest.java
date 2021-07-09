@@ -1,43 +1,98 @@
 package com.epam.esm.db;
 
+import com.epam.esm.GiftCertificateSystemApplication;
+import com.epam.esm.model.entity.Filter;
+import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.SortOption;
+import com.epam.esm.model.entity.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@JdbcTest
-@Sql({"classpath:schema.sql", "classpath:test-data.sql"})
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@ExtendWith({SpringExtension.class})
+@SpringBootTest(classes = GiftCertificateSystemApplication.class)
+@AutoConfigureTestDatabase
 public class GiftCertificateRepositoryTest {
-	/*
 	private static final int NON_EXISTING_ID = -1;
-	private static final int EXISTING_ID_1 = 1;
-	private static final String EXISTING_NAME_1 = "certificate1";
-	private static final String EXISTING_DESC_1 = "description1";
-	private static final int EXISTING_DURATION_1 = 1;
-	private static final BigDecimal EXISTING_PRICE_1 = BigDecimal.valueOf(12.34);
-	private static final String NAME_TO_BE_CREATED = "certificate6";
-	private static final String DESCRIPTION_TO_BE_CREATED = "description6";
-	private static final BigDecimal PRICE_TO_BE_CREATED = BigDecimal.valueOf(123.42);
-	private static final int DURATION_TO_BE_CREATED = 6;
-	private static final int EXISTING_ID_2 = 2;
-	private static final String NEW_NAME_2 = "certificate111";
-	private static final String NEW_DESC_2 = "description111";
-	private static final BigDecimal NEW_PRICE_2 = BigDecimal.valueOf(123.42);
-	private static final int NEW_DURATION_2 = 60;
+	private static final Tag existingTag1 = new Tag(1, "tag1");
+	private static final Tag existingTag2 = new Tag(2, "tag2");
+	private static final Tag existingTag3 = new Tag(3, "tag3");
+	private static final Tag existingTag4 = new Tag(4, "tag4");
+	private static final Tag existingTag5 = new Tag(5, "tag5");
+	private static final Tag existingTag6 = new Tag(6, "tag6");
+	private static final Tag existingTag7 = new Tag(7, "tag7");
+	private static final Tag existingTag8 = new Tag(8, "tag8");
+	private static final Tag existingTag9 = new Tag(9, "tag9");
+	private static final Tag existingTag10 = new Tag(10, "tag10");
+	private static final Tag nonExistingTagToBeCreated1 = new Tag(null, "tag100");
+	private static final Tag nonExistingTagToBeCreated2 = new Tag(null, "tag200");
+
+	private static final GiftCertificate certToBeCreated = GiftCertificate.builder()
+			.id(null)
+			.name("certificate8")
+			.description("description8")
+			.duration(10)
+			.price(BigDecimal.valueOf(123.42))
+			.tags(Set.of(existingTag1, existingTag2, nonExistingTagToBeCreated1))
+			.build();
+	private static final GiftCertificate existingCert1 = GiftCertificate.builder()
+			.id(1)
+			.name("certificate1")
+			.description("description1")
+			.duration(1)
+			.price(BigDecimal.valueOf(12.34))
+			.tags(Set.of(existingTag8, existingTag9, existingTag10))
+			.build();
+	private static final GiftCertificate existingCert2 = GiftCertificate.builder()
+			.id(2)
+			.name("certificate2")
+			.description("description2")
+			.duration(2)
+			.createDate(LocalDate.parse("2021-01-02").atStartOfDay())
+			.price(BigDecimal.valueOf(9112.18))
+			.tags(Set.of(existingTag3, existingTag6, existingTag7))
+			.build();
+	private static final GiftCertificate updatedCert2 = GiftCertificate.builder()
+			.id(2)
+			.name("certificate111")
+			.description("description111")
+			.duration(234)
+			.createDate(LocalDate.parse("2021-01-02").atStartOfDay())
+			.price(BigDecimal.valueOf(1.23))
+			.tags(Set.of(existingTag4, existingTag6, nonExistingTagToBeCreated2))
+			.build();
 	private static final int EXISTING_ID_3 = 3;
-	private static final int NOT_ASSOCIATED_CERTIFICATE_ID = 5;
-	private static final int NOT_ASSOCIATED_TAG_ID = 5;
-	private static final int ASSOCIATED_CERTIFICATE_ID = 2;
-	private static final int ASSOCIATED_TAG_ID = 7;
-	private static final Filter CONDITIONS_THAT_SOME_DATA_MEET =
-			new Filter("ertif", "escriptio", "tag8", new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC));
-	private static final Filter CONDITIONS_THAT_NO_DATA_MEET =
-			new Filter("wfwf", "wef", "tagr8", new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC));
+	private static final Filter CONDITIONS_THAT_SOME_DATA_MEET = Filter.builder()
+			.namePart("ertif")
+			.descriptionPart("escriptio")
+			.tagNames(Set.of("tag8"))
+			.sortBy(new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC)).build();
+	private static final Filter CONDITIONS_THAT_NO_DATA_MEET = Filter.builder()
+			.tagNames(Set.of("non existent")).build();
+	private static final int EXISTING_OFFSET = 0;
+	private static final int EXISTING_LIMIT = 10;
+	private static final int NON_EXISTING_OFFSET = 100;
+	private static final int NON_EXISTING_LIMIT = 10;
+
 	@Autowired
 	GiftCertificateRepository giftCertificateRepository;
-	@Autowired
-	TagRepository tagRepository;
 
 	private void assertCertificatesEqual(GiftCertificate c1, GiftCertificate c2) {
 		assertEquals(c1.getId(), c2.getId());
@@ -53,14 +108,12 @@ public class GiftCertificateRepositoryTest {
 			assertEquals(c1.getCreateDate().get(ChronoField.MINUTE_OF_DAY),
 					c2.getCreateDate().get(ChronoField.MINUTE_OF_DAY));
 		}
+		assertEquals(c1.getTags(), c2.getTags());
 	}
 
 	@Test
 	public void createCertificateShouldReturnNewEntityWhenPassedCorrectInput() {
-		GiftCertificate certificate = new GiftCertificate(NON_EXISTING_ID, NAME_TO_BE_CREATED,
-				DESCRIPTION_TO_BE_CREATED, PRICE_TO_BE_CREATED, DURATION_TO_BE_CREATED, null, null);
-		GiftCertificate created = giftCertificateRepository.createCertificate(certificate);
-		assertNotEquals(EXISTING_ID_1, created.getId());
+		GiftCertificate created = giftCertificateRepository.createCertificate(certToBeCreated);
 		assertNotNull(created.getCreateDate());
 		assertNotNull(created.getLastUpdateDate());
 		Optional<GiftCertificate> fetchedAfter = giftCertificateRepository.getCertificateById(created.getId());
@@ -70,13 +123,10 @@ public class GiftCertificateRepositoryTest {
 
 	@Test
 	public void getCertificateShouldReturnOptionalWithEntityWhenPassedExistingId() {
-		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(EXISTING_ID_1);
+		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(existingCert1.getId());
 		assertTrue(optional.isPresent());
 		GiftCertificate fetched = optional.get();
-		assertEquals(EXISTING_NAME_1, fetched.getName());
-		assertEquals(EXISTING_DESC_1, fetched.getDescription());
-		assertEquals(EXISTING_DURATION_1, fetched.getDuration());
-		assertEquals(EXISTING_PRICE_1, fetched.getPrice());
+		assertCertificatesEqual(existingCert1, fetched);
 	}
 
 	@Test
@@ -88,30 +138,26 @@ public class GiftCertificateRepositoryTest {
 	@Test
 	public void filterCertificatesShouldReturnListWhenPassedConditionsMetByAnyDataInDatabase() {
 		List<GiftCertificate> giftCertificates =
-				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_SOME_DATA_MEET);
+				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_SOME_DATA_MEET,
+						EXISTING_OFFSET, EXISTING_LIMIT).getPage();
 		assertFalse(giftCertificates.isEmpty());
-		for (GiftCertificate gc : giftCertificates) {
-			assertTrue(gc.getName().contains(CONDITIONS_THAT_SOME_DATA_MEET.getNamePart()));
-			assertTrue(gc.getDescription().contains(CONDITIONS_THAT_SOME_DATA_MEET.getDescriptionPart()));
-		}
 	}
 
 	@Test
 	public void filterCertificatesShouldReturnEmptyListWhenPassedConditionsMetByNoDataInDatabase() {
 		List<GiftCertificate> giftCertificates =
-				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_NO_DATA_MEET);
+				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_NO_DATA_MEET,
+						EXISTING_OFFSET, EXISTING_LIMIT).getPage();
 		assertTrue(giftCertificates.isEmpty());
 	}
 
 	@Test
 	public void updateCertificateShouldReturnTrueWhenPassedCorrectInput() {
-		GiftCertificate giftCertificate = new GiftCertificate(EXISTING_ID_2, NEW_NAME_2, NEW_DESC_2, NEW_PRICE_2,
-				NEW_DURATION_2, null, null);
-		boolean updated = giftCertificateRepository.updateCertificate(giftCertificate);
-		assertTrue(updated);
-		Optional<GiftCertificate> fetchAfter = giftCertificateRepository.getCertificateById(EXISTING_ID_2);
+		giftCertificateRepository.updateCertificate(updatedCert2);
+		Optional<GiftCertificate> fetchAfter = giftCertificateRepository.getCertificateById(updatedCert2.getId());
 		assertTrue(fetchAfter.isPresent());
-		assertCertificatesEqual(fetchAfter.get(), giftCertificate);
+		assertEquals(updatedCert2.getTags().stream().map(Tag::getName).collect(Collectors.toSet()),
+				fetchAfter.get().getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 	}
 
 	@Test
@@ -127,23 +173,4 @@ public class GiftCertificateRepositoryTest {
 		boolean deleted = giftCertificateRepository.deleteCertificate(NON_EXISTING_ID);
 		assertFalse(deleted);
 	}
-
-	@Test
-	public void addTagShouldNotThrowExceptionWhenPassedNotAssociatedIds() {
-		assertDoesNotThrow(() -> {
-			giftCertificateRepository.addTagToCertificate(NOT_ASSOCIATED_CERTIFICATE_ID, NOT_ASSOCIATED_TAG_ID);
-			List<Tag> tags = tagRepository.getTagsByCertificate(NOT_ASSOCIATED_CERTIFICATE_ID);
-			assertTrue(tags.stream().anyMatch(t -> t.getId() == NOT_ASSOCIATED_TAG_ID));
-		});
-	}
-
-	@Test
-	public void removeTagShouldNotThrowExceptionWhenPassedNotAssociatedIds() {
-		assertDoesNotThrow(() -> {
-			giftCertificateRepository.removeTagFromCertificate(ASSOCIATED_CERTIFICATE_ID, ASSOCIATED_TAG_ID);
-			List<Tag> tags = tagRepository.getTagsByCertificate(ASSOCIATED_CERTIFICATE_ID);
-			assertTrue(tags.stream().noneMatch(t -> t.getId() == ASSOCIATED_TAG_ID));
-		});
-	}
-*/
 }
