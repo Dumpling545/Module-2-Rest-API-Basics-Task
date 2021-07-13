@@ -49,6 +49,6 @@ INSERT INTO cert_user(id, user_name) VALUES (6, 'user6');
 
 -- orders
 INSERT INTO cert_order(id, user_id, gift_certificate_id, cost, purchase_date) VALUES (1, 1, 3, 1.1, '2018-01-01');
-INSERT INTO cert_order(id, user_id, gift_certificate_id, cost, purchase_date) VALUES (2, 1, 6, 2.9, NOW());
+INSERT INTO cert_order(id, user_id, gift_certificate_id, cost, purchase_date) VALUES (2, 1, 6, 2.9, '2020-04-15');
 INSERT INTO cert_order(id, user_id, gift_certificate_id, cost, purchase_date) VALUES (3, 1, 2, 1.9, NOW());
 

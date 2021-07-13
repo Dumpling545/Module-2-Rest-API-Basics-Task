@@ -2,9 +2,9 @@ package com.epam.esm.service;
 
 
 import com.epam.esm.db.GiftCertificateRepository;
-import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
@@ -12,8 +12,8 @@ import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Tag;
-import com.epam.esm.service.converter.FilterConverter;
 import com.epam.esm.service.converter.GiftCertificateConverter;
+import com.epam.esm.service.converter.GiftCertificateSearchFilterConverter;
 import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
@@ -147,7 +147,7 @@ public class GiftCertificateServiceImplTest {
 							existingTag2.getName())).build();
 	private static final long EXISTING_TAGS_FROM_CERT_CREATE_DTO_WITH_TWO_EXISTING_AND_TWO_NEW_TAGS = 2;
 	private static final long NEW_TAGS_FROM_CERT_CREATE_DTO_WITH_TWO_EXISTING_AND_TWO_NEW_TAGS = 2;
-	private static final GiftCertificateSearchFilterDTO GIFT_CERTIFICATE_SEARCH_FILTER_DTO = GiftCertificateSearchFilterDTO
+	private static final GiftCertificateSearchFilterDTO giftCertificateSearchFilterDTO = GiftCertificateSearchFilterDTO
 			.builder().build();
 	private static final PagedResult<GiftCertificate> pagedResult = PagedResult.<GiftCertificate>builder()
 			.page(List.of(existingCert))
@@ -161,13 +161,15 @@ public class GiftCertificateServiceImplTest {
 	private static final PageDTO pageDTO = PageDTO.builder().pageNumber(1).pageSize(5).build();
 	private final GiftCertificateConverter giftCertificateConverter =
 			Mappers.getMapper(GiftCertificateConverter.class);
-	private final FilterConverter filterConverter = Mappers.getMapper(FilterConverter.class);
+	private final GiftCertificateSearchFilterConverter filterConverter =
+			Mappers.getMapper(GiftCertificateSearchFilterConverter.class);
 	private final TagConverter tagConverter = Mappers.getMapper(TagConverter.class);
 	private final PagedResultConverter pagedResultConverter = Mappers.getMapper(PagedResultConverter.class);
 
 	{
 		ReflectionTestUtils.setField(giftCertificateConverter, "tagConverter", tagConverter, TagConverter.class);
 	}
+
 	public Stream<Arguments> createTestSources() {
 		TagService tagServiceWithEmptyNameSet = Mockito.mock(TagService.class);
 		TagService tagServiceReturningTwoExistingTagsSet = Mockito.mock(TagService.class);
@@ -247,9 +249,10 @@ public class GiftCertificateServiceImplTest {
 	                                                                         long expectedExistingTagsAdded,
 	                                                                         long expectedNewTagsAdded) {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
-		Mockito.when(gcRepository.getCertificateById(Mockito.eq(existingCert.getId()))).thenReturn(Optional.of(existingCert));
+		Mockito.when(gcRepository.getCertificateById(Mockito.eq(existingCert.getId())))
+				.thenReturn(Optional.of(existingCert));
 		Mockito.doAnswer(ans -> {
-			GiftCertificate gc =  ans.getArgument(0);
+			GiftCertificate gc = ans.getArgument(0);
 			long actualExistingTagsAdded = gc.getTags().stream().filter(t -> t.getId() != null).count();
 			long actualNewTagsAdded = gc.getTags().stream().filter(t -> t.getId() == null).count();
 			assertEquals(expectedExistingTagsAdded, actualExistingTagsAdded);
@@ -336,7 +339,8 @@ public class GiftCertificateServiceImplTest {
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 				gcRepository, giftCertificateConverter, tagConverter, filterConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
-			PagedResultDTO<GiftCertificateOutputDTO> outputDTO = service.getCertificates(filterDTO, pageDTO);
+			PagedResultDTO<GiftCertificateOutputDTO> outputDTO = service.getCertificates(giftCertificateSearchFilterDTO,
+					pageDTO);
 			assertEquals(pagedResultDto, outputDTO);
 		});
 	}

@@ -37,6 +37,12 @@ public class OrderRepositoryTest {
 			.giftCertificateId(3)
 			.cost(BigDecimal.valueOf(1.1))
 			.purchaseDate(LocalDate.parse("2018-01-01").atStartOfDay()).build();
+	private static final Order existingOrder2 = Order.builder()
+			.id(2)
+			.userId(1)
+			.giftCertificateId(6)
+			.cost(BigDecimal.valueOf(2.9))
+			.purchaseDate(LocalDate.parse("2020-04-15").atStartOfDay()).build();
 	private static final Order orderToBeCreated = Order.builder()
 			.userId(3)
 			.giftCertificateId(7)
@@ -69,9 +75,9 @@ public class OrderRepositoryTest {
 	}
 	@Test
 	public void getOrderByIdShouldReturnOptionalWithOrderWhenPassedExistingOrderId() {
-		Optional<Order> optional = orderRepository.getOrderById(existingOrder1.getId());
+		Optional<Order> optional = orderRepository.getOrderById(existingOrder2.getId());
 		assertTrue(optional.isPresent());
-		assertOrdersEqual(existingOrder1, optional.get());
+		assertOrdersEqual(existingOrder2, optional.get());
 	}
 
 	@Test
