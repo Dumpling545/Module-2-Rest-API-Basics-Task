@@ -3,7 +3,7 @@ package com.epam.esm.model.entity;
 import lombok.Value;
 
 /**
- * Object encapsulating information about sorting in Filter entity. Used for Service Layer <-> Repository layer
+ * Object encapsulating information about sorting. Used for Service Layer <-> Repository layer
  * communication
  */
 @Value

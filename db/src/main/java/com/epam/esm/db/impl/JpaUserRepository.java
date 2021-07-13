@@ -1,7 +1,7 @@
 package com.epam.esm.db.impl;
 
 import com.epam.esm.db.UserRepository;
-import com.epam.esm.db.helper.DatabaseHelper;
+import com.epam.esm.db.helper.FetchQueryHelper;
 import com.epam.esm.db.helper.TriConsumer;
 import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.User;
@@ -23,7 +23,7 @@ public class JpaUserRepository implements UserRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private final DatabaseHelper databaseHelper;
+	private final FetchQueryHelper fetchQueryHelper;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -39,7 +39,7 @@ public class JpaUserRepository implements UserRepository {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<User>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r);
 		};
-		return databaseHelper.fetchPagedResult(User.class, entityManager, queryConfigurator, offset, limit);
+		return fetchQueryHelper.fetchPagedResult(User.class, entityManager, queryConfigurator, offset, limit);
 	}
 
 }

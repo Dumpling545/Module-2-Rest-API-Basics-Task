@@ -1,7 +1,8 @@
 package com.epam.esm.db.impl;
 
 import com.epam.esm.db.GiftCertificateRepository;
-import com.epam.esm.db.helper.DatabaseHelper;
+import com.epam.esm.db.helper.FetchQueryHelper;
+import com.epam.esm.db.helper.OrderHelper;
 import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.GiftCertificate_;
@@ -41,7 +42,8 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private final DatabaseHelper databaseHelper;
+	private final FetchQueryHelper fetchQueryHelper;
+	private final OrderHelper<GiftCertificate> giftCertificateOrderHelper;
 	private static final String LOAD_GRAPH_HINT_KEY = "javax.persistence.loadgraph";
 	private static final String FULL_CERTIFICATE_ENTITY_GRAPH_NAME = "full-certificate-entity-graph";
 
@@ -70,7 +72,7 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public PagedResult<GiftCertificate> getCertificatesByFilter(GiftCertificateSearchFilter giftCertificateSearchFilter, int offset, int limit) {
-		PagedResult<Integer> filteredIdsResult = databaseHelper.fetchPagedResult(Integer.class, GiftCertificate.class,
+		PagedResult<Integer> filteredIdsResult = fetchQueryHelper.fetchPagedResult(Integer.class, GiftCertificate.class,
 				entityManager,
 				(cb, cq, r) -> configureQueryByFilter(giftCertificateSearchFilter, cb, cq, r),
 				offset, limit);
@@ -79,30 +81,16 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 		if(filteredIdsResult.getPage().isEmpty()){
 			return builder.page(EMPTY_LIST).build();
 		}
-		List<GiftCertificate> certificates = databaseHelper.fetch(GiftCertificate.class, entityManager,
+		List<GiftCertificate> certificates = fetchQueryHelper.fetch(GiftCertificate.class, entityManager,
 				(cb, cq, r) -> {
 					cq.select(r).where(r.get(GiftCertificate_.id).in(filteredIdsResult.getPage()));
 					if (giftCertificateSearchFilter.getSortBy() != null) {
-						cq.orderBy(createOrderFromSortOption(giftCertificateSearchFilter.getSortBy(), cb, r));
+						cq.orderBy(giftCertificateOrderHelper.createOrder(giftCertificateSearchFilter.getSortBy(), cb, r));
 					}
 				},
 				(em) -> (EntityGraph<GiftCertificate>) em.getEntityGraph(FULL_CERTIFICATE_ENTITY_GRAPH_NAME),
 				TypedQuery::getResultList);
 		return builder.page(certificates).build();
-	}
-
-	private Order createOrderFromSortOption(SortOption sortOption, CriteriaBuilder criteriaBuilder,
-	                                        Root<GiftCertificate> root) {
-		Function<Expression<?>, Order> direction = switch (sortOption.getDirection()) {
-			case ASC -> criteriaBuilder::asc;
-			case DESC -> criteriaBuilder::desc;
-		};
-		Path<?> sortCriteria = switch (sortOption.getField()) {
-			case NAME -> root.get(GiftCertificate_.name);
-			case CREATE_DATE -> root.get(GiftCertificate_.createDate);
-			case LAST_UPDATE_DATE -> root.get(GiftCertificate_.lastUpdateDate);
-		};
-		return direction.apply(sortCriteria);
 	}
 
 	private void configureQueryByFilter(GiftCertificateSearchFilter giftCertificateSearchFilter, CriteriaBuilder criteriaBuilder,
@@ -128,7 +116,7 @@ public class JpaGiftCertificateRepository implements GiftCertificateRepository {
 		}
 		criteriaQuery.select(root.get(GiftCertificate_.id)).where(restrictions.toArray(new Predicate[0]));
 		if (giftCertificateSearchFilter.getSortBy() != null) {
-			Order order = createOrderFromSortOption(giftCertificateSearchFilter.getSortBy(), criteriaBuilder, root);
+			Order order = giftCertificateOrderHelper.createOrder(giftCertificateSearchFilter.getSortBy(), criteriaBuilder, root);
 			criteriaQuery.orderBy(order);
 		}
 	}

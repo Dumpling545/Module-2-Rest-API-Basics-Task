@@ -1,7 +1,7 @@
 package com.epam.esm.db.impl;
 
 import com.epam.esm.db.TagRepository;
-import com.epam.esm.db.helper.DatabaseHelper;
+import com.epam.esm.db.helper.FetchQueryHelper;
 import com.epam.esm.db.helper.TriConsumer;
 import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Tag;
@@ -35,7 +35,7 @@ public class JpaTagRepository implements TagRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private final DatabaseHelper databaseHelper;
+	private final FetchQueryHelper fetchQueryHelper;
 
 	@Transactional
 	public Tag createTag(Tag tag) {
@@ -60,7 +60,7 @@ public class JpaTagRepository implements TagRepository {
 			cq.select(r).where(cb.equal(r.get(Tag_.name), tagName));
 		};
 		Function<TypedQuery<Tag>, Optional<Tag>> resultProducer = tq -> tq.getResultStream().findFirst();
-		return databaseHelper.fetch(Tag.class, entityManager, queryConfigurator, resultProducer);
+		return fetchQueryHelper.fetch(Tag.class, entityManager, queryConfigurator, resultProducer);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class JpaTagRepository implements TagRepository {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Tag>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r);
 		};
-		return databaseHelper.fetchPagedResult(Tag.class, entityManager, queryConfigurator, offset, limit);
+		return fetchQueryHelper.fetchPagedResult(Tag.class, entityManager, queryConfigurator, offset, limit);
 	}
 
 
@@ -80,7 +80,7 @@ public class JpaTagRepository implements TagRepository {
 			cq.select(r).where(r.get(Tag_.name).in(tagNames));
 		};
 		Function<TypedQuery<Tag>, List<Tag>> resultProducer = TypedQuery::getResultList;
-		return databaseHelper.fetch(Tag.class, entityManager, queryConfigurator, resultProducer);
+		return fetchQueryHelper.fetch(Tag.class, entityManager, queryConfigurator, resultProducer);
 	}
 
 	@Transactional

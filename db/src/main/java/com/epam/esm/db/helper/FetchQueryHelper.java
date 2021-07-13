@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Helper class performing queries aimed to reduce JPA boilerplate code
+ * Helper class performing fetch queries aimed to reduce JPA boilerplate code
  */
 @Component
-public class DatabaseHelper {
+public class FetchQueryHelper {
 
 	public <Q, O> O fetch(Class<Q> queryClass, EntityManager entityManager,
 	                      TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,

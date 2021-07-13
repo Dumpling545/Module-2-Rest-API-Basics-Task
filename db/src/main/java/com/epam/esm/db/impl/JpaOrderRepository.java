@@ -1,7 +1,7 @@
 package com.epam.esm.db.impl;
 
 import com.epam.esm.db.OrderRepository;
-import com.epam.esm.db.helper.DatabaseHelper;
+import com.epam.esm.db.helper.FetchQueryHelper;
 import com.epam.esm.db.helper.TriConsumer;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Order_;
@@ -25,7 +25,7 @@ public class JpaOrderRepository implements OrderRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private final DatabaseHelper databaseHelper;
+	private final FetchQueryHelper fetchQueryHelper;
 
 	@Transactional
 	public Order createOrder(Order order) {
@@ -51,7 +51,7 @@ public class JpaOrderRepository implements OrderRepository {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r);
 		};
-		return databaseHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
+		return fetchQueryHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class JpaOrderRepository implements OrderRepository {
 		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
 			cq.select(r).where(cb.equal(r.get(Order_.userId), userId));
 		};
-		return databaseHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
+		return fetchQueryHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
 	}
 
 }
