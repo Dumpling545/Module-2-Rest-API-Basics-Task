@@ -75,7 +75,7 @@ public class GiftCertificateController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> createCertificate(@RequestBody @Valid GiftCertificateCreateDTO certDTO,
+	public ResponseEntity createCertificate(@RequestBody @Valid GiftCertificateCreateDTO certDTO,
 	                                                UriComponentsBuilder ucb) {
 		GiftCertificateOutputDTO dto = certService.createCertificate(certDTO);
 		URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(dto.getId())).build().toUri();
@@ -83,7 +83,7 @@ public class GiftCertificateController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Object> updateCertificate(@PathVariable("id") Integer id,
+	public ResponseEntity updateCertificate(@PathVariable("id") Integer id,
 	                                                @RequestBody @Valid GiftCertificateUpdateDTO certDTO,
 	                                                UriComponentsBuilder ucb) {
 		certService.updateCertificate(id, certDTO);
@@ -91,9 +91,9 @@ public class GiftCertificateController {
 		return ResponseEntity.noContent().location(locationUri).build();
 	}
 
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping(value = "/{id}")
-	public void deleteCertificate(@PathVariable("id") Integer id) {
+	public ResponseEntity deleteCertificate(@PathVariable("id") Integer id) {
 		certService.deleteCertificate(id);
+		return ResponseEntity.noContent().build();
 	}
 }

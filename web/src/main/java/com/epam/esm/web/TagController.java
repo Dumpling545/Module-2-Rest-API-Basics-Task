@@ -39,7 +39,7 @@ public class TagController {
 	private final ExtendedRepresentationModelAssembler<TagDTO, TagController> assembler;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<EntityModel> getTag(@PathVariable("id") int id) {
+	public ResponseEntity<EntityModel> getTag(@PathVariable("id") Integer id) {
 		return ResponseEntity.ok(assembler.toModel(tagService.getTag(id)));
 	}
 
@@ -66,17 +66,15 @@ public class TagController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
+	public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
 		TagDTO dto = tagService.createTag(tagDTO);
-		HttpHeaders headers = new HttpHeaders();
 		URI locationUri = ucb.path("/tags/").path(String.valueOf(dto.getId())).build().toUri();
-		headers.setLocation(locationUri);
-		return new ResponseEntity<Object>(headers, HttpStatus.CREATED);
+		return ResponseEntity.created(locationUri).build();
 	}
 
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping(value = "/{id}")
-	public void deleteTag(@PathVariable("id") Integer id) {
+	public ResponseEntity deleteTag(@PathVariable("id") Integer id) {
 		tagService.deleteTag(id);
+		return ResponseEntity.noContent().build();
 	}
 }

@@ -58,11 +58,9 @@ public class OrderController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> createOrder(@RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
+	public ResponseEntity createOrder(@RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
 		OrderDTO dto = orderService.createOrder(orderDTO);
-		HttpHeaders headers = new HttpHeaders();
 		URI locationUri = ucb.path("/orders/").path(String.valueOf(dto.getId())).build().toUri();
-		headers.setLocation(locationUri);
-		return new ResponseEntity<Object>(headers, HttpStatus.CREATED);
+		return ResponseEntity.created(locationUri).build();
 	}
 }
