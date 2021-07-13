@@ -166,7 +166,7 @@ public class TagServiceImplTest {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
-			Set<TagDTO> set = tagService.getTagsFromNameSet(new HashSet<String>());
+			Set<TagDTO> set = tagService.getTagsFromNameSet(new HashSet<>());
 			assertEquals(EMPTY_SET, set);
 		});
 	}

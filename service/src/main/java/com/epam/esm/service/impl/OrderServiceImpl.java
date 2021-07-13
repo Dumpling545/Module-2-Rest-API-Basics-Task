@@ -64,13 +64,12 @@ public class OrderServiceImpl implements OrderService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		OrderDTO dto = optionalOrder.map(orderConverter::convert)
+		return optionalOrder.map(orderConverter::convert)
 				.orElseThrow(() -> {
 					String identifier = "id=" + id;
 					String message = String.format(orderNotFoundExceptionTemplate, identifier);
 					return new InvalidOrderException(message, InvalidOrderException.Reason.NOT_FOUND, id);
 				});
-		return dto;
 	}
 
 	private PagedResultDTO<OrderDTO> getOrderDTOList(Supplier<PagedResult<Order>> orderListSupplier) {

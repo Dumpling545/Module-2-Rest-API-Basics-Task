@@ -63,11 +63,10 @@ public class DatabaseHelper {
 	                                              int offset, int limit, boolean clearContext) {
 		List<Q> result = fetch(queryClass, rootClass, entityManager, queryConfigurator,entityGraphProducer,
 				(tq) -> tq.setFirstResult(offset).setMaxResults(limit + 1).getResultList(), false);
-		PagedResult<Q> pagedResult = PagedResult.<Q>builder()
+		return PagedResult.<Q>builder()
 				.first(offset == 0)
 				.last(result.size() <= limit)
 				.page(result.subList(0, Math.min(limit, result.size()))).build();
-		return pagedResult;
 	}
 
 	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,

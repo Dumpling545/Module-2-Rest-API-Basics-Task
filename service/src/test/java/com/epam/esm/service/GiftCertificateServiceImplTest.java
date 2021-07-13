@@ -25,7 +25,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
-import org.springframework.dao.DataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
@@ -219,14 +218,13 @@ public class GiftCertificateServiceImplTest {
 		Mockito.when(gcRepository.createCertificate(Mockito.any())).then(answer -> {
 			GiftCertificate newCert = answer.getArgument(0);
 			Random random = new Random();
-			GiftCertificate cert = GiftCertificate.builder()
+			return GiftCertificate.builder()
 					.id(random.nextInt())
 					.name(newCert.getName())
 					.description(newCert.getDescription())
 					.duration(newCert.getDuration())
 					.price(newCert.getPrice())
 					.tags(newCert.getTags()).build();
-			return cert;
 		});
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 				gcRepository, giftCertificateConverter, tagConverter, filterConverter, pagedResultConverter);

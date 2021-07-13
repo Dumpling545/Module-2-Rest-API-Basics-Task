@@ -69,8 +69,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 				existingTagDTOs.stream().map(tagConverter::convert).collect(Collectors.toSet());
 		//convert new tag names to tags
 		Set<Tag> newTags = newTagNames.stream().map(tn -> Tag.builder().name(tn).build()).collect(Collectors.toSet());
-		Set<Tag> tags = Stream.concat(existingTags.stream(), newTags.stream()).collect(Collectors.toSet());
-		return tags;
+		return Stream.concat(existingTags.stream(), newTags.stream()).collect(Collectors.toSet());
 	}
 
 	@Transactional
@@ -84,21 +83,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		GiftCertificateOutputDTO outputDTO = giftCertificateConverter.convert(output);
-		return outputDTO;
+		return giftCertificateConverter.convert(output);
 	}
 
 	@Override
 	public GiftCertificateOutputDTO getCertificate(int id) {
-		Optional<GiftCertificate> optionalCert = Optional.empty();
+		Optional<GiftCertificate> optionalCert;
 		try {
 			optionalCert = giftCertificateRepository.getCertificateById(id);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		GiftCertificateOutputDTO dto = optionalCert.map(giftCertificateConverter::convert)
+		return optionalCert.map(giftCertificateConverter::convert)
 				.orElseThrow(() -> createNotFoundException(id));
-		return dto;
 	}
 
 

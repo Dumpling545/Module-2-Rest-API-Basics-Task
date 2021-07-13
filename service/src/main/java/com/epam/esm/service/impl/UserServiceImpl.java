@@ -30,18 +30,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDTO getUser(int id) {
-		Optional<User> userOptional = Optional.empty();
+		Optional<User> userOptional;
 		try {
 			userOptional = userRepository.getUserById(id);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		UserDTO userDTO = userOptional.map(userConverter::convert).orElseThrow(() -> {
+		return userOptional.map(userConverter::convert).orElseThrow(() -> {
 			String identifier = "id=" + id;
 			String message = String.format(notFoundExceptionTemplate, identifier);
 			return new InvalidUserException(message, InvalidUserException.Reason.NOT_FOUND, id);
 		});
-		return userDTO;
 	}
 
 	@Override

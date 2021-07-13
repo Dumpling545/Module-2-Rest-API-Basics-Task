@@ -53,18 +53,17 @@ public class TagServiceImpl implements TagService {
 	}
 
 	private TagDTO getSingleTag(Supplier<Optional<Tag>> tagOptionalSupplier, Supplier<String> tagDescriptionSupplier) {
-		Optional<Tag> tagOptional = Optional.empty();
+		Optional<Tag> tagOptional;
 		try {
 			tagOptional = tagOptionalSupplier.get();
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		TagDTO tagDTO = tagOptional.map(tagConverter::convert).orElseThrow(() -> {
+		return tagOptional.map(tagConverter::convert).orElseThrow(() -> {
 			String identifier = tagDescriptionSupplier.get();
 			String message = String.format(notFoundExceptionTemplate, identifier);
 			return new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, identifier);
 		});
-		return tagDTO;
 	}
 
 	@Override
@@ -120,7 +119,6 @@ public class TagServiceImpl implements TagService {
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		Set<TagDTO> dtoSet = tagList.stream().map(tagConverter::convert).collect(Collectors.toSet());
-		return dtoSet;
+		return tagList.stream().map(tagConverter::convert).collect(Collectors.toSet());
 	}
 }

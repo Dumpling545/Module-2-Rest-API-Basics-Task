@@ -29,9 +29,8 @@ public class ExceptionHelper {
 	                                                int postfix) {
 		int errorCode = getErrorCode(status, postfix);
 		Error error = new Error(errorCode, messages);
-		ResponseEntity<Object> responseEntity = ResponseEntity.status(status).headers(headers)
+		return ResponseEntity.status(status).headers(headers)
 				.contentType(MediaType.APPLICATION_JSON).body(error);
-		return responseEntity;
 	}
 
 	public ResponseEntity<Object> handle(HttpStatus status, HttpHeaders headers, String messageTemplate, int postfix,
@@ -39,9 +38,8 @@ public class ExceptionHelper {
 		int errorCode = getErrorCode(status, postfix);
 		String message = String.format(messageTemplate, args);
 		Error error = new Error(errorCode, Collections.singletonList(message));
-		ResponseEntity<Object> responseEntity = ResponseEntity.status(status).headers(headers)
+		return ResponseEntity.status(status).headers(headers)
 				.contentType(MediaType.APPLICATION_JSON).body(error);
-		return responseEntity;
 	}
 
 	public ResponseEntity<Object> handle(HttpStatus status, String messageTemplate, int postfix, Object... args) {

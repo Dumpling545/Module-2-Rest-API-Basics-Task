@@ -63,7 +63,6 @@ public class OrderController {
 		HttpHeaders headers = new HttpHeaders();
 		URI locationUri = ucb.path("/orders/").path(String.valueOf(dto.getId())).build().toUri();
 		headers.setLocation(locationUri);
-		ResponseEntity<Object> entity = new ResponseEntity<Object>(headers, HttpStatus.CREATED);
-		return entity;
+		return new ResponseEntity<Object>(headers, HttpStatus.CREATED);
 	}
 }
