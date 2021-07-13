@@ -1,7 +1,7 @@
 package com.epam.esm.service.converter;
 
-import com.epam.esm.model.dto.FilterDTO;
-import com.epam.esm.model.entity.Filter;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
+import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.SortOption;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import org.mapstruct.Mapper;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
  *  @see <a href="https://mapstruct.org/">MapStruct library</a>
  */
 @Mapper(componentModel="spring")
-public abstract class FilterConverter {
+public abstract class GiftCertificateSearchFilterConverter {
 
 	private static final String DELIMITER = " ";
 	private static final int REQUIRED_SORT_BY_NUMBER_OF_TOKENS = 2;
@@ -29,7 +29,7 @@ public abstract class FilterConverter {
 	private String invalidNumberOfTokensTemplate;
 
 	@Mapping(target = "sortBy", source = "dto.sortBy")
-	public abstract Filter convert(FilterDTO dto);
+	public abstract GiftCertificateSearchFilter convert(GiftCertificateSearchFilterDTO dto);
 
 	public SortOption convert(String sortBy){
 		SortOption sortOption = null;

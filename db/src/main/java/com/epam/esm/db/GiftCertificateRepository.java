@@ -1,6 +1,6 @@
 package com.epam.esm.db;
 
-import com.epam.esm.model.entity.Filter;
+import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.PagedResult;
 
@@ -31,13 +31,13 @@ public interface GiftCertificateRepository {
 
 	/**
 	 * 	Retrieves all certificates filtered by provided filter object
-	 * @param filter
+	 * @param giftCertificateSearchFilter
 	 *      filter object used for filtering
 	 * @param offset how many elements to skip
 	 * @param limit how many elements to retrieve
 	 * @return filtered and paged list of certificates
 	 */
-	PagedResult<GiftCertificate> getCertificatesByFilter(Filter filter, int offset, int limit);
+	PagedResult<GiftCertificate> getCertificatesByFilter(GiftCertificateSearchFilter giftCertificateSearchFilter, int offset, int limit);
 
 	/**
 	 * Updates certificate with given {@link GiftCertificate#getId()} value

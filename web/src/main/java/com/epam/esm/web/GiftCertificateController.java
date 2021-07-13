@@ -1,6 +1,6 @@
 package com.epam.esm.web;
 
-import com.epam.esm.model.dto.FilterDTO;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
@@ -57,7 +57,7 @@ public class GiftCertificateController {
 			                                                            Integer pageNumber,
 	                                                            @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
 			                                                            Integer pageSize) {
-		FilterDTO filterDTO = FilterDTO.builder()
+		GiftCertificateSearchFilterDTO giftCertificateSearchFilterDTO = GiftCertificateSearchFilterDTO.builder()
 				.namePart(namePart)
 				.descriptionPart(descriptionPart)
 				.tagNames(tagNames)
@@ -66,7 +66,8 @@ public class GiftCertificateController {
 				.pageNumber(pageNumber)
 				.pageSize(pageSize)
 				.build();
-		PagedResultDTO<GiftCertificateOutputDTO> pagedResultDTO = certService.getCertificates(filterDTO, pageDTO);
+		PagedResultDTO<GiftCertificateOutputDTO> pagedResultDTO = certService.getCertificates(
+				giftCertificateSearchFilterDTO, pageDTO);
 		CollectionModel<EntityModel<GiftCertificateOutputDTO>> model =
 				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
 						(c, p) -> c.filteredCertificates(namePart, descriptionPart, tagNames, sortOption, p, pageSize));

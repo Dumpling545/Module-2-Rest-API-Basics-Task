@@ -1,7 +1,7 @@
 package com.epam.esm.service.converter;
 
-import com.epam.esm.model.dto.FilterDTO;
-import com.epam.esm.model.entity.Filter;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
+import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.SortOption;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import org.junit.jupiter.api.TestInstance;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
-public class FilterConverterTest {
+public class GiftCertificateSearchGiftCertificateSearchFilterConverterTest {
 	private static final Set<String> TAG_NAMES = Set.of("tag1", "tag2");
 	private static final String NAME_PART = "part1";
 	private static final String DESC_PART = "part2";
@@ -35,27 +35,28 @@ public class FilterConverterTest {
 	private static final String INVALID_NUMBER_OF_TOKENS_TEMPLATE = "invalidNumberOfTokensTemplate";
 	private static final String INVALID_DIRECTION_TOKEN_TEMPLATE = "invalidDirectionTokenTemplate";
 	private static final String INVALID_FIELD_TOKEN_TEMPLATE = "invalidFieldTokenTemplate";
-	private static FilterConverter filterConverter = Mappers.getMapper(FilterConverter.class);
+	private static GiftCertificateSearchFilterConverter
+			giftCertificateSearchFilterConverter = Mappers.getMapper(GiftCertificateSearchFilterConverter.class);
 
-	private Stream<FilterDTO> correctTestSources() {
-		return Stream.of(FilterDTO.builder().namePart(NAME_PART).descriptionPart(DESC_PART).tagNames(TAG_NAMES)
+	private Stream<GiftCertificateSearchFilterDTO> correctTestSources() {
+		return Stream.of(GiftCertificateSearchFilterDTO.builder().namePart(NAME_PART).descriptionPart(DESC_PART).tagNames(TAG_NAMES)
 						.sortBy(CORRECT_SORT_OPTION_STR).build(),
-				FilterDTO.builder().namePart(NAME_PART).build(),
-				FilterDTO.builder().descriptionPart(DESC_PART).build(),
-				FilterDTO.builder().tagNames(TAG_NAMES).build(),
-				FilterDTO.builder().sortBy(CORRECT_SORT_OPTION_STR).build());
+				GiftCertificateSearchFilterDTO.builder().namePart(NAME_PART).build(),
+				GiftCertificateSearchFilterDTO.builder().descriptionPart(DESC_PART).build(),
+				GiftCertificateSearchFilterDTO.builder().tagNames(TAG_NAMES).build(),
+				GiftCertificateSearchFilterDTO.builder().sortBy(CORRECT_SORT_OPTION_STR).build());
 	}
 
 	@ParameterizedTest
 	@MethodSource("correctTestSources")
-	public void convertShouldReturnFilterWhenPassedCorrectFilterDto(FilterDTO dto) {
+	public void convertShouldReturnFilterWhenPassedCorrectFilterDto(GiftCertificateSearchFilterDTO dto) {
 		assertDoesNotThrow(() -> {
-			Filter filter = filterConverter.convert(dto);
-			assertEquals(dto.getNamePart(), filter.getNamePart());
-			assertEquals(dto.getDescriptionPart(), filter.getDescriptionPart());
-			assertEquals(dto.getTagNames(), filter.getTagNames());
+			GiftCertificateSearchFilter giftCertificateSearchFilter = giftCertificateSearchFilterConverter.convert(dto);
+			assertEquals(dto.getNamePart(), giftCertificateSearchFilter.getNamePart());
+			assertEquals(dto.getDescriptionPart(), giftCertificateSearchFilter.getDescriptionPart());
+			assertEquals(dto.getTagNames(), giftCertificateSearchFilter.getTagNames());
 			if (dto.getSortBy() != null) {
-				assertEquals(EXPECTED_SORT_OPTION, filter.getSortBy());
+				assertEquals(EXPECTED_SORT_OPTION, giftCertificateSearchFilter.getSortBy());
 			}
 		});
 	}
@@ -63,25 +64,25 @@ public class FilterConverterTest {
 	private Stream<Arguments> incorrectTestSources() {
 		Random random = new Random();
 		return Stream.of(
-				Arguments.of(FilterDTO.builder().sortBy(INVALID_SORT_NUMBER_OF_TOKENS_STR).build(),
+				Arguments.of(GiftCertificateSearchFilterDTO.builder().sortBy(INVALID_SORT_NUMBER_OF_TOKENS_STR).build(),
 						INVALID_NUMBER_OF_TOKENS_TEMPLATE,
 						TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()),
-				Arguments.of(FilterDTO.builder().sortBy(INVALID_SORT_DIRECTION_STR).build(),
+				Arguments.of(GiftCertificateSearchFilterDTO.builder().sortBy(INVALID_SORT_DIRECTION_STR).build(),
 						INVALID_DIRECTION_TOKEN_TEMPLATE,
 						TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()),
-				Arguments.of(FilterDTO.builder().sortBy(INVALID_SORT_FIELD_STR).build(),
+				Arguments.of(GiftCertificateSearchFilterDTO.builder().sortBy(INVALID_SORT_FIELD_STR).build(),
 						INVALID_FIELD_TOKEN_TEMPLATE,
 						TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()));
 	}
 
 	@ParameterizedTest
 	@MethodSource("incorrectTestSources")
-	public void convertShouldThrowExceptionWhenPassedFilterDtoWithInvalidSortOption(FilterDTO dto,
+	public void convertShouldThrowExceptionWhenPassedFilterDtoWithInvalidSortOption(GiftCertificateSearchFilterDTO dto,
 	                                                                                String fieldName,
 	                                                                                String fieldValue) {
-		ReflectionTestUtils.setField(filterConverter, fieldName, fieldValue, String.class);
+		ReflectionTestUtils.setField(giftCertificateSearchFilterConverter, fieldName, fieldValue, String.class);
 		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
-				() -> filterConverter.convert(dto));
+				() -> giftCertificateSearchFilterConverter.convert(dto));
 		assertEquals(InvalidCertificateException.Reason.INVALID_SORT_BY, ex.getReason());
 	}
 }

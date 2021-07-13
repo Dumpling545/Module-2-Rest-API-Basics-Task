@@ -11,7 +11,7 @@ import java.util.Set;
  */
 @Data
 @Builder
-public class Filter {
+public class GiftCertificateSearchFilter {
 	private String namePart;
 	private String descriptionPart;
 	private Set<String> tagNames;

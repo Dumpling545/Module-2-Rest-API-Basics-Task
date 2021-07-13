@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 
 import com.epam.esm.db.GiftCertificateRepository;
-import com.epam.esm.model.dto.FilterDTO;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
@@ -147,7 +147,8 @@ public class GiftCertificateServiceImplTest {
 							existingTag2.getName())).build();
 	private static final long EXISTING_TAGS_FROM_CERT_CREATE_DTO_WITH_TWO_EXISTING_AND_TWO_NEW_TAGS = 2;
 	private static final long NEW_TAGS_FROM_CERT_CREATE_DTO_WITH_TWO_EXISTING_AND_TWO_NEW_TAGS = 2;
-	private static final FilterDTO filterDTO = FilterDTO.builder().build();
+	private static final GiftCertificateSearchFilterDTO GIFT_CERTIFICATE_SEARCH_FILTER_DTO = GiftCertificateSearchFilterDTO
+			.builder().build();
 	private static final PagedResult<GiftCertificate> pagedResult = PagedResult.<GiftCertificate>builder()
 			.page(List.of(existingCert))
 			.first(false)

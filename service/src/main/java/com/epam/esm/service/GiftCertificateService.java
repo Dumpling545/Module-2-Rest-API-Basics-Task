@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.dto.FilterDTO;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
@@ -62,5 +62,5 @@ public interface GiftCertificateService {
 	 * 		paging info
 	 * @return list of filtered and paged certificate DTOs
 	 */
-	PagedResultDTO<GiftCertificateOutputDTO> getCertificates(@Valid FilterDTO filter, @Valid PageDTO page);
+	PagedResultDTO<GiftCertificateOutputDTO> getCertificates(@Valid GiftCertificateSearchFilterDTO filter, @Valid PageDTO page);
 }

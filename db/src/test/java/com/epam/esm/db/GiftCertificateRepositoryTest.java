@@ -1,7 +1,7 @@
 package com.epam.esm.db;
 
 import com.epam.esm.GiftCertificateSystemApplication;
-import com.epam.esm.model.entity.Filter;
+import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.SortOption;
 import com.epam.esm.model.entity.Tag;
@@ -78,12 +78,12 @@ public class GiftCertificateRepositoryTest {
 			.tags(Set.of(existingTag4, existingTag6, nonExistingTagToBeCreated2))
 			.build();
 	private static final int EXISTING_ID_3 = 3;
-	private static final Filter CONDITIONS_THAT_SOME_DATA_MEET = Filter.builder()
+	private static final GiftCertificateSearchFilter CONDITIONS_THAT_SOME_DATA_MEET = GiftCertificateSearchFilter.builder()
 			.namePart("ertif")
 			.descriptionPart("escriptio")
 			.tagNames(Set.of("tag8"))
 			.sortBy(new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC)).build();
-	private static final Filter CONDITIONS_THAT_NO_DATA_MEET = Filter.builder()
+	private static final GiftCertificateSearchFilter CONDITIONS_THAT_NO_DATA_MEET = GiftCertificateSearchFilter.builder()
 			.tagNames(Set.of("non existent")).build();
 	private static final int EXISTING_OFFSET = 0;
 	private static final int EXISTING_LIMIT = 10;
