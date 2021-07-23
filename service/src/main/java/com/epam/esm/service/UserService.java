@@ -3,12 +3,14 @@ package com.epam.esm.service;
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.UserDTO;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 
 /**
  * Interface of service for manipulating User DTO objects
  */
+@Validated
 public interface UserService {
     /**
      * Retrieves user object by given id
