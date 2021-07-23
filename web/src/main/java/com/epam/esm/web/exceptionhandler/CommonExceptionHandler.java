@@ -2,9 +2,12 @@ package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.web.GiftCertificateController;
+import com.epam.esm.web.OrderController;
 import com.epam.esm.web.TagController;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.epam.esm.web.UserController;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -32,37 +36,58 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
+/**
+ * Exception handler for common exceptions, will be invoked only if there's
+ * no matched exception handler methods in other handler classes
+ */
 @Order(LOWEST_PRECEDENCE)
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LoggerFactory.getLogger(CommonExceptionHandler.class);
 	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
 	@Value("${tag.error-info.postfix}")
 	private int tagPostfix;
+	@Value("${order.error-info.postfix}")
+	private int orderPostfix;
+	@Value("${user.error-info.postfix}")
+	private int userPostfix;
 	@Value("${common.error-info.postfix}")
 	private int commonPostfix;
-	private ExceptionHelper helper;
-	private MessageSource messageSource;
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
 
-	public CommonExceptionHandler(ExceptionHelper helper, MessageSource messageSource) {
-		this.helper = helper;
-		this.messageSource = messageSource;
+	private int resolvePostfix(Class controllerClass) {
+		int postfix = commonPostfix;
+		if (controllerClass.equals(TagController.class)) {
+			postfix = tagPostfix;
+		} else if (controllerClass.equals(GiftCertificateController.class)) {
+			postfix = certPostfix;
+		} else if (controllerClass.equals(OrderController.class)) {
+			postfix = orderPostfix;
+		} else if (controllerClass.equals(UserController.class)) {
+			postfix = userPostfix;
+		}
+		return postfix;
 	}
 
 	private int resolvePostfix(HandlerMethod handlerMethod) {
-		Class controller = handlerMethod.getMethod().getDeclaringClass();
-		int postfix = commonPostfix;
-		if (controller.equals(TagController.class)) {
-			postfix = tagPostfix;
-		} else if (controller.equals(GiftCertificateController.class)) {
-			postfix = certPostfix;
-		}
-		return postfix;
+		Class controllerClass = handlerMethod.getMethod().getDeclaringClass();
+		return resolvePostfix(controllerClass);
+	}
+
+	private int resolvePostfix(Method method) {
+		Class controllerClass = method.getDeclaringClass();
+		return resolvePostfix(controllerClass);
 	}
 
 	@ExceptionHandler(ServiceException.class)
@@ -71,6 +96,14 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 		logger.error("Handled in the ServiceException handler", ex);
 		String message = messageSource.getMessage("common.error-message.service", null, locale);
 		return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR, message, postfix);
+	}
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Object> handleException(ConstraintViolationException ex, HandlerMethod handlerMethod, Locale locale) {
+		logger.error("Handled in the ConstraintViolationException handler", ex);
+		List<String> messages = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
+		return helper.handleUnformatted(HttpStatus.BAD_REQUEST,
+				messages,
+				resolvePostfix(handlerMethod));
 	}
 
 
@@ -177,9 +210,8 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                              HttpHeaders headers, HttpStatus status,
 	                                                              WebRequest request) {
 		logger.error("Handled in the MethodArgumentNotValidException handler", ex);
-		String message = messageSource.getMessage("common.error-message.method-argument-not-valid",
-				null, request.getLocale());
-		return helper.handle(status, headers, message, commonPostfix);
+		List<String> messages = ex.getAllErrors().stream().map(ObjectError::getDefaultMessage).toList();
+		return helper.handleUnformatted(status, headers, messages, resolvePostfix(ex.getParameter().getMethod()));
 	}
 
 	@Override

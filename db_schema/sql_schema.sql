@@ -40,5 +40,35 @@ ALTER TABLE public.tag_gift_certificate
     REFERENCES public.gift_certificate (id)
     ON DELETE CASCADE
     ON UPDATE NO ACTION;
+    
+CREATE TABLE IF NOT EXISTS public.cert_user
+(
+    id bigserial NOT NULL,
+    user_name character varying(100) UNIQUE NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public.cert_order
+(
+    id bigserial NOT NULL,
+    user_id bigserial NOT NULL,
+    gift_certificate_id bigserial NOT NULL,
+    cost real NOT NULL,
+    purchase_date timestamp without time zone NOT NULL,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE public.cert_order
+    ADD FOREIGN KEY (user_id)
+    REFERENCES public.cert_user (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION;
+    
+ALTER TABLE public.cert_order
+    ADD FOREIGN KEY (gift_certificate_id)
+    REFERENCES public.gift_certificate (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION;
 
 END;
+

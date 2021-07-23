@@ -1,53 +1,50 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.db.TagRepository;
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
+import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.converter.Converter;
+import com.epam.esm.service.converter.PagedResultConverter;
+import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.ServiceException;
-import com.epam.esm.service.validator.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
-	private static final int DEFAULT_TAG_ID = -1;
-	private TagRepository tagRepository;
-	private Validator<TagDTO> tagValidator;
-	private Converter<TagDTO, Tag> tagDtoToTagConverter;
-	private Converter<Tag, TagDTO> tagToTagDtoConverter;
 	@Value("${tag.exception.already-exists}")
 	private String alreadyExistsExceptionTemplate;
 	@Value("${tag.exception.not-found}")
 	private String notFoundExceptionTemplate;
 
-	public TagServiceImpl(TagRepository tagRepository, Validator<TagDTO> tagValidator,
-	                      Converter<TagDTO, Tag> tagDtoToTagConverter, Converter<Tag, TagDTO> tagToTagDtoConverter) {
-		this.tagRepository = tagRepository;
-		this.tagValidator = tagValidator;
-		this.tagDtoToTagConverter = tagDtoToTagConverter;
-		this.tagToTagDtoConverter = tagToTagDtoConverter;
-	}
+	private final TagRepository tagRepository;
+	private final TagConverter tagConverter;
+	private final PagedResultConverter pagedResultConverter;
 
 	@Override
 	public TagDTO createTag(TagDTO tagDto) {
-		tagValidator.validate(tagDto);
-		Tag tag = tagDtoToTagConverter.convert(tagDto);
+		Tag tag = tagConverter.convert(tagDto);
+		tag.setId(null);
 		try {
 			Tag newTag = tagRepository.createTag(tag);
-			return tagToTagDtoConverter.convert(newTag);
-		} catch (DuplicateKeyException ex) {
+			return tagConverter.convert(newTag);
+		} catch (DataIntegrityViolationException ex) {
 			String message = String.format(alreadyExistsExceptionTemplate, tagDto.getName());
 			throw new InvalidTagException(message, ex, InvalidTagException.Reason.ALREADY_EXISTS, tagDto.getName());
 		} catch (DataAccessException ex) {
@@ -55,20 +52,34 @@ public class TagServiceImpl implements TagService {
 		}
 	}
 
-	@Override
-	public TagDTO getTag(int id) {
-		Optional<Tag> tagOptional = Optional.empty();
+	private TagDTO getSingleTag(Supplier<Optional<Tag>> tagOptionalSupplier, Supplier<String> tagDescriptionSupplier) {
+		Optional<Tag> tagOptional;
 		try {
-			tagOptional = tagRepository.getTagById(id);
+			tagOptional = tagOptionalSupplier.get();
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		TagDTO tagDTO = tagOptional.map(tagToTagDtoConverter::convert).orElseThrow(() -> {
-			String identifier = "id=" + id;
+		return tagOptional.map(tagConverter::convert).orElseThrow(() -> {
+			String identifier = tagDescriptionSupplier.get();
 			String message = String.format(notFoundExceptionTemplate, identifier);
-			return new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, id);
+			return new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, identifier);
 		});
-		return tagDTO;
+	}
+
+	@Override
+	public TagDTO getTag(int id) {
+		return getSingleTag(() -> tagRepository.getTagById(id), () -> "id=" + id);
+	}
+
+	@Override
+	public TagDTO getTag(String tagName) {
+		return getSingleTag(() -> tagRepository.getTagByName(tagName), () -> "name=" + tagName);
+	}
+
+	@Override
+	public TagDTO getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId) {
+		return getSingleTag(() -> tagRepository.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(userId),
+				() -> "userId=" + userId);
 	}
 
 	@Override
@@ -82,20 +93,19 @@ public class TagServiceImpl implements TagService {
 		if (!deleted) {
 			String identifier = "id=" + id;
 			String message = String.format(notFoundExceptionTemplate, identifier);
-			throw new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, id);
+			throw new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, identifier);
 		}
 	}
 
 	@Override
-	public List<TagDTO> getAllTags() {
-		List<Tag> tagList = Collections.EMPTY_LIST;
+	public PagedResultDTO<TagDTO> getAllTags(PageDTO pageDTO) {
+		PagedResult<Tag> pagedResult;
 		try {
-			tagList = tagRepository.getAllTags();
+			pagedResult = tagRepository.getAllTags(pageDTO.getOffset(), pageDTO.getPageSize());
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		List<TagDTO> dtoList = tagList.stream().map(tagToTagDtoConverter::convert).toList();
-		return dtoList;
+		return pagedResultConverter.convertToTagPage(pagedResult);
 	}
 
 	@Override
@@ -103,26 +113,12 @@ public class TagServiceImpl implements TagService {
 		if (tagNames.size() == 0) {
 			return Collections.EMPTY_SET;
 		}
-		tagNames.forEach(tn -> tagValidator.validate(new TagDTO(DEFAULT_TAG_ID, tn)));
-		List<Tag> tagList = Collections.EMPTY_LIST;
+		List<Tag> tagList;
 		try {
 			tagList = tagRepository.getTagsFromNameSet(tagNames);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		Set<TagDTO> dtoSet = tagList.stream().map(tagToTagDtoConverter::convert).collect(Collectors.toSet());
-		return dtoSet;
-	}
-
-	@Override
-	public Set<TagDTO> getTagsByCertificate(int certificateId) {
-		List<Tag> tagList = Collections.EMPTY_LIST;
-		try {
-			tagList = tagRepository.getTagsByCertificate(certificateId);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		Set<TagDTO> dtoSet = tagList.stream().map(tagToTagDtoConverter::convert).collect(Collectors.toSet());
-		return dtoSet;
+		return tagList.stream().map(tagConverter::convert).collect(Collectors.toSet());
 	}
 }

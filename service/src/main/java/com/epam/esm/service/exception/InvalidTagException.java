@@ -11,23 +11,16 @@ public class InvalidTagException extends ServiceException {
 	@Getter
 	private final Reason reason;
 	@Getter
-	private int tagId;
-	@Getter
-	private String tagName;
+	private String tagDescription;
 
 	public InvalidTagException(String message, Reason reason) {
 		super(message);
 		this.reason = reason;
 	}
 
-	public InvalidTagException(String message, Reason reason, int id) {
+	public InvalidTagException(String message, Reason reason, String tagDescription) {
 		this(message, reason);
-		this.tagId = id;
-	}
-
-	public InvalidTagException(String message, Reason reason, String tagName) {
-		this(message, reason);
-		this.tagName = tagName;
+		this.tagDescription = tagDescription;
 	}
 
 	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason) {
@@ -35,17 +28,12 @@ public class InvalidTagException extends ServiceException {
 		this.reason = reason;
 	}
 
-	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason, int tagId) {
+	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason, String tagDescription) {
 		this(message, thr, reason);
-		this.tagId = tagId;
-	}
-
-	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason, String tagName) {
-		this(message, thr, reason);
-		this.tagName = tagName;
+		this.tagDescription = tagDescription;
 	}
 
 	public enum Reason {
-		INVALID_NAME, NOT_FOUND, ALREADY_EXISTS
+		NOT_FOUND, ALREADY_EXISTS
 	}
 }

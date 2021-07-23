@@ -1,9 +1,9 @@
 package com.epam.esm.db;
 
-import com.epam.esm.model.entity.Filter;
+import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.PagedResult;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,13 +30,14 @@ public interface GiftCertificateRepository {
 	Optional<GiftCertificate> getCertificateById(int id);
 
 	/**
-	 * Retrieves all certificates filtered by provided filter object
-	 *
-	 * @param filter
-	 * 		filter object used for filtering
-	 * @return filtered list of certificates
+	 * 	Retrieves all certificates filtered by provided filter object
+	 * @param giftCertificateSearchFilter
+	 *      filter object used for filtering
+	 * @param offset how many elements to skip
+	 * @param limit how many elements to retrieve
+	 * @return filtered and paged list of certificates
 	 */
-	List<GiftCertificate> getCertificatesByFilter(Filter filter);
+	PagedResult<GiftCertificate> getCertificatesByFilter(GiftCertificateSearchFilter giftCertificateSearchFilter, int offset, int limit);
 
 	/**
 	 * Updates certificate with given {@link GiftCertificate#getId()} value
@@ -44,10 +45,8 @@ public interface GiftCertificateRepository {
 	 * @param certificate
 	 * 		object that used as filter through {@link GiftCertificate#getId()} property and as update source through other
 	 * 		properties (dates are ignored).
-	 * @return true if certificate with given id successfully updated; false if certificate with such id does not exist
-	 * in database by the time of method invocation
 	 */
-	boolean updateCertificate(GiftCertificate certificate);
+	void updateCertificate(GiftCertificate certificate);
 
 	/**
 	 * Deletes certificate with given id from database
@@ -58,24 +57,4 @@ public interface GiftCertificateRepository {
 	 * in database by the time of method invocation
 	 */
 	boolean deleteCertificate(int id);
-
-	/**
-	 * Adds provided tag to provided certificate
-	 *
-	 * @param certificateId
-	 * 		id of provided certificate
-	 * @param tagId
-	 * 		id of provided tag
-	 */
-	void addTagToCertificate(int certificateId, int tagId);
-
-	/**
-	 * Removes provided tag from provided certificate
-	 *
-	 * @param certificateId
-	 * 		id of provided certificate
-	 * @param tagId
-	 * 		id of provided tag
-	 */
-	void removeTagFromCertificate(int certificateId, int tagId);
 }

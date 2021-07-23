@@ -7,6 +7,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Helper class aimed to reduce boilerplate code while constructing {@link Error} objects
+ */
 @Component
 public class ExceptionHelper {
 
@@ -15,14 +21,25 @@ public class ExceptionHelper {
 		return status.value() * 100 + postfix;
 	}
 
+	public ResponseEntity<Object> handleUnformatted(HttpStatus status, List<String> messages, int postfix) {
+		return handleUnformatted(status, new HttpHeaders(), messages, postfix);
+	}
+
+	public ResponseEntity<Object> handleUnformatted(HttpStatus status, HttpHeaders headers, List<String> messages,
+	                                                int postfix) {
+		int errorCode = getErrorCode(status, postfix);
+		Error error = new Error(errorCode, messages);
+		return ResponseEntity.status(status).headers(headers)
+				.contentType(MediaType.APPLICATION_JSON).body(error);
+	}
+
 	public ResponseEntity<Object> handle(HttpStatus status, HttpHeaders headers, String messageTemplate, int postfix,
 	                                     Object... args) {
 		int errorCode = getErrorCode(status, postfix);
 		String message = String.format(messageTemplate, args);
-		Error error = new Error(errorCode, message);
-		ResponseEntity<Object> responseEntity = ResponseEntity.status(status)
+		Error error = new Error(errorCode, Collections.singletonList(message));
+		return ResponseEntity.status(status).headers(headers)
 				.contentType(MediaType.APPLICATION_JSON).body(error);
-		return responseEntity;
 	}
 
 	public ResponseEntity<Object> handle(HttpStatus status, String messageTemplate, int postfix, Object... args) {

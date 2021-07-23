@@ -1,13 +1,18 @@
 package com.epam.esm.service;
 
+import com.epam.esm.model.dto.PageDTO;
+import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
 /**
  * Interface of service for manipulating Tag DTO objects
  */
+@Validated
 public interface TagService {
 	/**
 	 * Creates tag object
@@ -28,6 +33,15 @@ public interface TagService {
 	TagDTO getTag(int id);
 
 	/**
+	 * Retrieves tag object by given name
+	 *
+	 * @param tagName
+	 * 		if of tag to be retrieved
+	 * @return tag matching provided name
+	 */
+	TagDTO getTag(String tagName);
+
+	/**
 	 * Deletes tag object from database
 	 *
 	 * @param id
@@ -35,10 +49,11 @@ public interface TagService {
 	 */
 	void deleteTag(int id);
 
-	/**
-	 * Retrieves all existing tags from database
+	/** Retrieves all existing tags from database
+	 * @param page paging info
+	 * @return paged list of tags
 	 */
-	List<TagDTO> getAllTags();
+	PagedResultDTO<TagDTO> getAllTags(@Valid PageDTO page);
 
 	/**
 	 * Retrieves all tags which names included in provided set from database
@@ -50,11 +65,15 @@ public interface TagService {
 	Set<TagDTO> getTagsFromNameSet(Set<String> tagNames);
 
 	/**
-	 * Retrieves all tags associated with provided gift certificate
+	 * Retrieves tag with maximal number of associations among all certificates purchased by specified user. If there
+	 * are more than 1 user matching, tag with maximal aggregate cost of all orders is chosen.
+	 * <br>
+	 * NOTE: Associations with certificates counted on per-order basis (1 order - 1 association for each tag associated
+	 * with purchased certificate).
 	 *
-	 * @param certificateId
-	 * 		id of gift certificate
-	 * @return {@link List} with all Tag objects associated with given gift certificate id from database
+	 * @param userId
+	 * 		-- id of user
+	 * @return  corresponding tag object
 	 */
-	Set<TagDTO> getTagsByCertificate(int certificateId);
+	TagDTO getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId);
 }

@@ -1,8 +1,9 @@
 package com.epam.esm.web.exceptionhandler;
 
 import com.epam.esm.service.exception.InvalidCertificateException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
@@ -14,42 +15,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-
+/**
+ * Exception handler for exceptions associated with gift certificates
+ */
 @Order(HIGHEST_PRECEDENCE)
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GiftCertificateExceptionHandler {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LoggerFactory.getLogger(GiftCertificateExceptionHandler.class);
 	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
-	private ExceptionHelper helper;
-	private MessageSource messageSource;
-
-	public GiftCertificateExceptionHandler(ExceptionHelper helper, MessageSource messageSource) {
-		this.helper = helper;
-		this.messageSource = messageSource;
-	}
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
 
 	@ExceptionHandler(InvalidCertificateException.class)
 	public ResponseEntity<Object> handleException(InvalidCertificateException ex, Locale locale) {
 		HttpStatus status;
 		String message;
 		switch (ex.getReason()) {
-			case INVALID_NAME:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-name", null, locale);
-				break;
-			case INVALID_DESCRIPTION:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-desc", null, locale);
-				break;
-			case INVALID_DURATION:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-duration", null, locale);
-				break;
-			case INVALID_PRICE:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-price", null, locale);
-				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
 				message = messageSource.getMessage("cert.error-message.not-found",
