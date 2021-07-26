@@ -17,14 +17,12 @@ public class UserPermissionEvaluator implements PermissionEvaluator {
 	@Value("${oauth2.permissions.create}")
 	private String createPermission;
 
+	@Value("${oauth2.claims.user-id}")
+	private String userIdClaim;
+
 	private Integer extractUserId(Authentication authentication){
 		Jwt jwtToken = (Jwt) authentication.getPrincipal();
-		String sub = jwtToken.getSubject();
-		if(sub == null || sub.isEmpty()){
-			return null;
-		} else {
-			return Integer.parseInt(sub);
-		}
+		return jwtToken.getClaim(userIdClaim);
 	}
 	private boolean isAdmin(Authentication authentication){
 		return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(adminScope));

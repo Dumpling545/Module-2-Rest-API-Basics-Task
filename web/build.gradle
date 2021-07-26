@@ -1,7 +1,11 @@
 dependencies {
+    api 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.security:spring-security-jwt:' + springSecurityJWTVersion
+    api 'org.springframework.security.oauth:spring-security-oauth2:'+ springSecurityOAuth2Version
     api project(':service')
+
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation project(':model')
 }
 bootJar {

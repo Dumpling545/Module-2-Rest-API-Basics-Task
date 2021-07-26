@@ -62,7 +62,7 @@ public class OrderController {
     }
 
 	@PostMapping
-	@PreAuthorize("hasPermission(#orderDTO, ${oauth2.permissions.create})")
+	@PreAuthorize("hasPermission(#orderDTO, '${oauth2.permissions.create}')")
 	public ResponseEntity createOrder(@AuthenticationPrincipal OAuth2AuthenticatedPrincipal principal,
 	                                  @RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
 		if(orderDTO.getUserId() == null){

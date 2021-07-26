@@ -4,17 +4,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
-public class OAuth2ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
+public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Value("${oauth2.resource-server.jwt.key-value}")
 	private String jwtKey;
@@ -45,4 +51,30 @@ public class OAuth2ResourceServerConfiguration extends WebSecurityConfigurerAdap
 				.anyRequest().hasAuthority(adminScope);
 		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 	}
+	//TODO remove in-memory
+	@Bean
+	public UserDetailsService uds() {
+		var uds = new InMemoryUserDetailsManager();
+
+		var u = User.withUsername("john")
+				.password("12345")
+				.authorities("read")
+				.build();
+
+		uds.createUser(u);
+
+		return uds;
+	}
+	//TODO remove in-memory
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return NoOpPasswordEncoder.getInstance();
+	}
+
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
 }
