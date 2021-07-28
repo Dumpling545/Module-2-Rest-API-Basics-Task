@@ -1,6 +1,8 @@
 package com.epam.esm.web.auth.resourceserver;
 
 import com.epam.esm.model.dto.OrderDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -11,43 +13,55 @@ import java.io.Serializable;
 
 @Component
 public class UserPermissionEvaluator implements PermissionEvaluator {
-	@Value("${oauth2.scopes.admin}")
-	private String adminScope;
+    //TODO delete log
+    private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
+    @Value("${oauth2.permissions.create}")
+    private String createPermission;
 
-	@Value("${oauth2.permissions.create}")
-	private String createPermission;
+    @Value("${oauth2.claims.user-id}")
+    private String userIdClaim;
 
-	@Value("${oauth2.claims.user-id}")
-	private String userIdClaim;
+    @Value("SCOPE_${oauth2.scopes.orders.write-self}")
+    private String writeSelfOrdersScope;
+    @Value("SCOPE_${oauth2.scopes.orders.write-others}")
+    private String writeOthersOrdersScope;
 
-	private Integer extractUserId(Authentication authentication){
-		Jwt jwtToken = (Jwt) authentication.getPrincipal();
-		return jwtToken.getClaim(userIdClaim);
-	}
-	private boolean isAdmin(Authentication authentication){
-		return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(adminScope));
-	}
-	@Override
-	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-		if(targetDomainObject instanceof OrderDTO orderDTO){
-			return hasPermissionOnOrder(authentication, orderDTO, permission);
-		} else {
-			return false;
-		}
-	}
+    private Integer extractUserId(Authentication authentication) {
+        Jwt jwtToken = (Jwt) authentication.getPrincipal();
+        return jwtToken.<Long>getClaim(userIdClaim).intValue();
+    }
 
-	private boolean hasPermissionOnOrder(Authentication authentication, OrderDTO orderDTO, Object permission) {
-		Integer userId = extractUserId(authentication);
-		boolean isOrderWithoutUserId = orderDTO.getUserId() == null;
-		if (createPermission.equals(permission)) {
-			return isAdmin(authentication) || isOrderWithoutUserId || orderDTO.getUserId().equals(userId);
-		}
-		return false;
-	}
+    @Override
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+        logger.info("entered hasPermission");
+        if (targetDomainObject instanceof OrderDTO orderDTO) {
+            return hasPermissionOnOrder(authentication, orderDTO, permission);
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType,
-	                             Object permission) {
-		return false;
-	}
+    private boolean hasPermissionOnOrder(Authentication authentication, OrderDTO orderDTO, Object permission) {
+        logger.info("entered hasPermissionOnOrder: {}", permission.toString());
+        if (createPermission.equals(permission)) {
+            return hasCreatePermissionOnOrder(authentication, orderDTO);
+        }
+        return false;
+    }
+
+    private boolean hasCreatePermissionOnOrder(Authentication authentication, OrderDTO orderDTO) {
+        logger.info("entered hasCreatePermissionOnOrder");
+        Integer userId = extractUserId(authentication);
+        if (orderDTO.getUserId() == null || orderDTO.getUserId().equals(userId)) {
+            return authentication.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(writeSelfOrdersScope));
+        } else {
+            return authentication.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(writeOthersOrdersScope));
+        }
+    }
+
+    @Override
+    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType,
+                                 Object permission) {
+        return false;
+    }
 }

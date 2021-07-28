@@ -25,12 +25,13 @@ import java.net.URI;
 
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
+import static com.epam.esm.web.ResourcePaths.USERS;
 
 /**
  * Controller handling requests to 'user' resource
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping(USERS)
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;

@@ -11,8 +11,10 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +29,13 @@ import java.net.URI;
 
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
+import static com.epam.esm.web.ResourcePaths.ORDERS;
 
 /**
  * Controller handling requests to 'order' resource
  */
 @RestController
-@RequestMapping("/orders")
+@RequestMapping(ORDERS)
 @RequiredArgsConstructor
 public class OrderController {
     @Value("${oauth2.claims.user-id}")
@@ -62,11 +65,13 @@ public class OrderController {
     }
 
 	@PostMapping
-	@PreAuthorize("hasPermission(#orderDTO, '${oauth2.permissions.create}')")
-	public ResponseEntity createOrder(@AuthenticationPrincipal OAuth2AuthenticatedPrincipal principal,
-	                                  @RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
+	@PreAuthorize("hasPermission(#orderDTO, 'CREATE')")
+	public ResponseEntity createOrder(Authentication authentication,
+									  @RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
 		if(orderDTO.getUserId() == null){
-			orderDTO.setUserId(Integer.parseInt(principal.getAttribute(userIdClaimName)));
+			Jwt jwtToken = (Jwt) authentication.getPrincipal();
+			int userId = jwtToken.<Long>getClaim(userIdClaimName).intValue();
+			orderDTO.setUserId(userId);
 		}
 		OrderDTO dto = orderService.createOrder(orderDTO);
 		URI locationUri = ucb.path("/orders/").path(String.valueOf(dto.getId())).build().toUri();

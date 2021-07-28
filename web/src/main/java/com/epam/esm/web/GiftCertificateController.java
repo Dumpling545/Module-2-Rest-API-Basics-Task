@@ -29,12 +29,13 @@ import java.util.Set;
 
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
+import static com.epam.esm.web.ResourcePaths.GIFT_CERTIFICATES;
 
 /**
  * Controller handling requests to 'gift certificate' resource
  */
 @RestController
-@RequestMapping("/gift-certificates")
+@RequestMapping(GIFT_CERTIFICATES)
 @RequiredArgsConstructor
 public class GiftCertificateController {
     private final GiftCertificateService certService;

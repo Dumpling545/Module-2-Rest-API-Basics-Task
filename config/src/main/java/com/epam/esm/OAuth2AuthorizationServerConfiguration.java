@@ -38,6 +38,8 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
     @Autowired
     private AuthorizationServerExceptionHandler authorizationServerExceptionHandler;
 
+    @Value("${oauth2.auth-server.all-scopes}")
+    private String[] allScopes;
     //TODO remove in-memory
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -45,7 +47,7 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
                 .withClient("client")
                 .secret("{noop}secret")
                 .authorizedGrantTypes("password", "implicit")
-                .scopes("USER", "ADMIN")
+                .scopes(allScopes)
                 .redirectUris("example.com");
     }
 

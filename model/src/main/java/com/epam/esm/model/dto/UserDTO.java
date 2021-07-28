@@ -20,6 +20,7 @@ public class UserDTO extends IdentifiableDTO {
 	private String userName;
 	@JsonIgnore
 	private transient String password;
+	//TODO expose role?
 	private Role role;
 
 	public enum Role{

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +25,13 @@ import java.net.URI;
 
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
 import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
+import static com.epam.esm.web.ResourcePaths.TAGS;
 
 /**
  * Controller handling requests to 'tag' resource
  */
 @RestController
-@RequestMapping("/tags")
+@RequestMapping(TAGS)
 @RequiredArgsConstructor
 public class TagController {
     private final TagService tagService;
