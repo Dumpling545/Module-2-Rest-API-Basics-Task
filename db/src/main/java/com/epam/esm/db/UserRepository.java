@@ -18,6 +18,15 @@ public interface UserRepository {
      */
     Optional<User> getUserById(int id);
 
+	/**
+	 * Retrieves user with given name
+	 * @param name
+	 *      name of user to be retrieved
+	 * @return {@link Optional} containing corresponding user object, if user with such id exists in database;
+	 * 	 empty {@link Optional} otherwise
+	 */
+	Optional<User> getUserByName(String name);
+
     /**
      * Retrieves all users in database
      *

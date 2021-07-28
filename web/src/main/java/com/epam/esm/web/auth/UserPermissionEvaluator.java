@@ -1,4 +1,4 @@
-package com.epam.esm.web.permissionevaluator;
+package com.epam.esm.web.auth;
 
 import com.epam.esm.model.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Value;

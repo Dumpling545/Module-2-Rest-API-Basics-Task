@@ -45,6 +45,8 @@ CREATE TABLE IF NOT EXISTS public.cert_user
 (
     id bigserial NOT NULL,
     user_name character varying(100) UNIQUE NOT NULL,
+    password character varying(200) NOT NULL,
+    role character varying(50) NOT NULL,
     PRIMARY KEY (id)
 );
 

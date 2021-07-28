@@ -6,6 +6,7 @@ import com.epam.esm.model.dto.UserDTO;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Interface of service for manipulating User DTO objects
@@ -19,6 +20,15 @@ public interface UserService {
      * @return user matching provided id
      */
     UserDTO getUser(int id);
+
+	/**
+	 * Retrieves user object by given name
+	 *
+	 * @param name
+	 * 		name of user to be retrieved
+	 * @return Optional with user matching provided name; empty Optional otherwise.
+	 */
+	Optional<UserDTO> getUser(String name);
 
     /**
      * Retrieves all existing users from database
