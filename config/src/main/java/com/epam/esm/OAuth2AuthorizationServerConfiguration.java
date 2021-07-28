@@ -1,7 +1,8 @@
 package com.epam.esm;
 
-import com.epam.esm.web.auth.AuthoritiesToScopeTranslationTokenEnhancer;
-import com.epam.esm.web.auth.IgnoreAuthoritiesUserAuthenticationConverter;
+import com.epam.esm.web.auth.authorizationserver.AuthoritiesToScopeTranslationTokenEnhancer;
+import com.epam.esm.web.auth.authorizationserver.IgnoreAuthoritiesUserAuthenticationConverter;
+import com.epam.esm.web.exceptionhandler.AuthorizationServerExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,8 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
     private AuthoritiesToScopeTranslationTokenEnhancer authoritiesToScopeTranslationTokenEnhancer;
     @Autowired
     private IgnoreAuthoritiesUserAuthenticationConverter ignoreAuthoritiesUserAuthenticationConverter;
+    @Autowired
+    private AuthorizationServerExceptionHandler authorizationServerExceptionHandler;
 
     //TODO remove in-memory
     @Override
@@ -51,7 +54,8 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
         endpoints
                 .authenticationManager(authenticationManager)
                 .tokenStore(tokenStore())
-                .tokenEnhancer(tokenEnhancerChain());
+                .tokenEnhancer(tokenEnhancerChain())
+                .exceptionTranslator(authorizationServerExceptionHandler);
     }
 
     @Bean

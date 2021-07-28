@@ -1,4 +1,4 @@
-package com.epam.esm.web.auth;
+package com.epam.esm.web.auth.authorizationserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,10 +7,8 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
-import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 

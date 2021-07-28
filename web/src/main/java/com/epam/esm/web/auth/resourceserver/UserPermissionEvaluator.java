@@ -1,4 +1,4 @@
-package com.epam.esm.web.auth;
+package com.epam.esm.web.auth.resourceserver;
 
 import com.epam.esm.model.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Value;

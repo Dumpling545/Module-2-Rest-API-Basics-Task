@@ -1,6 +1,6 @@
 package com.epam.esm;
 
-import com.epam.esm.web.auth.UserAuthenticationProvider;
+import com.epam.esm.web.auth.authorizationserver.UserAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

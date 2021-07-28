@@ -1,4 +1,4 @@
-package com.epam.esm.web.auth;
+package com.epam.esm.web.auth.authorizationserver;
 
 import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.model.entity.User;
@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -27,8 +28,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private BadCredentialsException createPasswordOrUserNameNotFoundException(){
-        return new BadCredentialsException(passwordOrUserNameNotFound);
+    private UnauthorizedUserException createPasswordOrUserNameNotFoundException(){
+        return new UnauthorizedUserException(passwordOrUserNameNotFound);
     }
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

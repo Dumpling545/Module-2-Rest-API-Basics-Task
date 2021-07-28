@@ -1,4 +1,4 @@
-package com.epam.esm.web.auth;
+package com.epam.esm.web.auth.authorizationserver;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,7 @@ public class IgnoreAuthoritiesUserAuthenticationConverter extends DefaultUserAut
     private String userIdClaim;
     @Override
     public Map<String, ?> convertUserAuthentication(Authentication authentication) {
-        return Map.of(USERNAME, authentication.getName(), userIdClaim, authentication.getDetails());
+        return Map.of(userIdClaim, authentication.getDetails());
     }
 }
 
