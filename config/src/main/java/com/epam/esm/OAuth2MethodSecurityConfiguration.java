@@ -12,14 +12,14 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class OAuth2MethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
-	@Autowired
-	private UserPermissionEvaluator userPermissionEvaluator;
+    @Autowired
+    private UserPermissionEvaluator userPermissionEvaluator;
 
-	@Override
-	protected MethodSecurityExpressionHandler createExpressionHandler() {
-		DefaultMethodSecurityExpressionHandler expressionHandler =
-				new DefaultMethodSecurityExpressionHandler();
-		expressionHandler.setPermissionEvaluator(userPermissionEvaluator);
-		return expressionHandler;
-	}
+    @Override
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler =
+                new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(userPermissionEvaluator);
+        return expressionHandler;
+    }
 }

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,12 +65,12 @@ public class TagController {
         return ResponseEntity.ok(model);
     }
 
-	@PostMapping
-	public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
-		TagDTO dto = tagService.createTag(tagDTO);
-		URI locationUri = ucb.path(TAGS + "/").path(String.valueOf(dto.getId())).build().toUri();
-		return ResponseEntity.created(locationUri).build();
-	}
+    @PostMapping
+    public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
+        TagDTO dto = tagService.createTag(tagDTO);
+        URI locationUri = ucb.path(TAGS + "/").path(String.valueOf(dto.getId())).build().toUri();
+        return ResponseEntity.created(locationUri).build();
+    }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteTag(@PathVariable("id") Integer id) {

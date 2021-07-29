@@ -2,8 +2,6 @@ package com.epam.esm;
 
 import com.epam.esm.web.ResourcePaths;
 import com.epam.esm.web.auth.authorizationserver.UserAuthenticationProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,27 +17,26 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.web.filter.AbstractRequestLoggingFilter;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
 public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final String ANY_GIFT_CERTIFICATES_PATH = ResourcePaths.GIFT_CERTIFICATES + "/**";
+    private static final String ANY_TAGS_PATH = ResourcePaths.TAGS + "/**";
+    private static final String ANY_ORDERS_PATH = ResourcePaths.ORDERS + "/**";
+    private static final String ANY_USERS_PATH = ResourcePaths.USERS + "/**";
     @Autowired
     private UserAuthenticationProvider userAuthenticationProvider;
     @Value("${oauth2.resource-server.jwt.key-value}")
     private String jwtKey;
     @Value("${oauth2.resource-server.jwt.associated-secret-key-algorithm}")
     private String secretKeyAlgorithm;
-
     @Value("${oauth2.roles.guest}")
     private String[] guestScopesWithoutPrefix;
-
     @Value("SCOPE_${oauth2.scopes.root.read}")
     private String readRootScope;
     @Value("SCOPE_${oauth2.scopes.root.authorize-endpoint}")
@@ -64,11 +61,6 @@ public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter
     private String writeSelfOrdersScope;
     @Value("SCOPE_${oauth2.scopes.orders.write-others}")
     private String writeOthersOrdersScope;
-
-    private static final String ANY_GIFT_CERTIFICATES_PATH = ResourcePaths.GIFT_CERTIFICATES + "/**";
-    private static final String ANY_TAGS_PATH = ResourcePaths.TAGS + "/**";
-    private static final String ANY_ORDERS_PATH = ResourcePaths.ORDERS + "/**";
-    private static final String ANY_USERS_PATH = ResourcePaths.USERS + "/**";
 
     @Bean
     public JwtDecoder jwtDecoder() {

@@ -1,7 +1,6 @@
 package com.epam.esm.db;
 
 import com.epam.esm.model.entity.PagedResult;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 
 import java.util.Optional;
@@ -19,14 +18,14 @@ public interface UserRepository {
      */
     Optional<User> getUserById(int id);
 
-	/**
-	 * Retrieves user with given name
-	 * @param name
-	 *      name of user to be retrieved
-	 * @return {@link Optional} containing corresponding user object, if user with such id exists in database;
-	 * 	 empty {@link Optional} otherwise
-	 */
-	Optional<User> getUserByName(String name);
+    /**
+     * Retrieves user with given name
+     *
+     * @param name name of user to be retrieved
+     * @return {@link Optional} containing corresponding user object, if user with such id exists in database;
+     * empty {@link Optional} otherwise
+     */
+    Optional<User> getUserByName(String name);
 
     /**
      * Retrieves all users in database

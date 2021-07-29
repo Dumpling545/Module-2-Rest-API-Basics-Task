@@ -12,8 +12,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,17 +62,17 @@ public class OrderController {
         return ResponseEntity.ok(model);
     }
 
-	@PostMapping
-	@PreAuthorize("hasPermission(#orderDTO, 'CREATE')")
-	public ResponseEntity createOrder(Authentication authentication,
-									  @RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
-		if(orderDTO.getUserId() == null){
-			Jwt jwtToken = (Jwt) authentication.getPrincipal();
-			int userId = jwtToken.<Long>getClaim(userIdClaimName).intValue();
-			orderDTO.setUserId(userId);
-		}
-		OrderDTO dto = orderService.createOrder(orderDTO);
-		URI locationUri = ucb.path("/orders/").path(String.valueOf(dto.getId())).build().toUri();
-		return ResponseEntity.created(locationUri).build();
-	}
+    @PostMapping
+    @PreAuthorize("hasPermission(#orderDTO, 'CREATE')")
+    public ResponseEntity createOrder(Authentication authentication,
+                                      @RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
+        if (orderDTO.getUserId() == null) {
+            Jwt jwtToken = (Jwt) authentication.getPrincipal();
+            int userId = jwtToken.<Long>getClaim(userIdClaimName).intValue();
+            orderDTO.setUserId(userId);
+        }
+        OrderDTO dto = orderService.createOrder(orderDTO);
+        URI locationUri = ucb.path("/orders/").path(String.valueOf(dto.getId())).build().toUri();
+        return ResponseEntity.created(locationUri).build();
+    }
 }

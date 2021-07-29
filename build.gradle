@@ -34,7 +34,7 @@ subprojects {
 
         implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
         implementation 'org.springframework.security:spring-security-jwt:' + springSecurityJWTVersion
-        implementation 'org.springframework.security.oauth:spring-security-oauth2:'+ springSecurityOAuth2Version
+        implementation 'org.springframework.security.oauth:spring-security-oauth2:' + springSecurityOAuth2Version
 
         compileOnly 'org.projectlombok:lombok'
         implementation 'org.springframework.boot:spring-boot-starter'

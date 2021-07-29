@@ -11,6 +11,7 @@ import java.util.Map;
 public class IgnoreAuthoritiesUserAuthenticationConverter extends DefaultUserAuthenticationConverter {
     @Value("${oauth2.claims.user-id}")
     private String userIdClaim;
+
     @Override
     public Map<String, ?> convertUserAuthentication(Authentication authentication) {
         return Map.of(userIdClaim, authentication.getDetails());

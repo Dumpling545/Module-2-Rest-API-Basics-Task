@@ -5,12 +5,10 @@ import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.model.entity.PagedResult;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.UserConverter;
-import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.InvalidUserException;
 import com.epam.esm.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -48,40 +46,40 @@ public class UserServiceImpl implements UserService {
 		});
 	}
 
-	@Override
-	public Optional<UserDTO> getUser(String name) {
-		try {
-			return userRepository.getUserByName(name).map(userConverter::convert);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-	}
+    @Override
+    public Optional<UserDTO> getUser(String name) {
+        try {
+            return userRepository.getUserByName(name).map(userConverter::convert);
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+    }
 
-	@Override
-	public PagedResultDTO<UserDTO> getAllUsers(PageDTO page) {
-		PagedResult<User> pagedResult;
-		try {
-			pagedResult = userRepository.getAllUsers(page.getOffset(), page.getPageSize());
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		return pagedResultConverter.convertToUserPage(pagedResult);
-	}
+    @Override
+    public PagedResultDTO<UserDTO> getAllUsers(PageDTO page) {
+        PagedResult<User> pagedResult;
+        try {
+            pagedResult = userRepository.getAllUsers(page.getOffset(), page.getPageSize());
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        return pagedResultConverter.convertToUserPage(pagedResult);
+    }
 
-	@Override
-	public UserDTO registerUser(UserDTO userDto) {
-		User user = userConverter.convert(userDto);
-		user.setId(null);
-		user.setRole(User.Role.USER);
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		try {
-			User newUser = userRepository.createUser(user);
-			return userConverter.convert(newUser);
-		} catch (DataIntegrityViolationException ex) {
-			String message = String.format(alreadyExistsExceptionTemplate, userDto.getUserName());
-			throw new InvalidUserException(message, ex, InvalidUserException.Reason.ALREADY_EXISTS, userDto.getUserName());
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-	}
+    @Override
+    public UserDTO registerUser(UserDTO userDto) {
+        User user = userConverter.convert(userDto);
+        user.setId(null);
+        user.setRole(User.Role.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        try {
+            User newUser = userRepository.createUser(user);
+            return userConverter.convert(newUser);
+        } catch (DataIntegrityViolationException ex) {
+            String message = String.format(alreadyExistsExceptionTemplate, userDto.getUserName());
+            throw new InvalidUserException(message, ex, InvalidUserException.Reason.ALREADY_EXISTS, userDto.getUserName());
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+    }
 }

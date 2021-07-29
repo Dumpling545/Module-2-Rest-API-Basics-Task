@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
-import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.dto.UserDTO;
 import org.springframework.validation.annotation.Validated;
 

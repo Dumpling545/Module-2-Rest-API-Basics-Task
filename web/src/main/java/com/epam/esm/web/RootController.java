@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.epam.esm.web.ResourcePaths.ROOT;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -20,11 +19,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping(ROOT)
 public class RootController {
-	private static final String TAGS = ResourcePaths.TAGS.substring(1);
-	private static final String GIFT_CERTIFICATES = ResourcePaths.GIFT_CERTIFICATES.substring(1);
-	private static final String ORDERS = ResourcePaths.ORDERS.substring(1);
-	private static final String USERS = ResourcePaths.USERS.substring(1);
-	private static final String MOST_WIDELY_USED = "most-widely-used";
+    private static final String TAGS = ResourcePaths.TAGS.substring(1);
+    private static final String GIFT_CERTIFICATES = ResourcePaths.GIFT_CERTIFICATES.substring(1);
+    private static final String ORDERS = ResourcePaths.ORDERS.substring(1);
+    private static final String USERS = ResourcePaths.USERS.substring(1);
+    private static final String MOST_WIDELY_USED = "most-widely-used";
 
     @GetMapping
     public ResponseEntity<RepresentationModel> getApi() {

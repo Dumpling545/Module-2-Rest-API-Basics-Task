@@ -1,13 +1,20 @@
 package com.epam.esm.model.validation;
 
 import lombok.RequiredArgsConstructor;
-import org.passay.*;
+import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.EnglishSequenceData;
+import org.passay.IllegalSequenceRule;
+import org.passay.LengthRule;
+import org.passay.MessageResolver;
+import org.passay.PasswordData;
+import org.passay.PasswordValidator;
+import org.passay.RuleResult;
+import org.passay.WhitespaceRule;
 import org.passay.spring.SpringMessageResolver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -17,6 +24,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
+    private final MessageSource messageSource;
     @Value("${user.password.min-length}")
     private int minLength;
     @Value("${user.password.max-length}")
@@ -35,7 +43,6 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
     private int maximalDigitSequenceLength;
     @Value("${user.password.max-keyboard-sequence-length}")
     private int maximalKeyboardSequenceLength;
-    private final MessageSource messageSource;
 
     @Override
     public void initialize(ValidPassword constraintAnnotation) {

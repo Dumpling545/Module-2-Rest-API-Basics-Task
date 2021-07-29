@@ -35,16 +35,15 @@ public class JpaUserRepository implements UserRepository {
         return Optional.ofNullable(user);
     }
 
-	@Override
-	@Transactional(readOnly = true)
-	public Optional<User> getUserByName(String name) {
-		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<User>> queryConfigurator = (cb, cq, r) -> {
-			cq.select(r).where(cb.equal(r.get(User_.userName), name));
-		};
-		Function<TypedQuery<User>, Optional<User>> resultProducer = tq -> tq.getResultStream().findFirst();
-		return fetchQueryHelper.fetch(User.class, entityManager, queryConfigurator, resultProducer);
-
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> getUserByName(String name) {
+        TriConsumer<CriteriaBuilder, CriteriaQuery, Root<User>> queryConfigurator = (cb, cq, r) -> {
+            cq.select(r).where(cb.equal(r.get(User_.userName), name));
+        };
+        Function<TypedQuery<User>, Optional<User>> resultProducer = tq -> tq.getResultStream().findFirst();
+        return fetchQueryHelper.fetch(User.class, entityManager, queryConfigurator, resultProducer);
+    }
 
     @Override
     @Transactional(readOnly = true)

@@ -1,8 +1,6 @@
 package com.epam.esm.web.auth.resourceserver;
 
 import com.epam.esm.model.dto.OrderDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
