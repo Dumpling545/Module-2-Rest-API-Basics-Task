@@ -15,21 +15,21 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class TagAssembler extends ExtendedRepresentationModelAssembler<TagDTO, TagController> {
 
-	private static final String MOST_WIDELY_USED_TAG_REL = "most-popular-tag-by-user";
+    private static final String MOST_WIDELY_USED_TAG_REL = "most-popular-tag-by-user";
 
-	public TagAssembler() {
-		super(TagController.class, TagDTO.class);
-	}
+    public TagAssembler() {
+        super(TagController.class, TagDTO.class);
+    }
 
-	@Override
-	protected List<Link> rootAdditionalLinks() {
-		return List.of(linkTo(methodOn(TagController.class).getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(null))
-				               .withRel(MOST_WIDELY_USED_TAG_REL));
-	}
+    @Override
+    protected List<Link> rootAdditionalLinks() {
+        return List.of(linkTo(methodOn(TagController.class).getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(null))
+                .withRel(MOST_WIDELY_USED_TAG_REL));
+    }
 
-	@Override
-	public EntityModel<TagDTO> createModel(TagDTO entity) {
-		return instantiateModel(entity)
-				.add(linkTo(methodOn(TagController.class).allTags(null, null)).withRel(IanaLinkRelations.COLLECTION));
-	}
+    @Override
+    public EntityModel<TagDTO> createModel(TagDTO entity) {
+        return instantiateModel(entity)
+                .add(linkTo(methodOn(TagController.class).allTags(null, null)).withRel(IanaLinkRelations.COLLECTION));
+    }
 }

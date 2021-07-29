@@ -20,11 +20,11 @@ import org.mapstruct.Mapper;
  */
 @Mapper(componentModel = "spring")
 public interface PagedResultConverter {
-	PagedResultDTO<GiftCertificateOutputDTO> convertToCertificatePage(PagedResult<GiftCertificate> pagedResult);
+    PagedResultDTO<GiftCertificateOutputDTO> convertToCertificatePage(PagedResult<GiftCertificate> pagedResult);
 
-	PagedResultDTO<TagDTO> convertToTagPage(PagedResult<Tag> pagedResult);
+    PagedResultDTO<TagDTO> convertToTagPage(PagedResult<Tag> pagedResult);
 
-	PagedResultDTO<OrderDTO> convertToOrderPage(PagedResult<Order> pagedResult);
+    PagedResultDTO<OrderDTO> convertToOrderPage(PagedResult<Order> pagedResult);
 
-	PagedResultDTO<UserDTO> convertToUserPage(PagedResult<User> pagedResult);
+    PagedResultDTO<UserDTO> convertToUserPage(PagedResult<User> pagedResult);
 }

@@ -23,28 +23,28 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class UserExceptionHandler {
-	private static final Logger logger = LoggerFactory.getLogger(UserExceptionHandler.class);
-	private final ExceptionHelper helper;
-	private final MessageSource messageSource;
-	@Value("${user.error-info.postfix}")
-	private int userPostfix;
+    private static final Logger logger = LoggerFactory.getLogger(UserExceptionHandler.class);
+    private final ExceptionHelper helper;
+    private final MessageSource messageSource;
+    @Value("${user.error-info.postfix}")
+    private int userPostfix;
 
-	@ExceptionHandler(InvalidUserException.class)
-	public ResponseEntity<Object> handleException(InvalidUserException ex, Locale locale) {
-		HttpStatus status;
-		String message;
-		switch (ex.getReason()) {
-			case NOT_FOUND:
-				status = HttpStatus.NOT_FOUND;
-				String identifier = "id=" + ex.getUserId();
-				message = messageSource.getMessage("user.error-message.not-found",
-				                                   new Object[]{identifier}, locale);
-				break;
-			default:
-				status = HttpStatus.INTERNAL_SERVER_ERROR;
-				message = messageSource.getMessage("user.error-message.common", null, locale);
-		}
-		logger.error("Handled in the InvalidUserException handler", ex);
-		return helper.handle(status, message, userPostfix);
-	}
+    @ExceptionHandler(InvalidUserException.class)
+    public ResponseEntity<Object> handleException(InvalidUserException ex, Locale locale) {
+        HttpStatus status;
+        String message;
+        switch (ex.getReason()) {
+            case NOT_FOUND:
+                status = HttpStatus.NOT_FOUND;
+                String identifier = "id=" + ex.getUserId();
+                message = messageSource.getMessage("user.error-message.not-found",
+                        new Object[]{identifier}, locale);
+                break;
+            default:
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+                message = messageSource.getMessage("user.error-message.common", null, locale);
+        }
+        logger.error("Handled in the InvalidUserException handler", ex);
+        return helper.handle(status, message, userPostfix);
+    }
 }

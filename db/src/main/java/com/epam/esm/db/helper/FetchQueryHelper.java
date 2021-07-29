@@ -18,11 +18,11 @@ import java.util.function.Function;
 @Component
 public class FetchQueryHelper {
 
-	public <Q, O> O fetch(Class<Q> queryClass, EntityManager entityManager,
-	                      TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
-	                      Function<TypedQuery<Q>, O> resultProducer) {
-		return fetch(queryClass, entityManager, queryConfigurator, null, resultProducer);
-	}
+    public <Q, O> O fetch(Class<Q> queryClass, EntityManager entityManager,
+                          TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
+                          Function<TypedQuery<Q>, O> resultProducer) {
+        return fetch(queryClass, entityManager, queryConfigurator, null, resultProducer);
+    }
 
 	public <Q, O> O fetch(Class<Q> queryClass, EntityManager entityManager,
 	                      TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
@@ -87,12 +87,12 @@ public class FetchQueryHelper {
 		                        offset, limit, clearContext);
 	}
 
-	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
-	                                              EntityManager entityManager,
-	                                              TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
-	                                              int offset, int limit) {
-		return fetchPagedResult(queryClass, rootClass, entityManager, queryConfigurator, offset, limit, true);
-	}
+    public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
+                                                  EntityManager entityManager,
+                                                  TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
+                                                  int offset, int limit) {
+        return fetchPagedResult(queryClass, rootClass, entityManager, queryConfigurator, offset, limit, true);
+    }
 
 
 	public <Q> PagedResult<Q> fetchPagedResult(Class<Q> rootClass,
@@ -104,10 +104,10 @@ public class FetchQueryHelper {
 		                        limit);
 	}
 
-	public <Q> PagedResult<Q> fetchPagedResult(Class<Q> queryClass,
-	                                           EntityManager entityManager,
-	                                           TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
-	                                           int offset, int limit) {
-		return fetchPagedResult(queryClass, queryClass, entityManager, queryConfigurator, offset, limit, true);
-	}
+    public <Q> PagedResult<Q> fetchPagedResult(Class<Q> queryClass,
+                                               EntityManager entityManager,
+                                               TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
+                                               int offset, int limit) {
+        return fetchPagedResult(queryClass, queryClass, entityManager, queryConfigurator, offset, limit, true);
+    }
 }

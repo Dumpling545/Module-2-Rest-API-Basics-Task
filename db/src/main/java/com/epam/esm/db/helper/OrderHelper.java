@@ -11,5 +11,5 @@ import javax.persistence.criteria.Root;
  * Helper interface aimed to construct {@link Order} from {@link SortOption}
  */
 public interface OrderHelper<R> {
-	Order createOrder(SortOption sortOption, CriteriaBuilder criteriaBuilder, Root<R> root);
+    Order createOrder(SortOption sortOption, CriteriaBuilder criteriaBuilder, Root<R> root);
 }

@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class GiftCertificateSystemApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(GiftCertificateSystemApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GiftCertificateSystemApplication.class, args);
+    }
 }

@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
  */
 @Mapper(componentModel = "spring")
 public interface TagConverter {
-	Tag convert(TagDTO dto);
+    Tag convert(TagDTO dto);
 
-	TagDTO convert(Tag tag);
+    TagDTO convert(Tag tag);
 }

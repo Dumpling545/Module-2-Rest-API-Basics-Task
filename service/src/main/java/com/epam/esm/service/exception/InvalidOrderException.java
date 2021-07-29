@@ -8,22 +8,22 @@ import lombok.Getter;
  * retrieved using {@link InvalidOrderException#getReason()}
  */
 public class InvalidOrderException extends ServiceException {
-	@Getter
-	private final Reason reason;
-	@Getter
-	private Integer id;
+    @Getter
+    private final Reason reason;
+    @Getter
+    private Integer id;
 
-	public InvalidOrderException(String message, Reason reason) {
-		super(message);
-		this.reason = reason;
-	}
+    public InvalidOrderException(String message, Reason reason) {
+        super(message);
+        this.reason = reason;
+    }
 
-	public InvalidOrderException(String message, Reason reason, int id) {
-		this(message, reason);
-		this.id = id;
-	}
+    public InvalidOrderException(String message, Reason reason, int id) {
+        this(message, reason);
+        this.id = id;
+    }
 
-	public enum Reason {
-		NOT_FOUND
-	}
+    public enum Reason {
+        NOT_FOUND
+    }
 }

@@ -37,16 +37,16 @@ import java.util.Set;
 @Entity
 @Table(name = "gift_certificate")
 @NamedEntityGraph(
-		name = "full-certificate-entity-graph",
-		attributeNodes = {
-				@NamedAttributeNode(GiftCertificate_.NAME),
-				@NamedAttributeNode(GiftCertificate_.DESCRIPTION),
-				@NamedAttributeNode(GiftCertificate_.PRICE),
-				@NamedAttributeNode(GiftCertificate_.DURATION),
-				@NamedAttributeNode(GiftCertificate_.CREATE_DATE),
-				@NamedAttributeNode(GiftCertificate_.LAST_UPDATE_DATE),
-				@NamedAttributeNode(GiftCertificate_.TAGS)
-		}
+        name = "full-certificate-entity-graph",
+        attributeNodes = {
+                @NamedAttributeNode(GiftCertificate_.NAME),
+                @NamedAttributeNode(GiftCertificate_.DESCRIPTION),
+                @NamedAttributeNode(GiftCertificate_.PRICE),
+                @NamedAttributeNode(GiftCertificate_.DURATION),
+                @NamedAttributeNode(GiftCertificate_.CREATE_DATE),
+                @NamedAttributeNode(GiftCertificate_.LAST_UPDATE_DATE),
+                @NamedAttributeNode(GiftCertificate_.TAGS)
+        }
 )
 public class GiftCertificate {
 	private static final Logger logger = LoggerFactory.getLogger(GiftCertificate.class);
@@ -72,18 +72,18 @@ public class GiftCertificate {
 	           inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<Tag> tags;
 
-	@PrePersist
-	public void onPrePersist() {
-		logger.info(toString() + " to be persisted");
-	}
+    @PrePersist
+    public void onPrePersist() {
+        logger.info(toString() + " to be persisted");
+    }
 
-	@PreRemove
-	public void onPreRemove() {
-		logger.info(toString() + " to be removed");
-	}
+    @PreRemove
+    public void onPreRemove() {
+        logger.info(toString() + " to be removed");
+    }
 
-	@PreUpdate
-	public void onPreUpdate() {
-		logger.info(toString() + " to be updated");
-	}
+    @PreUpdate
+    public void onPreUpdate() {
+        logger.info(toString() + " to be updated");
+    }
 }

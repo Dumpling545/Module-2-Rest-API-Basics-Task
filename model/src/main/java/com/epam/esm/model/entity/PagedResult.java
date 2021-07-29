@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class PagedResult<T> {
-	private List<T> page;
-	private boolean first;
-	private boolean last;
+    private List<T> page;
+    private boolean first;
+    private boolean last;
 }

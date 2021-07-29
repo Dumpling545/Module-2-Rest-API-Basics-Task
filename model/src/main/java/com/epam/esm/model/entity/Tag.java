@@ -28,26 +28,26 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tag")
 public class Tag {
-	private static final Logger logger = LoggerFactory.getLogger(Tag.class);
-	@Id
-	@Column(nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	@Column(nullable = false, unique = true)
-	private String name;
+    private static final Logger logger = LoggerFactory.getLogger(Tag.class);
+    @Id
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(nullable = false, unique = true)
+    private String name;
 
-	@PrePersist
-	public void onPrePersist() {
-		logger.info(toString() + " to be persisted");
-	}
+    @PrePersist
+    public void onPrePersist() {
+        logger.info(toString() + " to be persisted");
+    }
 
-	@PreRemove
-	public void onPreRemove() {
-		logger.info(toString() + " to be removed");
-	}
+    @PreRemove
+    public void onPreRemove() {
+        logger.info(toString() + " to be removed");
+    }
 
-	@PreUpdate
-	public void onPreUpdate() {
-		logger.info(toString() + " to be updated");
-	}
+    @PreUpdate
+    public void onPreUpdate() {
+        logger.info(toString() + " to be updated");
+    }
 }

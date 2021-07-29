@@ -31,34 +31,34 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
-	private final OrderService orderService;
-	private final ExtendedRepresentationModelAssembler<OrderDTO, OrderController> assembler;
+    private final OrderService orderService;
+    private final ExtendedRepresentationModelAssembler<OrderDTO, OrderController> assembler;
 
-	@GetMapping("/{id}")
-	public ResponseEntity<EntityModel> getOrder(@PathVariable("id") Integer id) {
-		return ResponseEntity.ok(assembler.toModel(orderService.getOrder(id)));
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel> getOrder(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(assembler.toModel(orderService.getOrder(id)));
+    }
 
-	@GetMapping
-	public ResponseEntity<CollectionModel> allOrders(@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
-			                                                 Integer pageNumber,
-	                                                 @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
-			                                                 Integer pageSize) {
-		PageDTO pageDTO = PageDTO.builder()
-				.pageNumber(pageNumber)
-				.pageSize(pageSize)
-				.build();
-		PagedResultDTO<OrderDTO> pagedResultDTO = orderService.getAllOrders(pageDTO);
-		CollectionModel<EntityModel<OrderDTO>> model =
-				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-				                                 (c, p) -> c.allOrders(p, pageSize));
-		return ResponseEntity.ok(model);
-	}
+    @GetMapping
+    public ResponseEntity<CollectionModel> allOrders(@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
+                                                             Integer pageNumber,
+                                                     @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
+                                                             Integer pageSize) {
+        PageDTO pageDTO = PageDTO.builder()
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .build();
+        PagedResultDTO<OrderDTO> pagedResultDTO = orderService.getAllOrders(pageDTO);
+        CollectionModel<EntityModel<OrderDTO>> model =
+                assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
+                        (c, p) -> c.allOrders(p, pageSize));
+        return ResponseEntity.ok(model);
+    }
 
-	@PostMapping
-	public ResponseEntity createOrder(@RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
-		OrderDTO dto = orderService.createOrder(orderDTO);
-		URI locationUri = ucb.path("/orders/").path(String.valueOf(dto.getId())).build().toUri();
-		return ResponseEntity.created(locationUri).build();
-	}
+    @PostMapping
+    public ResponseEntity createOrder(@RequestBody @Valid OrderDTO orderDTO, UriComponentsBuilder ucb) {
+        OrderDTO dto = orderService.createOrder(orderDTO);
+        URI locationUri = ucb.path("/orders/").path(String.valueOf(dto.getId())).build().toUri();
+        return ResponseEntity.created(locationUri).build();
+    }
 }

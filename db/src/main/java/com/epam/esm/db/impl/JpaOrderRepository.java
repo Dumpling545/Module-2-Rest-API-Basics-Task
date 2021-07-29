@@ -22,44 +22,44 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class JpaOrderRepository implements OrderRepository {
-	private final FetchQueryHelper fetchQueryHelper;
-	@PersistenceContext
-	private EntityManager entityManager;
+    private final FetchQueryHelper fetchQueryHelper;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-	@Transactional
-	public Order createOrder(Order order) {
-		LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
-		order.setPurchaseDate(localDateTime);
-		entityManager.persist(order);
-		entityManager.flush();
-		entityManager.clear();
-		return order;
-	}
+    @Transactional
+    public Order createOrder(Order order) {
+        LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
+        order.setPurchaseDate(localDateTime);
+        entityManager.persist(order);
+        entityManager.flush();
+        entityManager.clear();
+        return order;
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public Optional<Order> getOrderById(int id) {
-		Order order = entityManager.find(Order.class, id);
-		entityManager.clear();
-		return Optional.ofNullable(order);
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Order> getOrderById(int id) {
+        Order order = entityManager.find(Order.class, id);
+        entityManager.clear();
+        return Optional.ofNullable(order);
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public PagedResult<Order> getAllOrders(int offset, int limit) {
-		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
-			cq.select(r);
-		};
-		return fetchQueryHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public PagedResult<Order> getAllOrders(int offset, int limit) {
+        TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
+            cq.select(r);
+        };
+        return fetchQueryHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public PagedResult<Order> getOrdersByUserId(int userId, int offset, int limit) {
-		TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
-			cq.select(r).where(cb.equal(r.get(Order_.userId), userId));
-		};
-		return fetchQueryHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public PagedResult<Order> getOrdersByUserId(int userId, int offset, int limit) {
+        TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Order>> queryConfigurator = (cb, cq, r) -> {
+            cq.select(r).where(cb.equal(r.get(Order_.userId), userId));
+        };
+        return fetchQueryHelper.fetchPagedResult(Order.class, entityManager, queryConfigurator, offset, limit);
+    }
 
 }

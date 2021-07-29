@@ -12,14 +12,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class OrderAssembler extends ExtendedRepresentationModelAssembler<OrderDTO, OrderController> {
 
-	public OrderAssembler() {
-		super(OrderController.class, OrderDTO.class);
-	}
+    public OrderAssembler() {
+        super(OrderController.class, OrderDTO.class);
+    }
 
-	@Override
-	public EntityModel<OrderDTO> createModel(OrderDTO entity) {
-		return instantiateModel(entity).add(linkTo(methodOn(OrderController.class)
-				                                           .allOrders(null, null))
-				                                    .withRel(IanaLinkRelations.COLLECTION));
-	}
+    @Override
+    public EntityModel<OrderDTO> createModel(OrderDTO entity) {
+        return instantiateModel(entity).add(linkTo(methodOn(OrderController.class)
+                .allOrders(null, null))
+                .withRel(IanaLinkRelations.COLLECTION));
+    }
 }

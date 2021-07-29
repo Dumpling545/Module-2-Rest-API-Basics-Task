@@ -8,33 +8,33 @@ import lombok.Getter;
  * retrieved using {@link InvalidCertificateException#getReason()}
  */
 public class InvalidCertificateException extends ServiceException {
-	@Getter
-	private final Reason reason;
+    @Getter
+    private final Reason reason;
 
-	@Getter
-	private Integer certificateId;
+    @Getter
+    private Integer certificateId;
 
-	public InvalidCertificateException(String message, Reason reason) {
-		super(message);
-		this.reason = reason;
-	}
+    public InvalidCertificateException(String message, Reason reason) {
+        super(message);
+        this.reason = reason;
+    }
 
-	public InvalidCertificateException(String message, Reason reason, int certificateId) {
-		this(message, reason);
-		this.certificateId = certificateId;
-	}
+    public InvalidCertificateException(String message, Reason reason, int certificateId) {
+        this(message, reason);
+        this.certificateId = certificateId;
+    }
 
-	public InvalidCertificateException(String message, Throwable thr, Reason reason) {
-		super(message, thr);
-		this.reason = reason;
-	}
+    public InvalidCertificateException(String message, Throwable thr, Reason reason) {
+        super(message, thr);
+        this.reason = reason;
+    }
 
-	public InvalidCertificateException(String message, Throwable thr, Reason reason, int certificateId) {
-		this(message, thr, reason);
-		this.certificateId = certificateId;
-	}
+    public InvalidCertificateException(String message, Throwable thr, Reason reason, int certificateId) {
+        this(message, thr, reason);
+        this.certificateId = certificateId;
+    }
 
-	public enum Reason {
+    public enum Reason {
 		NOT_FOUND, INVALID_SORT_BY
-	}
+    }
 }

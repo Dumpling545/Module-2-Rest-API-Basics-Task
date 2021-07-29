@@ -15,22 +15,22 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class UserAssembler extends ExtendedRepresentationModelAssembler<UserDTO, UserController> {
 
-	private static final String ORDERS = "orders";
+    private static final String ORDERS = "orders";
 
-	public UserAssembler() {
-		super(UserController.class, UserDTO.class);
-	}
+    public UserAssembler() {
+        super(UserController.class, UserDTO.class);
+    }
 
-	@Override
-	protected List<Link> entityAdditionalLinks(UserDTO userDTO) {
-		return List.of(linkTo(methodOn(UserController.class).getOrdersByUser(userDTO.getId(), null, null))
-				               .withRel(ORDERS));
-	}
+    @Override
+    protected List<Link> entityAdditionalLinks(UserDTO userDTO) {
+        return List.of(linkTo(methodOn(UserController.class).getOrdersByUser(userDTO.getId(), null, null))
+                .withRel(ORDERS));
+    }
 
-	@Override
-	public EntityModel<UserDTO> createModel(UserDTO entity) {
-		EntityModel<UserDTO> model = instantiateModel(entity);
-		model.add(linkTo(methodOn(UserController.class).allUsers(null, null)).withRel(IanaLinkRelations.COLLECTION));
-		return model;
-	}
+    @Override
+    public EntityModel<UserDTO> createModel(UserDTO entity) {
+        EntityModel<UserDTO> model = instantiateModel(entity);
+        model.add(linkTo(methodOn(UserController.class).allUsers(null, null)).withRel(IanaLinkRelations.COLLECTION));
+        return model;
+    }
 }

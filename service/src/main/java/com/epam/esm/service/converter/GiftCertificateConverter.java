@@ -19,9 +19,9 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
  */
 @Mapper(componentModel = "spring", uses = TagConverter.class, nullValuePropertyMappingStrategy = IGNORE)
 public interface GiftCertificateConverter {
-	GiftCertificate convert(GiftCertificateCreateDTO createDto, Set<Tag> tags);
+    GiftCertificate convert(GiftCertificateCreateDTO createDto, Set<Tag> tags);
 
-	void mergeGiftCertificate(@MappingTarget GiftCertificate base, GiftCertificateUpdateDTO updateDto, Set<Tag> tags);
+    void mergeGiftCertificate(@MappingTarget GiftCertificate base, GiftCertificateUpdateDTO updateDto, Set<Tag> tags);
 
-	GiftCertificateOutputDTO convert(GiftCertificate cert);
+    GiftCertificateOutputDTO convert(GiftCertificate cert);
 }

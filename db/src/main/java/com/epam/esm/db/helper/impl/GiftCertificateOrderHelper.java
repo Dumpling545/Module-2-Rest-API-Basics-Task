@@ -15,17 +15,17 @@ import java.util.function.Function;
 
 @Component
 public class GiftCertificateOrderHelper implements OrderHelper<GiftCertificate> {
-	@Override
-	public Order createOrder(SortOption sortOption, CriteriaBuilder criteriaBuilder, Root<GiftCertificate> root) {
-		Function<Expression<?>, Order> direction = switch (sortOption.getDirection()) {
-			case ASC -> criteriaBuilder::asc;
-			case DESC -> criteriaBuilder::desc;
-		};
-		Path<?> sortCriteria = switch (sortOption.getField()) {
-			case NAME -> root.get(GiftCertificate_.name);
-			case CREATE_DATE -> root.get(GiftCertificate_.createDate);
-			case LAST_UPDATE_DATE -> root.get(GiftCertificate_.lastUpdateDate);
-		};
-		return direction.apply(sortCriteria);
-	}
+    @Override
+    public Order createOrder(SortOption sortOption, CriteriaBuilder criteriaBuilder, Root<GiftCertificate> root) {
+        Function<Expression<?>, Order> direction = switch (sortOption.getDirection()) {
+            case ASC -> criteriaBuilder::asc;
+            case DESC -> criteriaBuilder::desc;
+        };
+        Path<?> sortCriteria = switch (sortOption.getField()) {
+            case NAME -> root.get(GiftCertificate_.name);
+            case CREATE_DATE -> root.get(GiftCertificate_.createDate);
+            case LAST_UPDATE_DATE -> root.get(GiftCertificate_.lastUpdateDate);
+        };
+        return direction.apply(sortCriteria);
+    }
 }

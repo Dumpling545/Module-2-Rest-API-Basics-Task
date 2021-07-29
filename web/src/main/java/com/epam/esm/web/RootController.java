@@ -24,41 +24,41 @@ public class RootController {
 	private static final String USERS = "users";
 	private static final String MOST_WIDELY_USED = "most-widely-used";
 
-	@GetMapping
-	public ResponseEntity<RepresentationModel> getApi() {
-		RepresentationModel model = new RepresentationModel();
-		Link tagItem = linkTo(methodOn(TagController.class).getTag(null))
-				.withRel(TAGS + '-' + IanaLinkRelations.ITEM_VALUE);
-		Link tagCollection = linkTo(methodOn(TagController.class).allTags(null, null))
-				.withRel(TAGS + '-' + IanaLinkRelations.COLLECTION_VALUE);
-		Link tagMostWidelyUsed = linkTo(methodOn(TagController.class)
-				                                .getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(null))
-				.withRel(TAGS + '-' + MOST_WIDELY_USED);
+    @GetMapping
+    public ResponseEntity<RepresentationModel> getApi() {
+        RepresentationModel model = new RepresentationModel();
+        Link tagItem = linkTo(methodOn(TagController.class).getTag(null))
+                .withRel(TAGS + '-' + IanaLinkRelations.ITEM_VALUE);
+        Link tagCollection = linkTo(methodOn(TagController.class).allTags(null, null))
+                .withRel(TAGS + '-' + IanaLinkRelations.COLLECTION_VALUE);
+        Link tagMostWidelyUsed = linkTo(methodOn(TagController.class)
+                .getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(null))
+                .withRel(TAGS + '-' + MOST_WIDELY_USED);
 
-		Link giftCertificateItem = linkTo(methodOn(GiftCertificateController.class).getCertificate(null))
-				.withRel(GIFT_CERTIFICATES + '-' + IanaLinkRelations.ITEM_VALUE);
-		Link giftCertificateCollection = linkTo(methodOn(GiftCertificateController.class)
-				                                        .filteredCertificates(null, null, null, null, null, null))
-				.withRel(GIFT_CERTIFICATES + '-' + IanaLinkRelations.COLLECTION_VALUE);
+        Link giftCertificateItem = linkTo(methodOn(GiftCertificateController.class).getCertificate(null))
+                .withRel(GIFT_CERTIFICATES + '-' + IanaLinkRelations.ITEM_VALUE);
+        Link giftCertificateCollection = linkTo(methodOn(GiftCertificateController.class)
+                .filteredCertificates(null, null, null, null, null, null))
+                .withRel(GIFT_CERTIFICATES + '-' + IanaLinkRelations.COLLECTION_VALUE);
 
-		Link userItem = linkTo(methodOn(UserController.class).getUser(null))
-				.withRel(USERS + '-' + IanaLinkRelations.ITEM_VALUE);
-		Link userOrders = linkTo(methodOn(UserController.class).getOrdersByUser(null, null, null))
-				.withRel(USERS + '-' + ORDERS);
-		Link userCollection = linkTo(methodOn(UserController.class).allUsers(null, null))
-				.withRel(USERS + '-' + IanaLinkRelations.COLLECTION_VALUE);
+        Link userItem = linkTo(methodOn(UserController.class).getUser(null))
+                .withRel(USERS + '-' + IanaLinkRelations.ITEM_VALUE);
+        Link userOrders = linkTo(methodOn(UserController.class).getOrdersByUser(null, null, null))
+                .withRel(USERS + '-' + ORDERS);
+        Link userCollection = linkTo(methodOn(UserController.class).allUsers(null, null))
+                .withRel(USERS + '-' + IanaLinkRelations.COLLECTION_VALUE);
 
-		Link orderItem = linkTo(methodOn(OrderController.class).getOrder(null))
-				.withRel(ORDERS + '-' + IanaLinkRelations.ITEM_VALUE);
-		Link orderCollection = linkTo(methodOn(OrderController.class).allOrders(null, null))
-				.withRel(ORDERS + '-' + IanaLinkRelations.COLLECTION_VALUE);
+        Link orderItem = linkTo(methodOn(OrderController.class).getOrder(null))
+                .withRel(ORDERS + '-' + IanaLinkRelations.ITEM_VALUE);
+        Link orderCollection = linkTo(methodOn(OrderController.class).allOrders(null, null))
+                .withRel(ORDERS + '-' + IanaLinkRelations.COLLECTION_VALUE);
 
-		Link selfLink = linkTo(methodOn(RootController.class).getApi()).withSelfRel();
-		model.add(tagItem, tagCollection, tagMostWidelyUsed,
-		          giftCertificateItem, giftCertificateCollection,
-		          userItem, userOrders, userCollection,
-		          orderItem, orderCollection,
-		          selfLink);
-		return ResponseEntity.ok(model);
-	}
+        Link selfLink = linkTo(methodOn(RootController.class).getApi()).withSelfRel();
+        model.add(tagItem, tagCollection, tagMostWidelyUsed,
+                giftCertificateItem, giftCertificateCollection,
+                userItem, userOrders, userCollection,
+                orderItem, orderCollection,
+                selfLink);
+        return ResponseEntity.ok(model);
+    }
 }

@@ -11,11 +11,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class GiftCertificateAssembler extends
-                                      ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO, GiftCertificateController> {
+        ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO, GiftCertificateController> {
 
-	public GiftCertificateAssembler() {
-		super(GiftCertificateController.class, GiftCertificateOutputDTO.class);
-	}
+    public GiftCertificateAssembler() {
+        super(GiftCertificateController.class, GiftCertificateOutputDTO.class);
+    }
 
 	@Override
 	public EntityModel<GiftCertificateOutputDTO> createModel(GiftCertificateOutputDTO entity) {

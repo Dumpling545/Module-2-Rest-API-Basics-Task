@@ -32,48 +32,48 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 @RequestMapping("/tags")
 @RequiredArgsConstructor
 public class TagController {
-	private final TagService tagService;
-	private final ExtendedRepresentationModelAssembler<TagDTO, TagController> assembler;
+    private final TagService tagService;
+    private final ExtendedRepresentationModelAssembler<TagDTO, TagController> assembler;
 
-	@GetMapping("/{id}")
-	public ResponseEntity<EntityModel> getTag(@PathVariable("id") Integer id) {
-		return ResponseEntity.ok(assembler.toModel(tagService.getTag(id)));
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel> getTag(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(assembler.toModel(tagService.getTag(id)));
+    }
 
-	@GetMapping("/most-widely-used-with-highest-total-cost")
-	public ResponseEntity<EntityModel> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(
+    @GetMapping("/most-widely-used-with-highest-total-cost")
+    public ResponseEntity<EntityModel> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(
 			@RequestParam Integer userId) {
-		return ResponseEntity.ok(
+        return ResponseEntity.ok(
 				assembler.toModel(tagService.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(userId)));
-	}
+    }
 
-	@GetMapping
-	public ResponseEntity<CollectionModel> allTags(
-			@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
-					Integer pageNumber,
-			@RequestParam(defaultValue = MIN_PAGE_SIZE + "")
-					Integer pageSize) {
-		PageDTO pageDTO = PageDTO.builder()
-				.pageNumber(pageNumber)
-				.pageSize(pageSize)
-				.build();
-		PagedResultDTO pagedResultDTO = tagService.getAllTags(pageDTO);
-		CollectionModel<EntityModel<TagDTO>> model =
-				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-				                                 (c, p) -> c.allTags(p, pageSize));
-		return ResponseEntity.ok(model);
-	}
+    @GetMapping
+    public ResponseEntity<CollectionModel> allTags(
+            @RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
+                    Integer pageNumber,
+            @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
+                    Integer pageSize) {
+        PageDTO pageDTO = PageDTO.builder()
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .build();
+        PagedResultDTO pagedResultDTO = tagService.getAllTags(pageDTO);
+        CollectionModel<EntityModel<TagDTO>> model =
+                assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
+                        (c, p) -> c.allTags(p, pageSize));
+        return ResponseEntity.ok(model);
+    }
 
-	@PostMapping
-	public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
-		TagDTO dto = tagService.createTag(tagDTO);
-		URI locationUri = ucb.path("/tags/").path(String.valueOf(dto.getId())).build().toUri();
-		return ResponseEntity.created(locationUri).build();
-	}
+    @PostMapping
+    public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
+        TagDTO dto = tagService.createTag(tagDTO);
+        URI locationUri = ucb.path("/tags/").path(String.valueOf(dto.getId())).build().toUri();
+        return ResponseEntity.created(locationUri).build();
+    }
 
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity deleteTag(@PathVariable("id") Integer id) {
-		tagService.deleteTag(id);
-		return ResponseEntity.noContent().build();
-	}
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deleteTag(@PathVariable("id") Integer id) {
+        tagService.deleteTag(id);
+        return ResponseEntity.noContent().build();
+    }
 }

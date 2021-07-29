@@ -8,14 +8,14 @@ import lombok.Value;
  */
 @Value
 public class SortOption {
-	Field field;
-	Direction direction;
+    Field field;
+    Direction direction;
 
-	public enum Field {
-		NAME, LAST_UPDATE_DATE, CREATE_DATE
-	}
+    public enum Field {
+        NAME, LAST_UPDATE_DATE, CREATE_DATE
+    }
 
-	public enum Direction {
-		ASC, DESC
-	}
+    public enum Direction {
+        ASC, DESC
+    }
 }

@@ -37,14 +37,14 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
 @RequestMapping("/gift-certificates")
 @RequiredArgsConstructor
 public class GiftCertificateController {
-	private final GiftCertificateService certService;
-	private final ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO, GiftCertificateController>
-			assembler;
+    private final GiftCertificateService certService;
+    private final ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO, GiftCertificateController>
+            assembler;
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<EntityModel> getCertificate(@PathVariable("id") Integer id) {
-		return ResponseEntity.ok(assembler.toModel(certService.getCertificate(id)));
-	}
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<EntityModel> getCertificate(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(assembler.toModel(certService.getCertificate(id)));
+    }
 
 	@GetMapping
 	public ResponseEntity<CollectionModel> filteredCertificates(@RequestParam(required = false) String namePart,
@@ -81,18 +81,18 @@ public class GiftCertificateController {
 		return ResponseEntity.created(locationUri).build();
 	}
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity updateCertificate(@PathVariable("id") Integer id,
-	                                        @RequestBody @Valid GiftCertificateUpdateDTO certDTO,
-	                                        UriComponentsBuilder ucb) {
-		certService.updateCertificate(id, certDTO);
-		URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(id)).build().toUri();
-		return ResponseEntity.noContent().location(locationUri).build();
-	}
+    @PutMapping(value = "/{id}")
+    public ResponseEntity updateCertificate(@PathVariable("id") Integer id,
+                                            @RequestBody @Valid GiftCertificateUpdateDTO certDTO,
+                                            UriComponentsBuilder ucb) {
+        certService.updateCertificate(id, certDTO);
+        URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(id)).build().toUri();
+        return ResponseEntity.noContent().location(locationUri).build();
+    }
 
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity deleteCertificate(@PathVariable("id") Integer id) {
-		certService.deleteCertificate(id);
-		return ResponseEntity.noContent().build();
-	}
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deleteCertificate(@PathVariable("id") Integer id) {
+        certService.deleteCertificate(id);
+        return ResponseEntity.noContent().build();
+    }
 }

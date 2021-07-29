@@ -38,108 +38,108 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-	private final TagService tagService;
-	private final GiftCertificateRepository giftCertificateRepository;
-	private final GiftCertificateConverter giftCertificateConverter;
-	private final TagConverter tagConverter;
-	private final GiftCertificateSearchFilterConverter giftCertificateSearchFilterConverter;
-	private final PagedResultConverter pagedResultConverter;
-	@Value("${cert.exception.not-found}")
-	private String notFoundExceptionTemplate;
+    private final TagService tagService;
+    private final GiftCertificateRepository giftCertificateRepository;
+    private final GiftCertificateConverter giftCertificateConverter;
+    private final TagConverter tagConverter;
+    private final GiftCertificateSearchFilterConverter giftCertificateSearchFilterConverter;
+    private final PagedResultConverter pagedResultConverter;
+    @Value("${cert.exception.not-found}")
+    private String notFoundExceptionTemplate;
 
-	private InvalidCertificateException createNotFoundException(int id) {
-		String identifier = "id=" + id;
-		String message = String.format(notFoundExceptionTemplate, identifier);
-		return new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND, id);
-	}
+    private InvalidCertificateException createNotFoundException(int id) {
+        String identifier = "id=" + id;
+        String message = String.format(notFoundExceptionTemplate, identifier);
+        return new InvalidCertificateException(message, InvalidCertificateException.Reason.NOT_FOUND, id);
+    }
 
-	private Set<Tag> prepareTagsForCreateUpdate(Set<String> tagNames) {
-		if (tagNames == null) {
-			return Collections.EMPTY_SET;
-		}
-		//get tags that are already exists in database
-		Set<TagDTO> existingTagDTOs = tagService.getTagsFromNameSet(tagNames);
-		Set<String> existingTagNames = existingTagDTOs.stream().map(TagDTO::getName).collect(Collectors.toSet());
-		//get tag names that are not in database yet
-		Set<String> newTagNames = tagNames.stream().filter(s -> !existingTagNames.contains(s))
-				.collect(Collectors.toSet());
-		//convert  existing tag dtos to tags
-		Set<Tag> existingTags =
-				existingTagDTOs.stream().map(tagConverter::convert).collect(Collectors.toSet());
-		//convert new tag names to tags
-		Set<Tag> newTags = newTagNames.stream().map(tn -> Tag.builder().name(tn).build()).collect(Collectors.toSet());
-		return Stream.concat(existingTags.stream(), newTags.stream()).collect(Collectors.toSet());
-	}
+    private Set<Tag> prepareTagsForCreateUpdate(Set<String> tagNames) {
+        if (tagNames == null) {
+            return Collections.EMPTY_SET;
+        }
+        //get tags that are already exists in database
+        Set<TagDTO> existingTagDTOs = tagService.getTagsFromNameSet(tagNames);
+        Set<String> existingTagNames = existingTagDTOs.stream().map(TagDTO::getName).collect(Collectors.toSet());
+        //get tag names that are not in database yet
+        Set<String> newTagNames = tagNames.stream().filter(s -> !existingTagNames.contains(s))
+                .collect(Collectors.toSet());
+        //convert  existing tag dtos to tags
+        Set<Tag> existingTags =
+                existingTagDTOs.stream().map(tagConverter::convert).collect(Collectors.toSet());
+        //convert new tag names to tags
+        Set<Tag> newTags = newTagNames.stream().map(tn -> Tag.builder().name(tn).build()).collect(Collectors.toSet());
+        return Stream.concat(existingTags.stream(), newTags.stream()).collect(Collectors.toSet());
+    }
 
-	@Transactional
-	public GiftCertificateOutputDTO createCertificate(GiftCertificateCreateDTO dto) {
-		Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
-		GiftCertificate input = giftCertificateConverter.convert(dto, tags);
-		input.setId(null);
-		GiftCertificate output;
-		try {
-			output = giftCertificateRepository.createCertificate(input);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		return giftCertificateConverter.convert(output);
-	}
+    @Transactional
+    public GiftCertificateOutputDTO createCertificate(GiftCertificateCreateDTO dto) {
+        Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
+        GiftCertificate input = giftCertificateConverter.convert(dto, tags);
+        input.setId(null);
+        GiftCertificate output;
+        try {
+            output = giftCertificateRepository.createCertificate(input);
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        return giftCertificateConverter.convert(output);
+    }
 
-	@Override
-	public GiftCertificateOutputDTO getCertificate(int id) {
-		Optional<GiftCertificate> optionalCert;
-		try {
-			optionalCert = giftCertificateRepository.getCertificateById(id);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		return optionalCert.map(giftCertificateConverter::convert)
-				.orElseThrow(() -> createNotFoundException(id));
-	}
+    @Override
+    public GiftCertificateOutputDTO getCertificate(int id) {
+        Optional<GiftCertificate> optionalCert;
+        try {
+            optionalCert = giftCertificateRepository.getCertificateById(id);
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        return optionalCert.map(giftCertificateConverter::convert)
+                .orElseThrow(() -> createNotFoundException(id));
+    }
 
 
-	@Transactional
-	public void updateCertificate(int id, GiftCertificateUpdateDTO dto) {
-		try {
-			Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(id);
-			GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(id));
-			Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
-			GiftCertificate updatedCert = cert.toBuilder().tags(new HashSet<>(cert.getTags())).build();
-			giftCertificateConverter.mergeGiftCertificate(updatedCert, dto, tags);
-			if (!updatedCert.equals(cert)) {
-				giftCertificateRepository.updateCertificate(updatedCert);
-			}
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-	}
+    @Transactional
+    public void updateCertificate(int id, GiftCertificateUpdateDTO dto) {
+        try {
+            Optional<GiftCertificate> optionalCert = giftCertificateRepository.getCertificateById(id);
+            GiftCertificate cert = optionalCert.orElseThrow(() -> createNotFoundException(id));
+            Set<Tag> tags = prepareTagsForCreateUpdate(dto.getTagNames());
+            GiftCertificate updatedCert = cert.toBuilder().tags(new HashSet<>(cert.getTags())).build();
+            giftCertificateConverter.mergeGiftCertificate(updatedCert, dto, tags);
+            if (!updatedCert.equals(cert)) {
+                giftCertificateRepository.updateCertificate(updatedCert);
+            }
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+    }
 
-	@Override
-	public void deleteCertificate(int id) {
-		boolean deleted = false;
-		try {
-			deleted = giftCertificateRepository.deleteCertificate(id);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		if (!deleted) {
-			throw createNotFoundException(id);
-		}
-	}
+    @Override
+    public void deleteCertificate(int id) {
+        boolean deleted = false;
+        try {
+            deleted = giftCertificateRepository.deleteCertificate(id);
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        if (!deleted) {
+            throw createNotFoundException(id);
+        }
+    }
 
-	@Override
-	public PagedResultDTO<GiftCertificateOutputDTO> getCertificates(
-			GiftCertificateSearchFilterDTO giftCertificateSearchFilterDTO,
-			PageDTO pageDTO) {
-		GiftCertificateSearchFilter giftCertificateSearchFilter = giftCertificateSearchFilterConverter.convert(
-				giftCertificateSearchFilterDTO);
-		PagedResult<GiftCertificate> pagedResult;
-		try {
-			pagedResult = giftCertificateRepository
-					.getCertificatesByFilter(giftCertificateSearchFilter, pageDTO.getOffset(), pageDTO.getPageSize());
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		return pagedResultConverter.convertToCertificatePage(pagedResult);
-	}
+    @Override
+    public PagedResultDTO<GiftCertificateOutputDTO> getCertificates(
+            GiftCertificateSearchFilterDTO giftCertificateSearchFilterDTO,
+            PageDTO pageDTO) {
+        GiftCertificateSearchFilter giftCertificateSearchFilter = giftCertificateSearchFilterConverter.convert(
+                giftCertificateSearchFilterDTO);
+        PagedResult<GiftCertificate> pagedResult;
+        try {
+            pagedResult = giftCertificateRepository
+                    .getCertificatesByFilter(giftCertificateSearchFilter, pageDTO.getOffset(), pageDTO.getPageSize());
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        return pagedResultConverter.convertToCertificatePage(pagedResult);
+    }
 }

@@ -30,65 +30,65 @@ import static org.springframework.transaction.annotation.Isolation.REPEATABLE_RE
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-	private final GiftCertificateService giftCertificateService;
-	private final OrderConverter orderConverter;
-	private final OrderRepository orderRepository;
-	private final PagedResultConverter pagedResultConverter;
-	@Value("${order.exception.not-found}")
-	private String orderNotFoundExceptionTemplate;
-	@Value("${user.exception.not-found}")
-	private String userNotFoundExceptionTemplate;
+    private final GiftCertificateService giftCertificateService;
+    private final OrderConverter orderConverter;
+    private final OrderRepository orderRepository;
+    private final PagedResultConverter pagedResultConverter;
+    @Value("${order.exception.not-found}")
+    private String orderNotFoundExceptionTemplate;
+    @Value("${user.exception.not-found}")
+    private String userNotFoundExceptionTemplate;
 
-	@Transactional(isolation = REPEATABLE_READ)
-	public OrderDTO createOrder(OrderDTO dto) {
-		GiftCertificateOutputDTO certDto = giftCertificateService.getCertificate(dto.getGiftCertificateId());
-		Order order = orderConverter.convert(dto, certDto.getPrice());
-		order.setId(null);
-		try {
-			Order newOrder = orderRepository.createOrder(order);
-			return orderConverter.convert(newOrder);
-		} catch (DataIntegrityViolationException ex) {
-			String message = String.format(userNotFoundExceptionTemplate, dto.getUserId());
-			throw new InvalidUserException(message, ex, InvalidUserException.Reason.NOT_FOUND, dto.getUserId());
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-	}
+    @Transactional(isolation = REPEATABLE_READ)
+    public OrderDTO createOrder(OrderDTO dto) {
+        GiftCertificateOutputDTO certDto = giftCertificateService.getCertificate(dto.getGiftCertificateId());
+        Order order = orderConverter.convert(dto, certDto.getPrice());
+        order.setId(null);
+        try {
+            Order newOrder = orderRepository.createOrder(order);
+            return orderConverter.convert(newOrder);
+        } catch (DataIntegrityViolationException ex) {
+            String message = String.format(userNotFoundExceptionTemplate, dto.getUserId());
+            throw new InvalidUserException(message, ex, InvalidUserException.Reason.NOT_FOUND, dto.getUserId());
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+    }
 
-	@Override
-	public OrderDTO getOrder(int id) {
-		Optional<Order> optionalOrder;
-		try {
-			optionalOrder = orderRepository.getOrderById(id);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		return optionalOrder.map(orderConverter::convert)
-				.orElseThrow(() -> {
-					String identifier = "id=" + id;
-					String message = String.format(orderNotFoundExceptionTemplate, identifier);
-					return new InvalidOrderException(message, InvalidOrderException.Reason.NOT_FOUND, id);
-				});
-	}
+    @Override
+    public OrderDTO getOrder(int id) {
+        Optional<Order> optionalOrder;
+        try {
+            optionalOrder = orderRepository.getOrderById(id);
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        return optionalOrder.map(orderConverter::convert)
+                .orElseThrow(() -> {
+                    String identifier = "id=" + id;
+                    String message = String.format(orderNotFoundExceptionTemplate, identifier);
+                    return new InvalidOrderException(message, InvalidOrderException.Reason.NOT_FOUND, id);
+                });
+    }
 
-	private PagedResultDTO<OrderDTO> getOrderDTOList(Supplier<PagedResult<Order>> orderListSupplier) {
-		PagedResult<Order> pagedResult;
-		try {
-			pagedResult = orderListSupplier.get();
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		return pagedResultConverter.convertToOrderPage(pagedResult);
-	}
+    private PagedResultDTO<OrderDTO> getOrderDTOList(Supplier<PagedResult<Order>> orderListSupplier) {
+        PagedResult<Order> pagedResult;
+        try {
+            pagedResult = orderListSupplier.get();
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        return pagedResultConverter.convertToOrderPage(pagedResult);
+    }
 
-	@Override
-	public PagedResultDTO<OrderDTO> getAllOrders(PageDTO pageDTO) {
-		return getOrderDTOList(() -> orderRepository.getAllOrders(pageDTO.getOffset(), pageDTO.getPageSize()));
-	}
+    @Override
+    public PagedResultDTO<OrderDTO> getAllOrders(PageDTO pageDTO) {
+        return getOrderDTOList(() -> orderRepository.getAllOrders(pageDTO.getOffset(), pageDTO.getPageSize()));
+    }
 
-	@Override
-	public PagedResultDTO<OrderDTO> getOrdersByUser(int userId, PageDTO pageDTO) {
-		return getOrderDTOList(
-				() -> orderRepository.getOrdersByUserId(userId, pageDTO.getOffset(), pageDTO.getPageSize()));
-	}
+    @Override
+    public PagedResultDTO<OrderDTO> getOrdersByUser(int userId, PageDTO pageDTO) {
+        return getOrderDTOList(
+                () -> orderRepository.getOrdersByUserId(userId, pageDTO.getOffset(), pageDTO.getPageSize()));
+    }
 }

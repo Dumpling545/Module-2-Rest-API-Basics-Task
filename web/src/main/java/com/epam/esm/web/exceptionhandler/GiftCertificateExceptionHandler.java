@@ -23,31 +23,31 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GiftCertificateExceptionHandler {
-	private static final Logger logger = LoggerFactory.getLogger(GiftCertificateExceptionHandler.class);
-	private final ExceptionHelper helper;
-	private final MessageSource messageSource;
-	@Value("${cert.error-info.postfix}")
-	private int certPostfix;
+    private static final Logger logger = LoggerFactory.getLogger(GiftCertificateExceptionHandler.class);
+    private final ExceptionHelper helper;
+    private final MessageSource messageSource;
+    @Value("${cert.error-info.postfix}")
+    private int certPostfix;
 
-	@ExceptionHandler(InvalidCertificateException.class)
-	public ResponseEntity<Object> handleException(InvalidCertificateException ex, Locale locale) {
-		HttpStatus status;
-		String message;
-		switch (ex.getReason()) {
-			case NOT_FOUND:
-				status = HttpStatus.NOT_FOUND;
-				message = messageSource.getMessage("cert.error-message.not-found",
-				                                   new Object[]{ex.getCertificateId()}, locale);
-				break;
-			case INVALID_SORT_BY:
-				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-sort", null, locale);
-				break;
-			default:
-				status = HttpStatus.INTERNAL_SERVER_ERROR;
-				message = messageSource.getMessage("cert.error-message.common", null, locale);
-		}
-		logger.error("Handled in the InvalidCertificateException handler", ex);
-		return helper.handle(status, message, certPostfix);
-	}
+    @ExceptionHandler(InvalidCertificateException.class)
+    public ResponseEntity<Object> handleException(InvalidCertificateException ex, Locale locale) {
+        HttpStatus status;
+        String message;
+        switch (ex.getReason()) {
+            case NOT_FOUND:
+                status = HttpStatus.NOT_FOUND;
+                message = messageSource.getMessage("cert.error-message.not-found",
+                        new Object[]{ex.getCertificateId()}, locale);
+                break;
+            case INVALID_SORT_BY:
+                status = HttpStatus.BAD_REQUEST;
+                message = messageSource.getMessage("cert.error-message.invalid-sort", null, locale);
+                break;
+            default:
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+                message = messageSource.getMessage("cert.error-message.common", null, locale);
+        }
+        logger.error("Handled in the InvalidCertificateException handler", ex);
+        return helper.handle(status, message, certPostfix);
+    }
 }

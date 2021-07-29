@@ -30,32 +30,32 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "cert_order")
 public class Order {
-	private static final Logger logger = LoggerFactory.getLogger(Order.class);
-	@Id
-	@Column(nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	@Column(name = "user_id", nullable = false)
-	private Integer userId;
-	@Column(name = "gift_certificate_id", nullable = false)
-	private Integer giftCertificateId;
-	@Column(nullable = false)
-	private BigDecimal cost;
-	@Column(name = "purchase_date", nullable = false)
-	private LocalDateTime purchaseDate;
+    private static final Logger logger = LoggerFactory.getLogger(Order.class);
+    @Id
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
+    @Column(name = "gift_certificate_id", nullable = false)
+    private Integer giftCertificateId;
+    @Column(nullable = false)
+    private BigDecimal cost;
+    @Column(name = "purchase_date", nullable = false)
+    private LocalDateTime purchaseDate;
 
-	@PrePersist
-	public void onPrePersist() {
-		logger.info(toString() + " to be persisted");
-	}
+    @PrePersist
+    public void onPrePersist() {
+        logger.info(toString() + " to be persisted");
+    }
 
-	@PreRemove
-	public void onPreRemove() {
-		logger.info(toString() + " to be removed");
-	}
+    @PreRemove
+    public void onPreRemove() {
+        logger.info(toString() + " to be removed");
+    }
 
-	@PreUpdate
-	public void onPreUpdate() {
-		logger.info(toString() + " to be updated");
-	}
+    @PreUpdate
+    public void onPreUpdate() {
+        logger.info(toString() + " to be updated");
+    }
 }

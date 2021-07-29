@@ -9,6 +9,6 @@ import java.util.List;
  */
 @Value
 public class Error {
-	int errorCode;
-	List<String> errorMessages;
+    int errorCode;
+    List<String> errorMessages;
 }

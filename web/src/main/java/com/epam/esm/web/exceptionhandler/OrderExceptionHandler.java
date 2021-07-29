@@ -24,29 +24,29 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @RequiredArgsConstructor
 public class OrderExceptionHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(OrderExceptionHandler.class);
-	private final ExceptionHelper helper;
-	private final MessageSource messageSource;
-	@Value("${order.error-info.postfix}")
-	private int orderPostfix;
+    private static final Logger logger = LoggerFactory.getLogger(OrderExceptionHandler.class);
+    private final ExceptionHelper helper;
+    private final MessageSource messageSource;
+    @Value("${order.error-info.postfix}")
+    private int orderPostfix;
 
-	@ExceptionHandler(InvalidOrderException.class)
-	public ResponseEntity<Object> handleException(InvalidOrderException ex, Locale locale) {
-		HttpStatus status;
-		String message;
-		switch (ex.getReason()) {
-			case NOT_FOUND:
-				status = HttpStatus.NOT_FOUND;
-				String identifier = "id=" + ex.getId();
-				message = messageSource.getMessage("order.error-message.not-found",
-				                                   new Object[]{identifier}, locale);
-				break;
-			default:
-				status = HttpStatus.INTERNAL_SERVER_ERROR;
-				message = messageSource.getMessage("order.error-message.common", null, locale);
-		}
-		logger.error("Handled in the InvalidOrderException handler", ex);
-		return helper.handle(status, message, orderPostfix);
-	}
+    @ExceptionHandler(InvalidOrderException.class)
+    public ResponseEntity<Object> handleException(InvalidOrderException ex, Locale locale) {
+        HttpStatus status;
+        String message;
+        switch (ex.getReason()) {
+            case NOT_FOUND:
+                status = HttpStatus.NOT_FOUND;
+                String identifier = "id=" + ex.getId();
+                message = messageSource.getMessage("order.error-message.not-found",
+                        new Object[]{identifier}, locale);
+                break;
+            default:
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+                message = messageSource.getMessage("order.error-message.common", null, locale);
+        }
+        logger.error("Handled in the InvalidOrderException handler", ex);
+        return helper.handle(status, message, orderPostfix);
+    }
 }
 
