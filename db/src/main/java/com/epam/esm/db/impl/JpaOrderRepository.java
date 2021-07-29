@@ -22,10 +22,9 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class JpaOrderRepository implements OrderRepository {
+	private final FetchQueryHelper fetchQueryHelper;
 	@PersistenceContext
 	private EntityManager entityManager;
-
-	private final FetchQueryHelper fetchQueryHelper;
 
 	@Transactional
 	public Order createOrder(Order order) {

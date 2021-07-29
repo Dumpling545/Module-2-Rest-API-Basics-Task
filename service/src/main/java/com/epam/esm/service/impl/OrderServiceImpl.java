@@ -30,15 +30,14 @@ import static org.springframework.transaction.annotation.Isolation.REPEATABLE_RE
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-	@Value("${order.exception.not-found}")
-	private String orderNotFoundExceptionTemplate;
-	@Value("${user.exception.not-found}")
-	private String userNotFoundExceptionTemplate;
-
 	private final GiftCertificateService giftCertificateService;
 	private final OrderConverter orderConverter;
 	private final OrderRepository orderRepository;
 	private final PagedResultConverter pagedResultConverter;
+	@Value("${order.exception.not-found}")
+	private String orderNotFoundExceptionTemplate;
+	@Value("${user.exception.not-found}")
+	private String userNotFoundExceptionTemplate;
 
 	@Transactional(isolation = REPEATABLE_READ)
 	public OrderDTO createOrder(OrderDTO dto) {

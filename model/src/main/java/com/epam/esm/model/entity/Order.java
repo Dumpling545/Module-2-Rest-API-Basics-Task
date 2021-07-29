@@ -43,16 +43,19 @@ public class Order {
 	private BigDecimal cost;
 	@Column(name = "purchase_date", nullable = false)
 	private LocalDateTime purchaseDate;
+
 	@PrePersist
-	public void onPrePersist(){
+	public void onPrePersist() {
 		logger.info(toString() + " to be persisted");
 	}
+
 	@PreRemove
-	public void onPreRemove(){
+	public void onPreRemove() {
 		logger.info(toString() + " to be removed");
 	}
+
 	@PreUpdate
-	public void onPreUpdate(){
+	public void onPreUpdate() {
 		logger.info(toString() + " to be updated");
 	}
 }

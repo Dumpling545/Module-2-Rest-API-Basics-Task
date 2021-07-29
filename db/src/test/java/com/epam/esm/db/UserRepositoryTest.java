@@ -51,7 +51,7 @@ public class UserRepositoryTest {
 	@Test
 	public void getAllUsersShouldReturnEmptyListWhenPassedNonExistingOffsetAndLimit() {
 		PagedResult<User> users = userRepository.getAllUsers(ALL_USERS_NON_EXISTING_OFFSET,
-				ALL_USERS_NON_EXISTING_LIMIT);
+		                                                     ALL_USERS_NON_EXISTING_LIMIT);
 		assertTrue(users.getPage().isEmpty());
 	}
 

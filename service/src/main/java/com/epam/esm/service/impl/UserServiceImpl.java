@@ -21,12 +21,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	@Value("${user.exception.not-found}")
-	private String notFoundExceptionTemplate;
-
 	private final UserRepository userRepository;
 	private final UserConverter userConverter;
 	private final PagedResultConverter pagedResultConverter;
+	@Value("${user.exception.not-found}")
+	private String notFoundExceptionTemplate;
 
 	@Override
 	public UserDTO getUser(int id) {

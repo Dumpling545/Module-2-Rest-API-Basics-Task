@@ -35,6 +35,6 @@ public class InvalidCertificateException extends ServiceException {
 	}
 
 	public enum Reason {
-        NOT_FOUND, INVALID_SORT_BY
+		NOT_FOUND, INVALID_SORT_BY
 	}
 }

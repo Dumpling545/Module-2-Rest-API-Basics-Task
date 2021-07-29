@@ -24,7 +24,7 @@ public class TagAssembler extends ExtendedRepresentationModelAssembler<TagDTO, T
 	@Override
 	protected List<Link> rootAdditionalLinks() {
 		return List.of(linkTo(methodOn(TagController.class).getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(null))
-						.withRel(MOST_WIDELY_USED_TAG_REL));
+				               .withRel(MOST_WIDELY_USED_TAG_REL));
 	}
 
 	@Override

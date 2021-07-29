@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 /**
  * Exception handler for exceptions associated with users
  */
@@ -23,10 +24,10 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @RequiredArgsConstructor
 public class UserExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(UserExceptionHandler.class);
-	@Value("${user.error-info.postfix}")
-	private int userPostfix;
 	private final ExceptionHelper helper;
 	private final MessageSource messageSource;
+	@Value("${user.error-info.postfix}")
+	private int userPostfix;
 
 	@ExceptionHandler(InvalidUserException.class)
 	public ResponseEntity<Object> handleException(InvalidUserException ex, Locale locale) {
@@ -37,7 +38,7 @@ public class UserExceptionHandler {
 				status = HttpStatus.NOT_FOUND;
 				String identifier = "id=" + ex.getUserId();
 				message = messageSource.getMessage("user.error-message.not-found",
-						new Object[]{identifier}, locale);
+				                                   new Object[]{identifier}, locale);
 				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;

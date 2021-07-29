@@ -36,11 +36,11 @@ public class UserServiceImplTest {
 	private static final User existingUser2 = User.builder()
 			.id(existingUserDto2.getId())
 			.userName(existingUserDto2.getUserName()).build();
+	private static final List<User> allExistingUserList = List.of(existingUser1, existingUser2);
+	private static final PagedResult<User> userPage = PagedResult.<User>builder().page(allExistingUserList).build();
 	private static final List<UserDTO> allExistingUserDtoList = List.of(existingUserDto1, existingUserDto2);
 	private static final PagedResultDTO<UserDTO> userPageDto = PagedResultDTO.<UserDTO>builder()
 			.page(allExistingUserDtoList).build();
-	private static final List<User> allExistingUserList = List.of(existingUser1, existingUser2);
-	private static final PagedResult<User> userPage = PagedResult.<User>builder().page(allExistingUserList).build();
 	private static final UserDTO nonExistingUserDto = UserDTO.builder()
 			.id(-10)
 			.userName("non existent").build();
@@ -54,11 +54,11 @@ public class UserServiceImplTest {
 	private final UserConverter userConverter = Mappers.getMapper(UserConverter.class);
 	private final PagedResultConverter pagedResultConverter = Mappers.getMapper(PagedResultConverter.class);
 
-
 	@Test
 	public void getUserShouldReturnDtoWhenPassedExistingUserId() {
 		UserRepository userRepository = Mockito.mock(UserRepository.class);
-		Mockito.when(userRepository.getUserById(Mockito.eq(existingUserDto1.getId()))).thenReturn(Optional.of(existingUser1));
+		Mockito.when(userRepository.getUserById(Mockito.eq(existingUserDto1.getId())))
+				.thenReturn(Optional.of(existingUser1));
 		UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
 			UserDTO res = userService.getUser(existingUserDto1.getId());
@@ -72,14 +72,16 @@ public class UserServiceImplTest {
 		Mockito.when(userRepository.getUserById(Mockito.eq(nonExistingUserDto.getId()))).thenReturn(Optional.empty());
 		UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter);
 		ReflectionTestUtils.setField(userService, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
-		InvalidUserException ex = assertThrows(InvalidUserException.class, () -> userService.getUser(existingUserDto1.getId()));
+		InvalidUserException ex =
+				assertThrows(InvalidUserException.class, () -> userService.getUser(existingUserDto1.getId()));
 		assertEquals(InvalidUserException.Reason.NOT_FOUND, ex.getReason());
 	}
 
 	@Test
 	public void getAllUsersShouldNotThrowExceptionAndReturnList() {
 		UserRepository userRepository = Mockito.mock(UserRepository.class);
-		Mockito.when(userRepository.getAllUsers(Mockito.eq(pageDTO.getOffset()), Mockito.eq(pageDTO.getPageSize()))).thenReturn(userPage);
+		Mockito.when(userRepository.getAllUsers(Mockito.eq(pageDTO.getOffset()), Mockito.eq(pageDTO.getPageSize())))
+				.thenReturn(userPage);
 		UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
 			PagedResultDTO<UserDTO> userDTOPagedResult = userService.getAllUsers(pageDTO);

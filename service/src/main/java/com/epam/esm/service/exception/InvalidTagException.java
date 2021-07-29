@@ -23,12 +23,12 @@ public class InvalidTagException extends ServiceException {
 		this.tagDescription = tagDescription;
 	}
 
-	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason) {
+	public InvalidTagException(String message, Throwable thr, Reason reason) {
 		super(message, thr);
 		this.reason = reason;
 	}
 
-	public InvalidTagException(String message, Throwable thr, InvalidTagException.Reason reason, String tagDescription) {
+	public InvalidTagException(String message, Throwable thr, Reason reason, String tagDescription) {
 		this(message, thr, reason);
 		this.tagDescription = tagDescription;
 	}

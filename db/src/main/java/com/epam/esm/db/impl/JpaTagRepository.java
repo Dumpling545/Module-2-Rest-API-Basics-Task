@@ -27,15 +27,14 @@ import java.util.function.Function;
 public class JpaTagRepository implements TagRepository {
 	private static final String GET_MOST_WIDELY_USED_TAG_WITH_HIGHEST_COST =
 			"SELECT tag.* FROM tag " +
-					"INNER JOIN tag_gift_certificate ON tag_gift_certificate.tag_id=tag.id " +
-					"INNER JOIN cert_order ON cert_order.gift_certificate_id=tag_gift_certificate.gift_certificate_id " +
-					"WHERE user_id=:userId GROUP BY tag.id, tag.name " +
-					"ORDER BY COUNT(cert_order.id) DESC, SUM(cert_order.cost) DESC LIMIT 1";
+			"INNER JOIN tag_gift_certificate ON tag_gift_certificate.tag_id=tag.id " +
+			"INNER JOIN cert_order ON cert_order.gift_certificate_id=tag_gift_certificate.gift_certificate_id " +
+			"WHERE user_id=:userId GROUP BY tag.id, tag.name " +
+			"ORDER BY COUNT(cert_order.id) DESC, SUM(cert_order.cost) DESC LIMIT 1";
 	private static final String USER_ID_PARAM_KEY = "userId";
+	private final FetchQueryHelper fetchQueryHelper;
 	@PersistenceContext
 	private EntityManager entityManager;
-
-	private final FetchQueryHelper fetchQueryHelper;
 
 	@Transactional
 	public Tag createTag(Tag tag) {

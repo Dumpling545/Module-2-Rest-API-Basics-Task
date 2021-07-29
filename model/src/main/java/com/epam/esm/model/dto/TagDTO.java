@@ -18,6 +18,6 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_TAG_NAME_LENGTH;
 @NoArgsConstructor
 public class TagDTO extends IdentifiableDTO {
 	@NotNull(message = "{tag.validation-message.name-not-empty}")
-	@Size(min = MIN_TAG_NAME_LENGTH, max = MAX_TAG_NAME_LENGTH, message="{tag.validation-message.name-size}")
+	@Size(min = MIN_TAG_NAME_LENGTH, max = MAX_TAG_NAME_LENGTH, message = "{tag.validation-message.name-size}")
 	private String name;
 }

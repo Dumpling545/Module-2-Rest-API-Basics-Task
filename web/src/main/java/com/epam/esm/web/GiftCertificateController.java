@@ -1,8 +1,8 @@
 package com.epam.esm.web;
 
-import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
@@ -11,7 +11,6 @@ import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -70,13 +68,14 @@ public class GiftCertificateController {
 				giftCertificateSearchFilterDTO, pageDTO);
 		CollectionModel<EntityModel<GiftCertificateOutputDTO>> model =
 				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-						(c, p) -> c.filteredCertificates(namePart, descriptionPart, tagNames, sortOption, p, pageSize));
+				                                 (c, p) -> c.filteredCertificates(namePart, descriptionPart, tagNames,
+				                                                                  sortOption, p, pageSize));
 		return ResponseEntity.ok(model);
 	}
 
 	@PostMapping
 	public ResponseEntity createCertificate(@RequestBody @Valid GiftCertificateCreateDTO certDTO,
-	                                                UriComponentsBuilder ucb) {
+	                                        UriComponentsBuilder ucb) {
 		GiftCertificateOutputDTO dto = certService.createCertificate(certDTO);
 		URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(dto.getId())).build().toUri();
 		return ResponseEntity.created(locationUri).build();
@@ -84,8 +83,8 @@ public class GiftCertificateController {
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity updateCertificate(@PathVariable("id") Integer id,
-	                                                @RequestBody @Valid GiftCertificateUpdateDTO certDTO,
-	                                                UriComponentsBuilder ucb) {
+	                                        @RequestBody @Valid GiftCertificateUpdateDTO certDTO,
+	                                        UriComponentsBuilder ucb) {
 		certService.updateCertificate(id, certDTO);
 		URI locationUri = ucb.path("/gift-certificates/").path(String.valueOf(id)).build().toUri();
 		return ResponseEntity.noContent().location(locationUri).build();

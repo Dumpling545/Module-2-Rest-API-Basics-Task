@@ -8,8 +8,6 @@ import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -44,8 +41,10 @@ public class TagController {
 	}
 
 	@GetMapping("/most-widely-used-with-highest-total-cost")
-	public ResponseEntity<EntityModel> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(@RequestParam Integer userId) {
-		return ResponseEntity.ok(assembler.toModel(tagService.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(userId)));
+	public ResponseEntity<EntityModel> getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(
+			@RequestParam Integer userId) {
+		return ResponseEntity.ok(
+				assembler.toModel(tagService.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(userId)));
 	}
 
 	@GetMapping
@@ -61,7 +60,7 @@ public class TagController {
 		PagedResultDTO pagedResultDTO = tagService.getAllTags(pageDTO);
 		CollectionModel<EntityModel<TagDTO>> model =
 				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-						(c, p) -> c.allTags(p, pageSize));
+				                                 (c, p) -> c.allTags(p, pageSize));
 		return ResponseEntity.ok(model);
 	}
 

@@ -45,6 +45,7 @@ public class TagRepositoryTest {
 		PagedResult<Tag> tags = tagRepository.getAllTags(ALL_TAGS_EXISTING_OFFSET, ALL_TAGS_EXISTING_LIMIT);
 		assertFalse(tags.getPage().isEmpty());
 	}
+
 	@Test
 	public void getAllTagsShouldReturnEmptyListWhenPassedNonExistingOffsetAndLimit() {
 		PagedResult<Tag> tags = tagRepository.getAllTags(ALL_TAGS_NON_EXISTING_OFFSET, ALL_TAGS_NON_EXISTING_LIMIT);
@@ -111,8 +112,9 @@ public class TagRepositoryTest {
 		List<Tag> expected = List.of(existingTag1, existingTag8);
 		assertEquals(expected, output);
 	}
+
 	@Test
-	public void getMostWidelyUsedTagOfUserWithHighestCostOfAllOrdersShouldReturnCorrectTagWhenPassedExistingUser(){
+	public void getMostWidelyUsedTagOfUserWithHighestCostOfAllOrdersShouldReturnCorrectTagWhenPassedExistingUser() {
 		Optional<Tag> tag = tagRepository.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(EXISTING_USER_ID);
 		assertTrue(tag.isPresent());
 		assertEquals(existingTag8, tag.get());

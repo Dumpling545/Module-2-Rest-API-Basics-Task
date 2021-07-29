@@ -19,7 +19,7 @@ public class OrderAssembler extends ExtendedRepresentationModelAssembler<OrderDT
 	@Override
 	public EntityModel<OrderDTO> createModel(OrderDTO entity) {
 		return instantiateModel(entity).add(linkTo(methodOn(OrderController.class)
-				.allOrders(null, null))
-				.withRel(IanaLinkRelations.COLLECTION));
+				                                           .allOrders(null, null))
+				                                    .withRel(IanaLinkRelations.COLLECTION));
 	}
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 /**
  * Exception handler for exceptions associated with orders
  */
@@ -24,10 +25,10 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 public class OrderExceptionHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrderExceptionHandler.class);
-	@Value("${order.error-info.postfix}")
-	private int orderPostfix;
 	private final ExceptionHelper helper;
 	private final MessageSource messageSource;
+	@Value("${order.error-info.postfix}")
+	private int orderPostfix;
 
 	@ExceptionHandler(InvalidOrderException.class)
 	public ResponseEntity<Object> handleException(InvalidOrderException ex, Locale locale) {
@@ -38,7 +39,7 @@ public class OrderExceptionHandler {
 				status = HttpStatus.NOT_FOUND;
 				String identifier = "id=" + ex.getId();
 				message = messageSource.getMessage("order.error-message.not-found",
-						new Object[]{identifier}, locale);
+				                                   new Object[]{identifier}, locale);
 				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;

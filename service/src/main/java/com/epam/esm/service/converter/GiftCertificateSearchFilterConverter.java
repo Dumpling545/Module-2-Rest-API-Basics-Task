@@ -7,13 +7,15 @@ import com.epam.esm.service.exception.InvalidCertificateException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Value;
+
 /**
  * Abstract mapping filter entities and DTOs. Since mapping logic is not
  * very straightforward, part of mapping process (String to SortOption)
  * is written manually. Used by MapStruct to generate actual mapper class
- *  @see <a href="https://mapstruct.org/">MapStruct library</a>
+ *
+ * @see <a href="https://mapstruct.org/">MapStruct library</a>
  */
-@Mapper(componentModel="spring")
+@Mapper(componentModel = "spring")
 public abstract class GiftCertificateSearchFilterConverter {
 
 	private static final String DELIMITER = " ";
@@ -31,13 +33,13 @@ public abstract class GiftCertificateSearchFilterConverter {
 	@Mapping(target = "sortBy", source = "dto.sortBy")
 	public abstract GiftCertificateSearchFilter convert(GiftCertificateSearchFilterDTO dto);
 
-	public SortOption convert(String sortBy){
+	public SortOption convert(String sortBy) {
 		SortOption sortOption = null;
 		if (sortBy != null) {
 			String tokens[] = sortBy.split(DELIMITER);
 			if (tokens.length != REQUIRED_SORT_BY_NUMBER_OF_TOKENS) {
 				String message = String.format(invalidNumberOfTokensTemplate, sortBy, tokens.length,
-						String.join(DELIMITER, tokens), REQUIRED_SORT_BY_NUMBER_OF_TOKENS);
+				                               String.join(DELIMITER, tokens), REQUIRED_SORT_BY_NUMBER_OF_TOKENS);
 				throw new InvalidCertificateException(message, InvalidCertificateException.Reason.INVALID_SORT_BY);
 			}
 			SortOption.Field field = field(tokens[FIELD_TOKEN_INDEX]);

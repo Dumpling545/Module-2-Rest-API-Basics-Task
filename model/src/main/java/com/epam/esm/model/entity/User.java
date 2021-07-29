@@ -34,16 +34,20 @@ public class User {
 	private Integer id;
 	@Column(name = "user_name", nullable = false, unique = true)
 	private String userName;
+
 	@PrePersist
-	public void onPrePersist(){
+	public void onPrePersist() {
 		logger.info(toString() + " to be persisted");
 	}
+
 	@PreRemove
-	public void onPreRemove(){
+	public void onPreRemove() {
 		logger.info(toString() + " to be removed");
 	}
+
 	@PreUpdate
-	public void onPreUpdate(){
+	public void onPreUpdate() {
 		logger.info(toString() + " to be updated");
 	}
+
 }

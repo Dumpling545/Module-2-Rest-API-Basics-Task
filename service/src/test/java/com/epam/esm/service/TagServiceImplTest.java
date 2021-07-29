@@ -46,11 +46,11 @@ public class TagServiceImplTest {
 	private static final Tag existingTag2 = Tag.builder()
 			.id(existingTagDto2.getId())
 			.name(existingTagDto2.getName()).build();
+	private static final List<Tag> allExistingTagList = List.of(existingTag1, existingTag2);
+	private static final PagedResult<Tag> tagPage = PagedResult.<Tag>builder().page(allExistingTagList).build();
 	private static final List<TagDTO> allExistingTagDtoList = List.of(existingTagDto1, existingTagDto2);
 	private static final PagedResultDTO<TagDTO> tagPageDto = PagedResultDTO.<TagDTO>builder()
 			.page(allExistingTagDtoList).build();
-	private static final List<Tag> allExistingTagList = List.of(existingTag1, existingTag2);
-	private static final PagedResult<Tag> tagPage = PagedResult.<Tag>builder().page(allExistingTagList).build();
 	private static final TagDTO nonExistingTagDto = TagDTO.builder()
 			.id(-10)
 			.name("non existent").build();
@@ -68,7 +68,7 @@ public class TagServiceImplTest {
 	public void createTagShouldReturnNewDtoWithIdWhenPassedCorrectDto() {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
 		Mockito.when(tagRepository
-				.createTag(Mockito.argThat(arg -> arg.getName().equals(tagDtoToBeCreated.getName()))))
+				             .createTag(Mockito.argThat(arg -> arg.getName().equals(tagDtoToBeCreated.getName()))))
 				.thenReturn(mockedCreatedTag);
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
@@ -93,7 +93,8 @@ public class TagServiceImplTest {
 	@Test
 	public void getTagShouldReturnDtoWhenPassedExistingTagId() {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.when(tagRepository.getTagById(Mockito.eq(existingTagDto1.getId()))).thenReturn(Optional.of(existingTag1));
+		Mockito.when(tagRepository.getTagById(Mockito.eq(existingTagDto1.getId())))
+				.thenReturn(Optional.of(existingTag1));
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
 			TagDTO res = tagService.getTag(existingTagDto1.getId());
@@ -107,14 +108,16 @@ public class TagServiceImplTest {
 		Mockito.when(tagRepository.getTagById(Mockito.eq(nonExistingTagDto.getId()))).thenReturn(Optional.empty());
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		ReflectionTestUtils.setField(tagService, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
-		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagService.getTag(existingTagDto1.getId()));
+		InvalidTagException ex =
+				assertThrows(InvalidTagException.class, () -> tagService.getTag(existingTagDto1.getId()));
 		assertEquals(InvalidTagException.Reason.NOT_FOUND, ex.getReason());
 	}
 
 	@Test
 	public void getTagByNameShouldReturnDtoWhenPassedExistingTagName() {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.when(tagRepository.getTagByName(Mockito.eq(existingTagDto1.getName()))).thenReturn(Optional.of(existingTag1));
+		Mockito.when(tagRepository.getTagByName(Mockito.eq(existingTagDto1.getName())))
+				.thenReturn(Optional.of(existingTag1));
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
 			TagDTO res = tagService.getTag(existingTagDto1.getName());
@@ -128,7 +131,8 @@ public class TagServiceImplTest {
 		Mockito.when(tagRepository.getTagByName(Mockito.eq(nonExistingTagDto.getName()))).thenReturn(Optional.empty());
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		ReflectionTestUtils.setField(tagService, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
-		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagService.getTag(nonExistingTagDto.getName()));
+		InvalidTagException ex =
+				assertThrows(InvalidTagException.class, () -> tagService.getTag(nonExistingTagDto.getName()));
 		assertEquals(InvalidTagException.Reason.NOT_FOUND, ex.getReason());
 	}
 
@@ -146,14 +150,16 @@ public class TagServiceImplTest {
 		Mockito.when(tagRepository.deleteTag(Mockito.eq(existingTagDto1.getId()))).thenReturn(false);
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		ReflectionTestUtils.setField(tagService, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
-		InvalidTagException ex = assertThrows(InvalidTagException.class, () -> tagService.deleteTag(existingTagDto1.getId()));
+		InvalidTagException ex =
+				assertThrows(InvalidTagException.class, () -> tagService.deleteTag(existingTagDto1.getId()));
 		assertEquals(InvalidTagException.Reason.NOT_FOUND, ex.getReason());
 	}
 
 	@Test
 	public void getAllTagsShouldNotThrowExceptionAndReturnList() {
 		TagRepository tagRepository = Mockito.mock(TagRepository.class);
-		Mockito.when(tagRepository.getAllTags(Mockito.eq(pageDTO.getOffset()), Mockito.eq(pageDTO.getPageSize()))).thenReturn(tagPage);
+		Mockito.when(tagRepository.getAllTags(Mockito.eq(pageDTO.getOffset()), Mockito.eq(pageDTO.getPageSize())))
+				.thenReturn(tagPage);
 		TagService tagService = new TagServiceImpl(tagRepository, tagConverter, pagedResultConverter);
 		assertDoesNotThrow(() -> {
 			PagedResultDTO<TagDTO> tagDTOPagedResult = tagService.getAllTags(pageDTO);

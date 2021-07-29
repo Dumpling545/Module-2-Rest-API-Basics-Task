@@ -8,8 +8,6 @@ import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +51,7 @@ public class OrderController {
 		PagedResultDTO<OrderDTO> pagedResultDTO = orderService.getAllOrders(pageDTO);
 		CollectionModel<EntityModel<OrderDTO>> model =
 				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-						(c, p) -> c.allOrders(p, pageSize));
+				                                 (c, p) -> c.allOrders(p, pageSize));
 		return ResponseEntity.ok(model);
 	}
 

@@ -30,7 +30,7 @@ public class GiftCertificateSearchGiftCertificateSearchFilterConverterTest {
 	private static final String INVALID_SORT_FIELD_STR = "price desc";
 	private static final String INVALID_SORT_DIRECTION_STR = "name ascdesc";
 	private static final SortOption EXPECTED_SORT_OPTION = new SortOption(SortOption.Field.NAME,
-			SortOption.Direction.DESC);
+	                                                                      SortOption.Direction.DESC);
 	private static final String TEST_EXCEPTION_MESSAGE_TEMPLATE = "Test message %s";
 	private static final String INVALID_NUMBER_OF_TOKENS_TEMPLATE = "invalidNumberOfTokensTemplate";
 	private static final String INVALID_DIRECTION_TOKEN_TEMPLATE = "invalidDirectionTokenTemplate";
@@ -39,12 +39,13 @@ public class GiftCertificateSearchGiftCertificateSearchFilterConverterTest {
 			giftCertificateSearchFilterConverter = Mappers.getMapper(GiftCertificateSearchFilterConverter.class);
 
 	private Stream<GiftCertificateSearchFilterDTO> correctTestSources() {
-		return Stream.of(GiftCertificateSearchFilterDTO.builder().namePart(NAME_PART).descriptionPart(DESC_PART).tagNames(TAG_NAMES)
-						.sortBy(CORRECT_SORT_OPTION_STR).build(),
-				GiftCertificateSearchFilterDTO.builder().namePart(NAME_PART).build(),
-				GiftCertificateSearchFilterDTO.builder().descriptionPart(DESC_PART).build(),
-				GiftCertificateSearchFilterDTO.builder().tagNames(TAG_NAMES).build(),
-				GiftCertificateSearchFilterDTO.builder().sortBy(CORRECT_SORT_OPTION_STR).build());
+		return Stream.of(GiftCertificateSearchFilterDTO.builder().namePart(NAME_PART).descriptionPart(DESC_PART)
+				                 .tagNames(TAG_NAMES)
+				                 .sortBy(CORRECT_SORT_OPTION_STR).build(),
+		                 GiftCertificateSearchFilterDTO.builder().namePart(NAME_PART).build(),
+		                 GiftCertificateSearchFilterDTO.builder().descriptionPart(DESC_PART).build(),
+		                 GiftCertificateSearchFilterDTO.builder().tagNames(TAG_NAMES).build(),
+		                 GiftCertificateSearchFilterDTO.builder().sortBy(CORRECT_SORT_OPTION_STR).build());
 	}
 
 	@ParameterizedTest
@@ -65,14 +66,14 @@ public class GiftCertificateSearchGiftCertificateSearchFilterConverterTest {
 		Random random = new Random();
 		return Stream.of(
 				Arguments.of(GiftCertificateSearchFilterDTO.builder().sortBy(INVALID_SORT_NUMBER_OF_TOKENS_STR).build(),
-						INVALID_NUMBER_OF_TOKENS_TEMPLATE,
-						TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()),
+				             INVALID_NUMBER_OF_TOKENS_TEMPLATE,
+				             TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()),
 				Arguments.of(GiftCertificateSearchFilterDTO.builder().sortBy(INVALID_SORT_DIRECTION_STR).build(),
-						INVALID_DIRECTION_TOKEN_TEMPLATE,
-						TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()),
+				             INVALID_DIRECTION_TOKEN_TEMPLATE,
+				             TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()),
 				Arguments.of(GiftCertificateSearchFilterDTO.builder().sortBy(INVALID_SORT_FIELD_STR).build(),
-						INVALID_FIELD_TOKEN_TEMPLATE,
-						TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()));
+				             INVALID_FIELD_TOKEN_TEMPLATE,
+				             TEST_EXCEPTION_MESSAGE_TEMPLATE + random.nextInt()));
 	}
 
 	@ParameterizedTest
@@ -82,7 +83,7 @@ public class GiftCertificateSearchGiftCertificateSearchFilterConverterTest {
 	                                                                                String fieldValue) {
 		ReflectionTestUtils.setField(giftCertificateSearchFilterConverter, fieldName, fieldValue, String.class);
 		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
-				() -> giftCertificateSearchFilterConverter.convert(dto));
+		                                              () -> giftCertificateSearchFilterConverter.convert(dto));
 		assertEquals(InvalidCertificateException.Reason.INVALID_SORT_BY, ex.getReason());
 	}
 }

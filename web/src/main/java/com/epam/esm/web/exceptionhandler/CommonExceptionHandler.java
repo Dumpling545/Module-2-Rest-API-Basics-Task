@@ -53,6 +53,8 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 @RequiredArgsConstructor
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(CommonExceptionHandler.class);
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
 	@Value("${cert.error-info.postfix}")
 	private int certPostfix;
 	@Value("${tag.error-info.postfix}")
@@ -63,8 +65,6 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	private int userPostfix;
 	@Value("${common.error-info.postfix}")
 	private int commonPostfix;
-	private final ExceptionHelper helper;
-	private final MessageSource messageSource;
 
 	private int resolvePostfix(Class controllerClass) {
 		int postfix = commonPostfix;
@@ -97,13 +97,15 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 		String message = messageSource.getMessage("common.error-message.service", null, locale);
 		return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR, message, postfix);
 	}
+
 	@ExceptionHandler(ConstraintViolationException.class)
-	public ResponseEntity<Object> handleException(ConstraintViolationException ex, HandlerMethod handlerMethod, Locale locale) {
+	public ResponseEntity<Object> handleException(ConstraintViolationException ex, HandlerMethod handlerMethod,
+	                                              Locale locale) {
 		logger.error("Handled in the ConstraintViolationException handler", ex);
 		List<String> messages = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
 		return helper.handleUnformatted(HttpStatus.BAD_REQUEST,
-				messages,
-				resolvePostfix(handlerMethod));
+		                                messages,
+		                                resolvePostfix(handlerMethod));
 	}
 
 
@@ -113,7 +115,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                                     WebRequest request) {
 		logger.error("Handled in the HttpRequestMethodNotSupportedException handler", ex);
 		String message = messageSource.getMessage("common.error-message.http-request-method-not-supported",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -123,7 +125,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                                 WebRequest request) {
 		logger.error("Handled in the HttpMediaTypeNotSupportedException handler", ex);
 		String message = messageSource.getMessage("common.error-message.http-media-type-not-supported",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -133,7 +135,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                                  WebRequest request) {
 		logger.error("Handled in the HttpMediaTypeNotAcceptableException handler", ex);
 		String message = messageSource.getMessage("common.error-message.http-media-type-not-acceptable",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -142,7 +144,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                           HttpStatus status, WebRequest request) {
 		logger.error("Handled in the MissingPathVariableException handler", ex);
 		String message = messageSource.getMessage("common.error-message.missing-path-variable",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -152,7 +154,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                                      WebRequest request) {
 		logger.error("Handled in the MissingServletRequestParameterException handler", ex);
 		String message = messageSource.getMessage("common.error-message.missing-servlet-request-parameter",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -162,7 +164,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                                      WebRequest request) {
 		logger.error("Handled in the ServletRequestBindingException handler", ex);
 		String message = messageSource.getMessage("common.error-message.servlet-request-binding",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -172,7 +174,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                              WebRequest request) {
 		logger.error("Handled in the ConversionNotSupportedException handler", ex);
 		String message = messageSource.getMessage("common.error-message.conversion-not-supported",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -181,7 +183,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                    HttpStatus status, WebRequest request) {
 		logger.error("Handled in the TypeMismatchException handler", ex);
 		String message = messageSource.getMessage("common.error-message.type-mismatch",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -191,7 +193,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                              WebRequest request) {
 		logger.error("Handled in the HttpMessageNotReadableException handler", ex);
 		String message = messageSource.getMessage("common.error-message.http-message-not-readable",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -201,7 +203,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                              WebRequest request) {
 		logger.error("Handled in the HttpMessageNotWritableException handler", ex);
 		String message = messageSource.getMessage("common.error-message.http-message-not-writable",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -220,7 +222,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                                 WebRequest request) {
 		logger.error("Handled in the MissingServletRequestPartException handler", ex);
 		String message = messageSource.getMessage("common.error-message.missing-servlet-request-part",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -229,7 +231,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                     WebRequest request) {
 		logger.error("Handled in the BindException handler", ex);
 		String message = messageSource.getMessage("common.error-message.bind",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -238,7 +240,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                               HttpStatus status, WebRequest request) {
 		logger.error("Handled in the NoHandlerFoundException handler", ex);
 		String message = messageSource.getMessage("common.error-message.no-handler-found",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
@@ -248,7 +250,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	                                                                    WebRequest request) {
 		logger.error("Handled in the AsyncRequestTimeoutException handler", ex);
 		String message = messageSource.getMessage("common.error-message.async-request-timeout",
-				null, request.getLocale());
+		                                          null, request.getLocale());
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 

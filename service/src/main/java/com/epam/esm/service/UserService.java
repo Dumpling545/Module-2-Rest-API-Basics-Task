@@ -13,12 +13,14 @@ public interface UserService {
 	/**
 	 * Retrieves user object by given id
 	 *
-	 * @param id
-	 * 		if of user to be retrieved
+	 * @param id if of user to be retrieved
 	 * @return user matching provided id
 	 */
 	UserDTO getUser(int id);
-	/** Retrieves all existing users from database
+
+	/**
+	 * Retrieves all existing users from database
+	 *
 	 * @param page paging info
 	 * @return paged list of users
 	 */

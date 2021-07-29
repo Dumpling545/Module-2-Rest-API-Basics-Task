@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 /**
  * Exception handler for exceptions associated with tags
  */
@@ -24,10 +25,10 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 public class TagExceptionHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(TagExceptionHandler.class);
-	@Value("${tag.error-info.postfix}")
-	private int tagPostfix;
 	private final ExceptionHelper helper;
 	private final MessageSource messageSource;
+	@Value("${tag.error-info.postfix}")
+	private int tagPostfix;
 
 	@ExceptionHandler(InvalidTagException.class)
 	public ResponseEntity<Object> handleException(InvalidTagException ex, Locale locale) {
@@ -37,13 +38,13 @@ public class TagExceptionHandler {
 			case ALREADY_EXISTS:
 				status = HttpStatus.CONFLICT;
 				message = messageSource.getMessage("tag.error-message.already-exists",
-						new Object[]{ex.getTagDescription()}, locale);
+				                                   new Object[]{ex.getTagDescription()}, locale);
 				break;
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
 				String tagDescription = ex.getTagDescription();
 				message = messageSource.getMessage("tag.error-message.not-found",
-						new Object[]{tagDescription}, locale);
+				                                   new Object[]{tagDescription}, locale);
 				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;

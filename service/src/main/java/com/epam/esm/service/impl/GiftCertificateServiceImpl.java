@@ -1,21 +1,21 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.db.GiftCertificateRepository;
-import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
+import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
-import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.converter.GiftCertificateSearchFilterConverter;
 import com.epam.esm.service.converter.GiftCertificateConverter;
+import com.epam.esm.service.converter.GiftCertificateSearchFilterConverter;
 import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
@@ -38,15 +38,14 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-	@Value("${cert.exception.not-found}")
-	private String notFoundExceptionTemplate;
-
 	private final TagService tagService;
 	private final GiftCertificateRepository giftCertificateRepository;
 	private final GiftCertificateConverter giftCertificateConverter;
 	private final TagConverter tagConverter;
 	private final GiftCertificateSearchFilterConverter giftCertificateSearchFilterConverter;
 	private final PagedResultConverter pagedResultConverter;
+	@Value("${cert.exception.not-found}")
+	private String notFoundExceptionTemplate;
 
 	private InvalidCertificateException createNotFoundException(int id) {
 		String identifier = "id=" + id;

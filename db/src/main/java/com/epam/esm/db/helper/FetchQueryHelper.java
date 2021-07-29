@@ -29,7 +29,7 @@ public class FetchQueryHelper {
 	                      Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
 	                      Function<TypedQuery<Q>, O> resultProducer) {
 		return fetch(queryClass, queryClass, entityManager, queryConfigurator, entityGraphProducer, resultProducer,
-				true);
+		             true);
 	}
 
 	public <Q, R, O> O fetch(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
@@ -37,6 +37,7 @@ public class FetchQueryHelper {
 	                         Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
 		return fetch(queryClass, rootClass, entityManager, queryConfigurator, null, outputProducer, clearContext);
 	}
+
 	public <Q, R, O> O fetch(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
 	                         TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
 	                         Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
@@ -61,8 +62,8 @@ public class FetchQueryHelper {
 	                                              TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
 	                                              Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
 	                                              int offset, int limit, boolean clearContext) {
-		List<Q> result = fetch(queryClass, rootClass, entityManager, queryConfigurator,entityGraphProducer,
-				(tq) -> tq.setFirstResult(offset).setMaxResults(limit + 1).getResultList(), false);
+		List<Q> result = fetch(queryClass, rootClass, entityManager, queryConfigurator, entityGraphProducer,
+		                       (tq) -> tq.setFirstResult(offset).setMaxResults(limit + 1).getResultList(), false);
 		return PagedResult.<Q>builder()
 				.first(offset == 0)
 				.last(result.size() <= limit)
@@ -75,7 +76,7 @@ public class FetchQueryHelper {
 	                                              Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
 	                                              int offset, int limit) {
 		return fetchPagedResult(queryClass, rootClass, entityManager, queryConfigurator, entityGraphProducer,
-				offset, limit, true);
+		                        offset, limit, true);
 	}
 
 	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
@@ -83,7 +84,7 @@ public class FetchQueryHelper {
 	                                              TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
 	                                              int offset, int limit, boolean clearContext) {
 		return fetchPagedResult(queryClass, rootClass, entityManager, queryConfigurator, null,
-				offset, limit, clearContext);
+		                        offset, limit, clearContext);
 	}
 
 	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
@@ -100,7 +101,7 @@ public class FetchQueryHelper {
 	                                           Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
 	                                           int offset, int limit) {
 		return fetchPagedResult(rootClass, rootClass, entityManager, queryConfigurator, entityGraphProducer, offset,
-				limit);
+		                        limit);
 	}
 
 	public <Q> PagedResult<Q> fetchPagedResult(Class<Q> queryClass,

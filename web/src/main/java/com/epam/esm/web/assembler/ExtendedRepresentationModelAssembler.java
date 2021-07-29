@@ -30,13 +30,16 @@ public abstract class ExtendedRepresentationModelAssembler<T extends Identifiabl
 
 	/**
 	 * Links to add at the root of any parent entity (both single or collection of entities)
+	 *
 	 * @return List of links
 	 */
 	protected List<Link> rootAdditionalLinks() {
 		return Collections.EMPTY_LIST;
 	}
+
 	/**
 	 * Links to add at the root of any EntityModel
+	 *
 	 * @return List of links
 	 */
 	protected List<Link> entityAdditionalLinks(T entity) {
@@ -45,6 +48,7 @@ public abstract class ExtendedRepresentationModelAssembler<T extends Identifiabl
 
 	/**
 	 * Method used for base conversion of entity to EntityModel inside toModel() method
+	 *
 	 * @param entity entity to be converted
 	 * @return entity model
 	 */
@@ -75,13 +79,10 @@ public abstract class ExtendedRepresentationModelAssembler<T extends Identifiabl
 	/**
 	 * Assembles model from PagedResultDTO, adding some links to provide paging info
 	 *
-	 * @param pageNumber
-	 * 		current page number
-	 * @param pagedResultDTO
-	 * 		result retrieved from some server method to be served to client side
-	 * @param pagedResultControllerHandler
-	 * 		lambda expression that must invoke same controller handler on specified controller, leaving pageNumber
-	 * 		parameter as variable
+	 * @param pageNumber                   current page number
+	 * @param pagedResultDTO               result retrieved from some server method to be served to client side
+	 * @param pagedResultControllerHandler lambda expression that must invoke same controller handler on specified controller, leaving pageNumber
+	 *                                     parameter as variable
 	 * @return assembled collection model
 	 */
 	public CollectionModel<EntityModel<T>> toPagedCollectionModel(int pageNumber,
@@ -89,16 +90,16 @@ public abstract class ExtendedRepresentationModelAssembler<T extends Identifiabl
 	                                                              BiFunction<C, Integer, ResponseEntity<CollectionModel>> pagedResultControllerHandler) {
 		CollectionModel model = toCollectionModel(pagedResultDTO.getPage());
 		model.addIf(!pagedResultDTO.isFirst(),
-				() -> linkTo(pagedResultControllerHandler.apply((C) methodOn(getControllerClass()), 1))
-						.withRel(IanaLinkRelations.FIRST))
+		            () -> linkTo(pagedResultControllerHandler.apply((C) methodOn(getControllerClass()), 1))
+				            .withRel(IanaLinkRelations.FIRST))
 				.addIf(!pagedResultDTO.isFirst(),
-						() -> linkTo(
-								pagedResultControllerHandler.apply((C) methodOn(getControllerClass()), pageNumber - 1))
-								.withRel(IanaLinkRelations.PREV))
+				       () -> linkTo(
+						       pagedResultControllerHandler.apply((C) methodOn(getControllerClass()), pageNumber - 1))
+						       .withRel(IanaLinkRelations.PREV))
 				.addIf(!pagedResultDTO.isLast(),
-						() -> linkTo(
-								pagedResultControllerHandler.apply((C) methodOn(getControllerClass()), pageNumber + 1))
-								.withRel(IanaLinkRelations.NEXT));
+				       () -> linkTo(
+						       pagedResultControllerHandler.apply((C) methodOn(getControllerClass()), pageNumber + 1))
+						       .withRel(IanaLinkRelations.NEXT));
 		return model;
 	}
 }

@@ -17,8 +17,7 @@ public interface TagService {
 	/**
 	 * Creates tag object
 	 *
-	 * @param tag
-	 * 		dto representing tag to be created, id is ignored
+	 * @param tag dto representing tag to be created, id is ignored
 	 * @return dto representing created tag
 	 */
 	TagDTO createTag(TagDTO tag);
@@ -26,8 +25,7 @@ public interface TagService {
 	/**
 	 * Retrieves tag object by given id
 	 *
-	 * @param id
-	 * 		if of tag to be retrieved
+	 * @param id if of tag to be retrieved
 	 * @return tag matching provided id
 	 */
 	TagDTO getTag(int id);
@@ -35,8 +33,7 @@ public interface TagService {
 	/**
 	 * Retrieves tag object by given name
 	 *
-	 * @param tagName
-	 * 		if of tag to be retrieved
+	 * @param tagName if of tag to be retrieved
 	 * @return tag matching provided name
 	 */
 	TagDTO getTag(String tagName);
@@ -44,12 +41,13 @@ public interface TagService {
 	/**
 	 * Deletes tag object from database
 	 *
-	 * @param id
-	 * 		id of tag to be deleted
+	 * @param id id of tag to be deleted
 	 */
 	void deleteTag(int id);
 
-	/** Retrieves all existing tags from database
+	/**
+	 * Retrieves all existing tags from database
+	 *
 	 * @param page paging info
 	 * @return paged list of tags
 	 */
@@ -58,8 +56,7 @@ public interface TagService {
 	/**
 	 * Retrieves all tags which names included in provided set from database
 	 *
-	 * @param tagNames
-	 * 		-- {@link Set} of tag names to retrieve
+	 * @param tagNames -- {@link Set} of tag names to retrieve
 	 * @return {@link List} of tags
 	 */
 	Set<TagDTO> getTagsFromNameSet(Set<String> tagNames);
@@ -71,9 +68,8 @@ public interface TagService {
 	 * NOTE: Associations with certificates counted on per-order basis (1 order - 1 association for each tag associated
 	 * with purchased certificate).
 	 *
-	 * @param userId
-	 * 		-- id of user
-	 * @return  corresponding tag object
+	 * @param userId -- id of user
+	 * @return corresponding tag object
 	 */
 	TagDTO getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId);
 }

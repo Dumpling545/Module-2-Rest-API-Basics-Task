@@ -20,7 +20,7 @@ public class GiftCertificateAssembler extends
 	@Override
 	public EntityModel<GiftCertificateOutputDTO> createModel(GiftCertificateOutputDTO entity) {
 		return instantiateModel(entity).add(linkTo(methodOn(GiftCertificateController.class)
-				.filteredCertificates(null, null, null, null, null, null))
-				.withRel(IanaLinkRelations.COLLECTION));
+				                                           .filteredCertificates(null, null, null, null, null, null))
+				                                    .withRel(IanaLinkRelations.COLLECTION));
 	}
 }

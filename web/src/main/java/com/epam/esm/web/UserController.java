@@ -31,6 +31,7 @@ public class UserController {
 	private final OrderService orderService;
 	private final ExtendedRepresentationModelAssembler<UserDTO, UserController> userAssembler;
 	private final ExtendedRepresentationModelAssembler<OrderDTO, UserController> orderAssembler;
+
 	@GetMapping
 	public ResponseEntity<CollectionModel> allUsers(@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
 			                                                Integer pageNumber,
@@ -43,7 +44,7 @@ public class UserController {
 		PagedResultDTO<UserDTO> pagedResultDTO = userService.getAllUsers(pageDTO);
 		CollectionModel<EntityModel<UserDTO>> model =
 				userAssembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-						(c, p) -> c.allUsers(p, pageSize));
+				                                     (c, p) -> c.allUsers(p, pageSize));
 		return ResponseEntity.ok(model);
 	}
 
@@ -54,10 +55,10 @@ public class UserController {
 
 	@GetMapping("/{id}/orders")
 	public ResponseEntity<CollectionModel> getOrdersByUser(@PathVariable("id") Integer id,
-	                                      @RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
-			                                      Integer pageNumber,
-	                                      @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
-			                                      Integer pageSize) {
+	                                                       @RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
+			                                                       Integer pageNumber,
+	                                                       @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
+			                                                       Integer pageSize) {
 		PageDTO pageDTO = PageDTO.builder()
 				.pageNumber(pageNumber)
 				.pageSize(pageSize)
@@ -65,7 +66,7 @@ public class UserController {
 		PagedResultDTO<OrderDTO> pagedResultDTO = orderService.getOrdersByUser(id, pageDTO);
 		CollectionModel<EntityModel<OrderDTO>> model =
 				orderAssembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-						(c, p) -> c.getOrdersByUser(id, p, pageSize));
+				                                      (c, p) -> c.getOrdersByUser(id, p, pageSize));
 		return ResponseEntity.ok(model);
 	}
 

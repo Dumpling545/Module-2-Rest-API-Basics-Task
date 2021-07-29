@@ -55,16 +55,17 @@ public class OrderRepositoryTest {
 	@Autowired
 	OrderRepository orderRepository;
 
-	private void assertOrdersEqual(Order o1, Order o2){
+	private void assertOrdersEqual(Order o1, Order o2) {
 		assertEquals(o1.getId(), o2.getId());
 		assertEquals(o1.getUserId(), o2.getUserId());
 		assertEquals(o1.getGiftCertificateId(), o2.getGiftCertificateId());
 		assertEquals(o1.getCost(), o2.getCost());
-		if(o1.getPurchaseDate() != null && o2.getPurchaseDate() != null){
+		if (o1.getPurchaseDate() != null && o2.getPurchaseDate() != null) {
 			assertEquals(o1.getPurchaseDate().get(ChronoField.MINUTE_OF_DAY),
-					o1.getPurchaseDate().get(ChronoField.MINUTE_OF_DAY));
+			             o1.getPurchaseDate().get(ChronoField.MINUTE_OF_DAY));
 		}
 	}
+
 	@Test
 	public void createOrderShouldReturnOrderWhenPassedCorrectOrder() {
 		Order created = orderRepository.createOrder(orderToBeCreated);
@@ -73,6 +74,7 @@ public class OrderRepositoryTest {
 		assertTrue(fetchedAfterCreation.isPresent());
 		assertOrdersEqual(fetchedAfterCreation.get(), created);
 	}
+
 	@Test
 	public void getOrderByIdShouldReturnOptionalWithOrderWhenPassedExistingOrderId() {
 		Optional<Order> optional = orderRepository.getOrderById(existingOrder2.getId());
@@ -95,30 +97,31 @@ public class OrderRepositoryTest {
 	@Test
 	public void getAllOrdersShouldReturnEmptyListWhenPassedNonExistingOffsetAndLimit() {
 		PagedResult<Order> orders = orderRepository.getAllOrders(ALL_ORDERS_NON_EXISTING_OFFSET,
-				ALL_ORDERS_NON_EXISTING_LIMIT);
+		                                                         ALL_ORDERS_NON_EXISTING_LIMIT);
 		assertTrue(orders.getPage().isEmpty());
 	}
 
 	@Test
 	public void getOrdersByUserIdShouldReturnNonEmptyListWhenPassedExistingOffsetAndLimit() {
 		PagedResult<Order> orders = orderRepository.getOrdersByUserId(existingOrder1.getUserId(),
-				ALL_ORDERS_EXISTING_OFFSET, ALL_ORDERS_EXISTING_LIMIT);
+		                                                              ALL_ORDERS_EXISTING_OFFSET,
+		                                                              ALL_ORDERS_EXISTING_LIMIT);
 		assertFalse(orders.getPage().isEmpty());
 	}
 
 	@Test
 	public void getOrdersByUserIdShouldReturnEmptyListWhenPassedNonExistingUserId() {
 		PagedResult<Order> orders = orderRepository.getOrdersByUserId(NON_EXISTENT_USER_ID,
-				ALL_ORDERS_EXISTING_OFFSET,
-				ALL_ORDERS_EXISTING_LIMIT);
+		                                                              ALL_ORDERS_EXISTING_OFFSET,
+		                                                              ALL_ORDERS_EXISTING_LIMIT);
 		assertTrue(orders.getPage().isEmpty());
 	}
 
 	@Test
 	public void getOrdersByUserIdShouldReturnEmptyListWhenPassedNonExistingOffsetAndLimit() {
 		PagedResult<Order> orders = orderRepository.getOrdersByUserId(existingOrder1.getUserId(),
-				ALL_ORDERS_NON_EXISTING_OFFSET,
-				ALL_ORDERS_NON_EXISTING_LIMIT);
+		                                                              ALL_ORDERS_NON_EXISTING_OFFSET,
+		                                                              ALL_ORDERS_NON_EXISTING_LIMIT);
 		assertTrue(orders.getPage().isEmpty());
 	}
 }

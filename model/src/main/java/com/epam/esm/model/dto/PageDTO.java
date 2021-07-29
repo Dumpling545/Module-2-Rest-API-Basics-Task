@@ -26,7 +26,7 @@ public class PageDTO {
 	@Max(value = MAX_PAGE_SIZE, message = "{page.validation-message.page-size-max}")
 	private Integer pageSize;
 
-	public int getOffset(){
+	public int getOffset() {
 		return (pageNumber - 1) * pageSize;
 	}
 }

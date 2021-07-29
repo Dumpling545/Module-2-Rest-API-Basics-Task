@@ -20,10 +20,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JpaUserRepository implements UserRepository {
 
+	private final FetchQueryHelper fetchQueryHelper;
 	@PersistenceContext
 	private EntityManager entityManager;
-
-	private final FetchQueryHelper fetchQueryHelper;
 
 	@Override
 	@Transactional(readOnly = true)

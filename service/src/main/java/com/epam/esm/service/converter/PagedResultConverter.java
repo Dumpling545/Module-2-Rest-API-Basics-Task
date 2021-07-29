@@ -15,12 +15,16 @@ import org.mapstruct.Mapper;
 /**
  * Interface mapping pagedResult (containing retrieved paged list and boolean flags)
  * entities and DTOs. Used by MapStruct to generate actual mapper class
- *  @see <a href="https://mapstruct.org/">MapStruct library</a>
+ *
+ * @see <a href="https://mapstruct.org/">MapStruct library</a>
  */
-@Mapper(componentModel="spring")
+@Mapper(componentModel = "spring")
 public interface PagedResultConverter {
 	PagedResultDTO<GiftCertificateOutputDTO> convertToCertificatePage(PagedResult<GiftCertificate> pagedResult);
+
 	PagedResultDTO<TagDTO> convertToTagPage(PagedResult<Tag> pagedResult);
+
 	PagedResultDTO<OrderDTO> convertToOrderPage(PagedResult<Order> pagedResult);
+
 	PagedResultDTO<UserDTO> convertToUserPage(PagedResult<User> pagedResult);
 }

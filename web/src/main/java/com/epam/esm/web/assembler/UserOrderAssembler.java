@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserOrderAssembler extends ExtendedRepresentationModelAssembler<OrderDTO, UserController> {
 	private final ExtendedRepresentationModelAssembler<OrderDTO, OrderController> orderAssembler;
+
 	public UserOrderAssembler(ExtendedRepresentationModelAssembler<OrderDTO, OrderController> orderAssembler) {
 		super(UserController.class, OrderDTO.class);
 		this.orderAssembler = orderAssembler;

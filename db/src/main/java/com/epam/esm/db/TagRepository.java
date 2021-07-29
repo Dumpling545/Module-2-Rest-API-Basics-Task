@@ -15,8 +15,7 @@ public interface TagRepository {
 	/**
 	 * Creates new tag in database (id property is ignored).
 	 *
-	 * @param tag
-	 * 		object containing name for new tag, id field is ignored
+	 * @param tag object containing name for new tag, id field is ignored
 	 * @return Tag object representing newly created tag in database
 	 */
 	Tag createTag(Tag tag);
@@ -24,8 +23,7 @@ public interface TagRepository {
 	/**
 	 * Retrieves tag with given id
 	 *
-	 * @param id
-	 * 		id of tag to be retrieved
+	 * @param id id of tag to be retrieved
 	 * @return {@link Optional} containing corresponding tag object, if tag with such id exists in database; empty
 	 * {@link Optional} otherwise
 	 */
@@ -34,8 +32,7 @@ public interface TagRepository {
 	/**
 	 * Retrieves tag with given name
 	 *
-	 * @param tagName
-	 * 		name of tag to be retrieved
+	 * @param tagName name of tag to be retrieved
 	 * @return {@link Optional} of tag containing corresponding tag object, if tag with such name exists in database;
 	 * empty {@link Optional} otherwise
 	 */
@@ -44,10 +41,8 @@ public interface TagRepository {
 	/**
 	 * Retrieves all tags in database
 	 *
-	 * @param offset
-	 * 		how many elements to skip
-	 * @param limit
-	 * 		how many elements to retrieve
+	 * @param offset how many elements to skip
+	 * @param limit  how many elements to retrieve
 	 * @return paged list of tags
 	 */
 	PagedResult<Tag> getAllTags(int offset, int limit);
@@ -55,8 +50,7 @@ public interface TagRepository {
 	/**
 	 * Retrieves all tags which names included in provided set from database
 	 *
-	 * @param tagNames
-	 * 		-- {@link Set} of tag names to retrieve
+	 * @param tagNames -- {@link Set} of tag names to retrieve
 	 * @return {@link List} of tags
 	 */
 	List<Tag> getTagsFromNameSet(Set<String> tagNames);
@@ -64,8 +58,7 @@ public interface TagRepository {
 	/**
 	 * Deletes tag with given id from database
 	 *
-	 * @param id
-	 * 		id of tag to be deleted
+	 * @param id id of tag to be deleted
 	 * @return true if tag with given id successfully deleted; false if tag with such id does not exist in database by
 	 * the time of method invocation
 	 */
@@ -78,8 +71,7 @@ public interface TagRepository {
 	 * NOTE: Associations with certificates counted on per-order basis (1 order - 1 association for each tag associated
 	 * with purchased certificate).
 	 *
-	 * @param userId
-	 * 		-- id of user
+	 * @param userId -- id of user
 	 * @return {@link Optional} containing corresponding tag object, if tag with such id exists in database; empty
 	 * {@link Optional} otherwise
 	 */

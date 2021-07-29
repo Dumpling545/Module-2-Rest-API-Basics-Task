@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Locale;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 /**
  * Exception handler for exceptions associated with gift certificates
  */
@@ -23,10 +24,10 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @RequiredArgsConstructor
 public class GiftCertificateExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(GiftCertificateExceptionHandler.class);
-	@Value("${cert.error-info.postfix}")
-	private int certPostfix;
 	private final ExceptionHelper helper;
 	private final MessageSource messageSource;
+	@Value("${cert.error-info.postfix}")
+	private int certPostfix;
 
 	@ExceptionHandler(InvalidCertificateException.class)
 	public ResponseEntity<Object> handleException(InvalidCertificateException ex, Locale locale) {
@@ -36,7 +37,7 @@ public class GiftCertificateExceptionHandler {
 			case NOT_FOUND:
 				status = HttpStatus.NOT_FOUND;
 				message = messageSource.getMessage("cert.error-message.not-found",
-						new Object[]{ex.getCertificateId()}, locale);
+				                                   new Object[]{ex.getCertificateId()}, locale);
 				break;
 			case INVALID_SORT_BY:
 				status = HttpStatus.BAD_REQUEST;

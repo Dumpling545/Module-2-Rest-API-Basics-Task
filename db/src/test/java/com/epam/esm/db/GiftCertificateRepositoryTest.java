@@ -1,8 +1,8 @@
 package com.epam.esm.db;
 
 import com.epam.esm.GiftCertificateSystemApplication;
-import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.GiftCertificateSearchFilter;
 import com.epam.esm.model.entity.SortOption;
 import com.epam.esm.model.entity.Tag;
 import org.junit.jupiter.api.Test;
@@ -78,13 +78,15 @@ public class GiftCertificateRepositoryTest {
 			.tags(Set.of(existingTag4, existingTag6, nonExistingTagToBeCreated2))
 			.build();
 	private static final int EXISTING_ID_3 = 3;
-	private static final GiftCertificateSearchFilter CONDITIONS_THAT_SOME_DATA_MEET = GiftCertificateSearchFilter.builder()
-			.namePart("ertif")
-			.descriptionPart("escriptio")
-			.tagNames(Set.of("tag8"))
-			.sortBy(new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC)).build();
-	private static final GiftCertificateSearchFilter CONDITIONS_THAT_NO_DATA_MEET = GiftCertificateSearchFilter.builder()
-			.tagNames(Set.of("non existent")).build();
+	private static final GiftCertificateSearchFilter CONDITIONS_THAT_SOME_DATA_MEET =
+			GiftCertificateSearchFilter.builder()
+					.namePart("ertif")
+					.descriptionPart("escriptio")
+					.tagNames(Set.of("tag8"))
+					.sortBy(new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC)).build();
+	private static final GiftCertificateSearchFilter CONDITIONS_THAT_NO_DATA_MEET =
+			GiftCertificateSearchFilter.builder()
+					.tagNames(Set.of("non existent")).build();
 	private static final int EXISTING_OFFSET = 0;
 	private static final int EXISTING_LIMIT = 10;
 	private static final int NON_EXISTING_OFFSET = 100;
@@ -101,11 +103,11 @@ public class GiftCertificateRepositoryTest {
 		assertEquals(c1.getPrice(), c2.getPrice());
 		if (c1.getLastUpdateDate() != null && c2.getLastUpdateDate() != null) {
 			assertEquals(c1.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY),
-					c2.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY));
+			             c2.getLastUpdateDate().get(ChronoField.MINUTE_OF_DAY));
 		}
 		if (c1.getCreateDate() != null && c2.getCreateDate() != null) {
 			assertEquals(c1.getCreateDate().get(ChronoField.MINUTE_OF_DAY),
-					c2.getCreateDate().get(ChronoField.MINUTE_OF_DAY));
+			             c2.getCreateDate().get(ChronoField.MINUTE_OF_DAY));
 		}
 		assertEquals(c1.getTags(), c2.getTags());
 	}
@@ -138,7 +140,7 @@ public class GiftCertificateRepositoryTest {
 	public void filterCertificatesShouldReturnListWhenPassedConditionsMetByAnyDataInDatabase() {
 		List<GiftCertificate> giftCertificates =
 				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_SOME_DATA_MEET,
-						EXISTING_OFFSET, EXISTING_LIMIT).getPage();
+				                                                  EXISTING_OFFSET, EXISTING_LIMIT).getPage();
 		assertFalse(giftCertificates.isEmpty());
 	}
 
@@ -146,7 +148,7 @@ public class GiftCertificateRepositoryTest {
 	public void filterCertificatesShouldReturnEmptyListWhenPassedConditionsMetByNoDataInDatabase() {
 		List<GiftCertificate> giftCertificates =
 				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_NO_DATA_MEET,
-						EXISTING_OFFSET, EXISTING_LIMIT).getPage();
+				                                                  EXISTING_OFFSET, EXISTING_LIMIT).getPage();
 		assertTrue(giftCertificates.isEmpty());
 	}
 
@@ -156,7 +158,7 @@ public class GiftCertificateRepositoryTest {
 		Optional<GiftCertificate> fetchAfter = giftCertificateRepository.getCertificateById(updatedCert2.getId());
 		assertTrue(fetchAfter.isPresent());
 		assertEquals(updatedCert2.getTags().stream().map(Tag::getName).collect(Collectors.toSet()),
-				fetchAfter.get().getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
+		             fetchAfter.get().getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 	}
 
 	@Test

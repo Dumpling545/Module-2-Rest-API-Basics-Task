@@ -11,17 +11,18 @@ import java.util.Optional;
 public interface UserRepository {
 	/**
 	 * Retrieves user with given id
-	 * @param id
-	 *      id of user to be retrieved
+	 *
+	 * @param id id of user to be retrieved
 	 * @return {@link Optional} containing corresponding user object, if user with such id exists in database;
-	 * 	 empty {@link Optional} otherwise
+	 * empty {@link Optional} otherwise
 	 */
 	Optional<User> getUserById(int id);
 
 	/**
 	 * Retrieves all users in database
+	 *
 	 * @param offset how many elements to skip
-	 * @param limit how many elements to retrieve
+	 * @param limit  how many elements to retrieve
 	 * @return paged list of users
 	 */
 	PagedResult<User> getAllUsers(int offset, int limit);

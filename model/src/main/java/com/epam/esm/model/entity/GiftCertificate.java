@@ -68,8 +68,8 @@ public class GiftCertificate {
 	private LocalDateTime lastUpdateDate;
 	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
 	@JoinTable(name = "tag_gift_certificate",
-			joinColumns = @JoinColumn(name = "gift_certificate_id"),
-			inverseJoinColumns = @JoinColumn(name = "tag_id"))
+	           joinColumns = @JoinColumn(name = "gift_certificate_id"),
+	           inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<Tag> tags;
 
 	@PrePersist

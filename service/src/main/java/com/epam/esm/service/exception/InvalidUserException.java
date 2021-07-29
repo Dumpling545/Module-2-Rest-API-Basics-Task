@@ -24,6 +24,7 @@ public class InvalidUserException extends ServiceException {
 		this(message, reason);
 		this.userId = userId;
 	}
+
 	public InvalidUserException(String message, Throwable thr, Reason reason, int userId) {
 		super(message, thr);
 		this.reason = reason;
@@ -31,6 +32,6 @@ public class InvalidUserException extends ServiceException {
 	}
 
 	public enum Reason {
-		NOT_FOUND
+		NOT_FOUND;
 	}
 }

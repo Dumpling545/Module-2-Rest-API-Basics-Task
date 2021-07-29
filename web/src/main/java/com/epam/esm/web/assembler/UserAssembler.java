@@ -24,7 +24,7 @@ public class UserAssembler extends ExtendedRepresentationModelAssembler<UserDTO,
 	@Override
 	protected List<Link> entityAdditionalLinks(UserDTO userDTO) {
 		return List.of(linkTo(methodOn(UserController.class).getOrdersByUser(userDTO.getId(), null, null))
-				.withRel(ORDERS));
+				               .withRel(ORDERS));
 	}
 
 	@Override

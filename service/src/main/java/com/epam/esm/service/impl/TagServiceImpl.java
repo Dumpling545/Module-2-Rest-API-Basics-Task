@@ -28,14 +28,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
+	private final TagRepository tagRepository;
+	private final TagConverter tagConverter;
+	private final PagedResultConverter pagedResultConverter;
 	@Value("${tag.exception.already-exists}")
 	private String alreadyExistsExceptionTemplate;
 	@Value("${tag.exception.not-found}")
 	private String notFoundExceptionTemplate;
-
-	private final TagRepository tagRepository;
-	private final TagConverter tagConverter;
-	private final PagedResultConverter pagedResultConverter;
 
 	@Override
 	public TagDTO createTag(TagDTO tagDto) {
@@ -79,7 +78,7 @@ public class TagServiceImpl implements TagService {
 	@Override
 	public TagDTO getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(int userId) {
 		return getSingleTag(() -> tagRepository.getMostWidelyUsedTagOfUserWithHighestCostOfAllOrders(userId),
-				() -> "userId=" + userId);
+		                    () -> "userId=" + userId);
 	}
 
 	@Override
