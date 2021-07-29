@@ -6,6 +6,10 @@ package com.epam.esm.model.dto;
 public final class ValidationConstraints {
     public static final int MIN_TAG_NAME_LENGTH = 3;
     public static final int MAX_TAG_NAME_LENGTH = 30;
+	public static final int MIN_USER_NAME_LENGTH = 6;
+	public static final int MAX_USER_NAME_LENGTH = 40;
+	public static final int MIN_USER_PASSWORD_LENGTH = 10;
+	public static final int MAX_USER_PASSWORD_LENGTH = 60;
     public static final int MIN_CERT_NAME_LENGTH = 3;
     public static final int MAX_CERT_NAME_LENGTH = 50;
     public static final int MIN_CERT_DESC_LENGTH = 10;

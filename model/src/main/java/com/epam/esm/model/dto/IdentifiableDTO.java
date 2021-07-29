@@ -1,5 +1,6 @@
 package com.epam.esm.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -12,5 +13,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public abstract class IdentifiableDTO {
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer id;
 }

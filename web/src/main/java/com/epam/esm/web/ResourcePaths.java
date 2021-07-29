@@ -1,6 +1,7 @@
 package com.epam.esm.web;
 
-public class ResourcePaths {
+public final class ResourcePaths {
+    private ResourcePaths(){}
     public static final String ROOT = "/";
     public static final String GIFT_CERTIFICATES = "/gift-certificates";
     public static final String TAGS = "/tags";

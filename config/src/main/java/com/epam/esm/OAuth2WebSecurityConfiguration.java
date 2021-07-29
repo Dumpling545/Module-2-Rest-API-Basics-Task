@@ -2,6 +2,8 @@ package com.epam.esm;
 
 import com.epam.esm.web.ResourcePaths;
 import com.epam.esm.web.auth.authorizationserver.UserAuthenticationProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,89 +23,97 @@ import org.springframework.web.filter.AbstractRequestLoggingFilter;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Configuration
 public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private UserAuthenticationProvider userAuthenticationProvider;
-	@Value("${oauth2.resource-server.jwt.key-value}")
-	private String jwtKey;
-	@Value("${oauth2.resource-server.jwt.associated-secret-key-algorithm}")
-	private String secretKeyAlgorithm;
+    @Autowired
+    private UserAuthenticationProvider userAuthenticationProvider;
+    @Value("${oauth2.resource-server.jwt.key-value}")
+    private String jwtKey;
+    @Value("${oauth2.resource-server.jwt.associated-secret-key-algorithm}")
+    private String secretKeyAlgorithm;
 
-	@Value("${oauth2.roles.guest}")
-	private String[] guestScopes;
+    @Value("${oauth2.roles.guest}")
+    private String[] guestScopesWithoutPrefix;
 
-	@Value("SCOPE_${oauth2.scopes.root.read}")
-	private String readRootScope;
-	@Value("SCOPE_${oauth2.scopes.root.authorize-endpoint}")
-	private String authorizeEndpointRootScope;
-	@Value("SCOPE_${oauth2.scopes.root.token-endpoint}")
-	private String tokenEndpointRootScope;
-	@Value("SCOPE_${oauth2.scopes.gift-certificates.read}")
-	private String readGiftCertificatesScope;
-	@Value("SCOPE_${oauth2.scopes.gift-certificates.write}")
-	private String writeGiftCertificatesScope;
-	@Value("SCOPE_${oauth2.scopes.tags.read}")
-	private String readTagsScope;
-	@Value("SCOPE_${oauth2.scopes.tags.write}")
-	private String writeTagsScope;
-	@Value("SCOPE_${oauth2.scopes.users.read}")
-	private String readUsersScope;
-	@Value("SCOPE_${oauth2.scopes.users.write-new}")
-	private String writeNewUserScope;
-	@Value("SCOPE_${oauth2.scopes.orders.read}")
-	private String readOrdersScope;
-	@Value("SCOPE_${oauth2.scopes.orders.write-self}")
-	private String writeSelfOrdersScope;
-	@Value("SCOPE_${oauth2.scopes.orders.write-others}")
-	private String writeOthersOrdersScope;
+    @Value("SCOPE_${oauth2.scopes.root.read}")
+    private String readRootScope;
+    @Value("SCOPE_${oauth2.scopes.root.authorize-endpoint}")
+    private String authorizeEndpointRootScope;
+    @Value("SCOPE_${oauth2.scopes.root.token-endpoint}")
+    private String tokenEndpointRootScope;
+    @Value("SCOPE_${oauth2.scopes.gift-certificates.read}")
+    private String readGiftCertificatesScope;
+    @Value("SCOPE_${oauth2.scopes.gift-certificates.write}")
+    private String writeGiftCertificatesScope;
+    @Value("SCOPE_${oauth2.scopes.tags.read}")
+    private String readTagsScope;
+    @Value("SCOPE_${oauth2.scopes.tags.write}")
+    private String writeTagsScope;
+    @Value("SCOPE_${oauth2.scopes.users.read}")
+    private String readUsersScope;
+    @Value("SCOPE_${oauth2.scopes.users.write-new}")
+    private String writeNewUserScope;
+    @Value("SCOPE_${oauth2.scopes.orders.read}")
+    private String readOrdersScope;
+    @Value("SCOPE_${oauth2.scopes.orders.write-self}")
+    private String writeSelfOrdersScope;
+    @Value("SCOPE_${oauth2.scopes.orders.write-others}")
+    private String writeOthersOrdersScope;
 
-	private static final String ANY_GIFT_CERTIFICATES_PATH = ResourcePaths.GIFT_CERTIFICATES + "/**";
-	private static final String ANY_TAGS_PATH = ResourcePaths.TAGS + "/**";
-	private static final String ANY_ORDERS_PATH = ResourcePaths.ORDERS + "/**";
-	private static final String ANY_USERS_PATH = ResourcePaths.USERS + "/**";
-	@Bean
-	public JwtDecoder jwtDecoder() {
-		byte [] key = jwtKey.getBytes();
-		SecretKey originalKey = new SecretKeySpec(key, 0, key.length, secretKeyAlgorithm);
-		return NimbusJwtDecoder.withSecretKey(originalKey).build();
-	}
+    private static final String ANY_GIFT_CERTIFICATES_PATH = ResourcePaths.GIFT_CERTIFICATES + "/**";
+    private static final String ANY_TAGS_PATH = ResourcePaths.TAGS + "/**";
+    private static final String ANY_ORDERS_PATH = ResourcePaths.ORDERS + "/**";
+    private static final String ANY_USERS_PATH = ResourcePaths.USERS + "/**";
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.formLogin();
-		http.anonymous().authorities(guestScopes);
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-		http.authorizeRequests()
-				.mvcMatchers(ResourcePaths.ROOT).hasAuthority(readRootScope)
-				.mvcMatchers("oauth/token").hasAuthority(tokenEndpointRootScope)
-				.mvcMatchers("oauth/authorize").not().anonymous()
-				.mvcMatchers(HttpMethod.GET, ANY_GIFT_CERTIFICATES_PATH).hasAuthority(readGiftCertificatesScope)
-				.mvcMatchers(HttpMethod.GET, ANY_TAGS_PATH).hasAuthority(readTagsScope)
-				.mvcMatchers(HttpMethod.GET, ANY_USERS_PATH).hasAuthority(readUsersScope)
-				.mvcMatchers(HttpMethod.GET, ANY_ORDERS_PATH).hasAuthority(readOrdersScope)
-				.mvcMatchers(ANY_GIFT_CERTIFICATES_PATH).hasAuthority(writeGiftCertificatesScope)
-				.mvcMatchers(ResourcePaths.USERS + "/register").hasAuthority(writeNewUserScope)
-				.mvcMatchers(ANY_ORDERS_PATH).hasAnyAuthority(writeSelfOrdersScope, writeOthersOrdersScope)
-				.anyRequest().denyAll();
-		http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
-	}
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        byte[] key = jwtKey.getBytes();
+        SecretKey originalKey = new SecretKeySpec(key, 0, key.length, secretKeyAlgorithm);
+        return NimbusJwtDecoder.withSecretKey(originalKey).build();
+    }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(userAuthenticationProvider);
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        String[] guestScopes = Stream.of(guestScopesWithoutPrefix)
+                .map(s -> String.format("SCOPE_%s", s)).toArray(String[]::new);
+        http.formLogin();
+        http.csrf().disable();
+        http.anonymous().authorities(guestScopes);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        http.authorizeRequests()
+                .mvcMatchers(ResourcePaths.ROOT).hasAuthority(readRootScope)
+                .mvcMatchers("oauth/token").hasAuthority(tokenEndpointRootScope)
+                .mvcMatchers("oauth/authorize").not().anonymous()
+                .mvcMatchers(HttpMethod.POST, ResourcePaths.USERS + "/register").hasAuthority(writeNewUserScope)
+                .mvcMatchers(HttpMethod.GET, ANY_GIFT_CERTIFICATES_PATH).hasAuthority(readGiftCertificatesScope)
+                .mvcMatchers(HttpMethod.GET, ANY_TAGS_PATH).hasAuthority(readTagsScope)
+                .mvcMatchers(HttpMethod.GET, ANY_USERS_PATH).hasAuthority(readUsersScope)
+                .mvcMatchers(HttpMethod.GET, ANY_ORDERS_PATH).hasAuthority(readOrdersScope)
+                .mvcMatchers(ANY_GIFT_CERTIFICATES_PATH).hasAuthority(writeGiftCertificatesScope)
+                .mvcMatchers(ANY_ORDERS_PATH).hasAnyAuthority(writeSelfOrdersScope, writeOthersOrdersScope)
+                .anyRequest().denyAll();
+        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+    }
 
-	@Override
-	@Bean
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(userAuthenticationProvider);
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
 }

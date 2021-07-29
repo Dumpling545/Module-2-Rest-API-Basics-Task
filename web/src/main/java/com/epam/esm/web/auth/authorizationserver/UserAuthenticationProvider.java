@@ -50,7 +50,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
             throw createPasswordOrUserNameNotFoundException();
         }
         UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(userDTO.getUserName(),
-                userDTO.getPassword(), getScopes(userDTO));
+                null, getScopes(userDTO));
         result.setDetails(userDTO.getId());
         return result;
     }

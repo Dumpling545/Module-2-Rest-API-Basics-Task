@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.model.dto.PageDTO;
 import com.epam.esm.model.dto.PagedResultDTO;
+import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.dto.UserDTO;
 import org.springframework.validation.annotation.Validated;
 
@@ -37,4 +38,13 @@ public interface UserService {
      * @return paged list of users
      */
     PagedResultDTO<UserDTO> getAllUsers(@Valid PageDTO page);
+
+	/**
+	 * Registers user
+	 *
+	 * @param user
+	 * 		dto representing user to be registered, id is ignored
+	 * @return dto representing created tag
+	 */
+	UserDTO registerUser(UserDTO user);
 }

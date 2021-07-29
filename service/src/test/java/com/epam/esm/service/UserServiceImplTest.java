@@ -13,6 +13,8 @@ import com.epam.esm.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -54,12 +56,13 @@ public class UserServiceImplTest {
     private static final PageDTO pageDTO = PageDTO.builder().pageNumber(1).pageSize(5).build();
     private final UserConverter userConverter = Mappers.getMapper(UserConverter.class);
     private final PagedResultConverter pagedResultConverter = Mappers.getMapper(PagedResultConverter.class);
+	private final PasswordEncoder passwordEncoder = NoOpPasswordEncoder.getInstance();
 
     @Test
     public void getUserShouldReturnDtoWhenPassedExistingUserId() {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         Mockito.when(userRepository.getUserById(Mockito.eq(existingUserDto1.getId()))).thenReturn(Optional.of(existingUser1));
-        UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter);
+        UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter, passwordEncoder);
         assertDoesNotThrow(() -> {
             UserDTO res = userService.getUser(existingUserDto1.getId());
             assertEquals(existingUserDto1, res);
@@ -70,7 +73,7 @@ public class UserServiceImplTest {
     public void getUserShouldThrowExceptionWhenPassedNonExistingUserId() {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         Mockito.when(userRepository.getUserById(Mockito.eq(nonExistingUserDto.getId()))).thenReturn(Optional.empty());
-        UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter);
+        UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter, passwordEncoder);
         ReflectionTestUtils.setField(userService, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
         InvalidUserException ex =
 				assertThrows(InvalidUserException.class, () -> userService.getUser(existingUserDto1.getId()));
@@ -82,7 +85,7 @@ public class UserServiceImplTest {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         Mockito.when(userRepository.getAllUsers(Mockito.eq(pageDTO.getOffset()), Mockito.eq(pageDTO.getPageSize())))
 				.thenReturn(userPage);
-        UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter);
+        UserService userService = new UserServiceImpl(userRepository, userConverter, pagedResultConverter, passwordEncoder);
         assertDoesNotThrow(() -> {
             PagedResultDTO<UserDTO> userDTOPagedResult = userService.getAllUsers(pageDTO);
             assertEquals(userPageDto, userDTOPagedResult);

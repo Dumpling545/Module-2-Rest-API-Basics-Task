@@ -54,4 +54,13 @@ public class JpaUserRepository implements UserRepository {
         };
         return fetchQueryHelper.fetchPagedResult(User.class, entityManager, queryConfigurator, offset, limit);
     }
+
+	@Override
+	@Transactional
+	public User createUser(User user) {
+		entityManager.persist(user);
+		entityManager.flush();
+		entityManager.clear();
+		return user;
+	}
 }

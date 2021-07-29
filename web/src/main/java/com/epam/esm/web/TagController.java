@@ -66,12 +66,12 @@ public class TagController {
         return ResponseEntity.ok(model);
     }
 
-    @PostMapping
-    public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
-        TagDTO dto = tagService.createTag(tagDTO);
-        URI locationUri = ucb.path("/tags/").path(String.valueOf(dto.getId())).build().toUri();
-        return ResponseEntity.created(locationUri).build();
-    }
+	@PostMapping
+	public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
+		TagDTO dto = tagService.createTag(tagDTO);
+		URI locationUri = ucb.path(TAGS + "/").path(String.valueOf(dto.getId())).build().toUri();
+		return ResponseEntity.created(locationUri).build();
+	}
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteTag(@PathVariable("id") Integer id) {

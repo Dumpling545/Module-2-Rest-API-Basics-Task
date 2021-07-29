@@ -1,9 +1,6 @@
 package com.epam.esm.web;
 
-import com.epam.esm.model.dto.OrderDTO;
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
-import com.epam.esm.model.dto.UserDTO;
+import com.epam.esm.model.dto.*;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
@@ -75,6 +72,12 @@ public class UserController {
                 orderAssembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
                         (c, p) -> c.getOrdersByUser(id, p, pageSize));
         return ResponseEntity.ok(model);
+    }
+    @PostMapping("/register")
+    public ResponseEntity registerUser(@RequestBody @Valid UserDTO userDTO, UriComponentsBuilder ucb) {
+        UserDTO dto = userService.registerUser(userDTO);
+        URI locationUri = ucb.path(USERS + "/").path(String.valueOf(dto.getId())).build().toUri();
+        return ResponseEntity.created(locationUri).build();
     }
 
 }

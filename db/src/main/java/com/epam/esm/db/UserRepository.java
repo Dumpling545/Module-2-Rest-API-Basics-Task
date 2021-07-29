@@ -1,6 +1,7 @@
 package com.epam.esm.db;
 
 import com.epam.esm.model.entity.PagedResult;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 
 import java.util.Optional;
@@ -35,4 +36,13 @@ public interface UserRepository {
      * @return paged list of users
      */
     PagedResult<User> getAllUsers(int offset, int limit);
+
+	/**
+	 * Creates new user in database (id property is ignored).
+	 * NOTE: password should be pre-encoded
+	 * @param user
+	 * 		object containing name for new user, id field is ignored
+	 * @return Tag object representing newly created user in database
+	 */
+	User createUser(User user);
 }

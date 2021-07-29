@@ -21,6 +21,7 @@ import java.util.List;
 /**
  * NOTE: Deprecated class is used since there is no current support for Implicit and Password owner flows at
  * Authorization Server side
+ * NOTE: Single in-memory client used since there is no requirement for client management in the task
  */
 @Configuration
 @EnableAuthorizationServer
@@ -38,17 +39,24 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
     @Autowired
     private AuthorizationServerExceptionHandler authorizationServerExceptionHandler;
 
-    @Value("${oauth2.auth-server.all-scopes}")
-    private String[] allScopes;
-    //TODO remove in-memory
+    @Value("${oauth2.auth-server.in-memory-client-name}")
+    private String inMemoryClientName;
+    @Value("${oauth2.auth-server.in-memory-client-secret}")
+    private String inMemoryClientSecret;
+    @Value("${oauth2.auth-server.in-memory-client-grant-types}")
+    private String[] inMemoryClientGrantTypes;
+    @Value("${oauth2.auth-server.in-memory-client-scopes}")
+    private String[] inMemoryClientScopes;
+    @Value("${oauth2.auth-server.in-memory-client-redirect-uris}")
+    private String[] inMemoryClientRedirectUris;
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("client")
-                .secret("{noop}secret")
-                .authorizedGrantTypes("password", "implicit")
-                .scopes(allScopes)
-                .redirectUris("example.com");
+                .withClient(inMemoryClientName)
+                .secret(inMemoryClientSecret)
+                .authorizedGrantTypes(inMemoryClientGrantTypes)
+                .scopes(inMemoryClientScopes)
+                .redirectUris(inMemoryClientRedirectUris);
     }
 
     @Override
