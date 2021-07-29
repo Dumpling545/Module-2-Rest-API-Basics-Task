@@ -13,8 +13,6 @@ import java.io.Serializable;
 
 @Component
 public class UserPermissionEvaluator implements PermissionEvaluator {
-    //TODO delete log
-    private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
     @Value("${oauth2.permissions.create}")
     private String createPermission;
 
@@ -33,7 +31,6 @@ public class UserPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        logger.info("entered hasPermission");
         if (targetDomainObject instanceof OrderDTO orderDTO) {
             return hasPermissionOnOrder(authentication, orderDTO, permission);
         } else {
@@ -42,7 +39,6 @@ public class UserPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean hasPermissionOnOrder(Authentication authentication, OrderDTO orderDTO, Object permission) {
-        logger.info("entered hasPermissionOnOrder: {}", permission.toString());
         if (createPermission.equals(permission)) {
             return hasCreatePermissionOnOrder(authentication, orderDTO);
         }
@@ -50,7 +46,6 @@ public class UserPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean hasCreatePermissionOnOrder(Authentication authentication, OrderDTO orderDTO) {
-        logger.info("entered hasCreatePermissionOnOrder");
         Integer userId = extractUserId(authentication);
         if (orderDTO.getUserId() == null || orderDTO.getUserId().equals(userId)) {
             return authentication.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(writeSelfOrdersScope));

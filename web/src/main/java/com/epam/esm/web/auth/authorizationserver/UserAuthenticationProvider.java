@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
 
-    //TODO add to properties
-    private String passwordOrUserNameNotFound = "Password or user name not found";
+    @Value("${auth.exception.password-username-not-found}")
+    private String passwordOrUserNameNotFound;
     @Autowired
     private UserService userService;
     @Autowired

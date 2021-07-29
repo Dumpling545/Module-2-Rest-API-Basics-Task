@@ -16,27 +16,18 @@ import java.util.stream.Collectors;
 
 @Component
 public class AuthoritiesToScopeTranslationTokenEnhancer implements TokenEnhancer {
+    //TODO delete
     private static final Logger logger = LoggerFactory.getLogger(AuthoritiesToScopeTranslationTokenEnhancer.class);
-    @Value("${oauth2.scopes.request-all-possible-scopes}")
-    private String allPossibleScopes;
-    //TODO make as property
-    private String invalidScopeMessage = "One or more scopes from requested scope list(%s) cannot be granted to user with id=%d";
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         var token = new DefaultOAuth2AccessToken(accessToken);
         var authorities = authentication.getUserAuthentication().getAuthorities();
         Set<String> scopes = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+        logger.info("scopes={}", scopes.toString());
         var requestedScopes = token.getScope();
-        if(requestedScopes.contains(allPossibleScopes)){
-            token.setScope(scopes);
-        } else if(!scopes.containsAll(requestedScopes)){
-            var message = String.format(invalidScopeMessage,
-                    requestedScopes.toString(),
-                    authentication.getUserAuthentication().getDetails());
-            throw new InvalidScopeException(message);
-        } else {
-            token.setScope(scopes.stream().filter(requestedScopes::contains).collect(Collectors.toSet()));
-        }
+        logger.info("requestedScopes={}", requestedScopes.toString());
+        token.setScope(scopes.stream().filter(requestedScopes::contains).collect(Collectors.toSet()));
+        logger.info("result={}", token.getScope().toString());
         return token;
     }
 }
