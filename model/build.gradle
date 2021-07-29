@@ -3,6 +3,7 @@ dependencies {
     api 'javax.persistence:javax.persistence-api'
     api 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-json'
+    implementation 'org.passay:passay:' + passayVersion
 }
 bootJar {
     enabled = false
