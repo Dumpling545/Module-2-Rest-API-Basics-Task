@@ -28,6 +28,16 @@ public interface UserRepository {
     Optional<User> getUserByName(String name);
 
     /**
+     * Retrieves user with given external id and external provider
+     *
+     * @param externalId       -- id of user in external provider system
+     * @param externalProvider -- provider name (github, google, etc.)
+     * @return {@link Optional} containing corresponding user object, if user with such external id and provider name exists in database;
+     * empty {@link Optional} otherwise
+     */
+    Optional<User> getUserByExternalInfo(String externalId, String externalProvider);
+
+    /**
      * Retrieves all users in database
      *
      * @param offset how many elements to skip
@@ -36,12 +46,12 @@ public interface UserRepository {
      */
     PagedResult<User> getAllUsers(int offset, int limit);
 
-	/**
-	 * Creates new user in database (id property is ignored).
-	 * NOTE: password should be pre-encoded
-	 * @param user
-	 * 		object containing name for new user, id field is ignored
-	 * @return Tag object representing newly created user in database
-	 */
-	User createUser(User user);
+    /**
+     * Creates new user in database (id property is ignored).
+     * NOTE: password should be pre-encoded
+     *
+     * @param user object containing name for new user, id field is ignored
+     * @return User object representing newly created user in database
+     */
+    User createUser(User user);
 }

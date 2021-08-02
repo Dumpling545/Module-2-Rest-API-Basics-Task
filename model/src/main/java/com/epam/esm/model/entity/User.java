@@ -36,8 +36,12 @@ public class User {
     private Integer id;
     @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
-    @Column(nullable = false)
+    @Column
     private String password;
+    @Column(name="external_provider")
+    private String externalProvider;
+    @Column(name="external_id")
+    private String externalId;
     @Enumerated(EnumType.STRING)
     private Role role;
 

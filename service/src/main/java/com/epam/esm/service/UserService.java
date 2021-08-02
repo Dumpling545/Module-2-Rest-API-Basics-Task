@@ -30,6 +30,16 @@ public interface UserService {
 	 */
 	Optional<UserDTO> getUser(String name);
 
+	/**
+	 * Retrieves user object registered with external provider.
+	 * @param externalId -- String that uniquely identifies user in provider system
+	 * @param externalProvider -- provider name (github, google, etc.)
+	 * @return Optional with user matching provided external id and provider name; empty Optional otherwise.
+	 *
+	 * @apiNote Method must return {@link Optional#empty()} if at least one of params
+	 * is null or empty
+	 */
+	Optional<UserDTO> getUser(String externalId, String externalProvider);
     /**
      * Retrieves all existing users from database
      *

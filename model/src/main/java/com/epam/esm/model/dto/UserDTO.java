@@ -1,11 +1,13 @@
 package com.epam.esm.model.dto;
 
 import com.epam.esm.model.validation.ValidPassword;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -28,6 +30,10 @@ public class UserDTO extends IdentifiableDTO {
     private transient String password;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Role role;
+    @JsonIgnore
+    private transient String externalProvider;
+    @JsonIgnore
+    private transient String externalId;
 
     public enum Role {
         USER, ADMIN;

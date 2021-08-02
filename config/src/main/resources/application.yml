@@ -5,7 +5,7 @@ spring:
         registration:
           github:
             client-id: f00b9327d1d8d58afeb3
-            client-secret: [sensitive]
+            client-secret: 160241749e46030b65879f2f6ecb26744fa7fbb9
   profiles:
     default: development
   config:
@@ -14,7 +14,7 @@ spring:
       - classpath:service-exception.properties
       - classpath:web-exception.properties
       - classpath:password.properties
-      - classpath:oauth2.properties
+      - classpath:oauth2.yml
   datasource:
     hikari:
       password: gift-cert-sys-db-user-pw

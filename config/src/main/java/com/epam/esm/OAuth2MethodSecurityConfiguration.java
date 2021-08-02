@@ -1,6 +1,7 @@
 package com.epam.esm;
 
 import com.epam.esm.web.auth.resourceserver.UserPermissionEvaluator;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;

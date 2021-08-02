@@ -1,6 +1,8 @@
 package com.epam.esm.db.helper;
 
 import com.epam.esm.model.entity.PagedResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityGraph;
@@ -32,30 +34,29 @@ public class FetchQueryHelper {
 		             true);
 	}
 
-	public <Q, R, O> O fetch(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
-	                         TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
-	                         Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
-		return fetch(queryClass, rootClass, entityManager, queryConfigurator, null, outputProducer, clearContext);
-	}
-
-	public <Q, R, O> O fetch(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
-	                         TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
-	                         Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
-	                         Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Q> criteriaQuery = criteriaBuilder.createQuery(queryClass);
-		Root<R> root = criteriaQuery.from(rootClass);
-		queryConfigurator.accept(criteriaBuilder, criteriaQuery, root);
-		TypedQuery<Q> typedQuery = entityManager.createQuery(criteriaQuery);
-		if (entityGraphProducer != null) {
-			typedQuery.setHint("javax.persistence.loadgraph", entityGraphProducer.apply(entityManager));
-		}
-		O result = outputProducer.apply(typedQuery);
-		if (clearContext) {
-			entityManager.clear();
-		}
-		return result;
-	}
+    public <Q, R, O> O fetch(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
+                             TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
+                             Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
+        return fetch(queryClass, rootClass, entityManager, queryConfigurator, null, outputProducer, clearContext);
+    }
+    public <Q, R, O> O fetch(Class<Q> queryClass, Class<R> rootClass, EntityManager entityManager,
+                             TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
+                             Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
+                             Function<TypedQuery<Q>, O> outputProducer, boolean clearContext) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Q> criteriaQuery = criteriaBuilder.createQuery(queryClass);
+        Root<R> root = criteriaQuery.from(rootClass);
+        queryConfigurator.accept(criteriaBuilder, criteriaQuery, root);
+        TypedQuery<Q> typedQuery = entityManager.createQuery(criteriaQuery);
+        if (entityGraphProducer != null) {
+            typedQuery.setHint("javax.persistence.loadgraph", entityGraphProducer.apply(entityManager));
+        }
+        O result = outputProducer.apply(typedQuery);
+        if (clearContext) {
+            entityManager.clear();
+        }
+        return result;
+    }
 
 	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
 	                                              EntityManager entityManager,

@@ -39,6 +39,7 @@ public class InvalidUserException extends ServiceException {
 
     public enum Reason {
         NOT_FOUND,
-        ALREADY_EXISTS;
+        ALREADY_EXISTS,
+        INCONSISTENT_CREDENTIALS;
     }
 }

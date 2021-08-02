@@ -1,6 +1,7 @@
 package com.epam.esm.web.auth.resourceserver;
 
 import com.epam.esm.model.dto.OrderDTO;
+import com.epam.esm.web.auth.common.Scopes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -17,10 +18,6 @@ public class UserPermissionEvaluator implements PermissionEvaluator {
     @Value("${oauth2.claims.user-id}")
     private String userIdClaim;
 
-    @Value("SCOPE_${oauth2.scopes.orders.write-self}")
-    private String writeSelfOrdersScope;
-    @Value("SCOPE_${oauth2.scopes.orders.write-others}")
-    private String writeOthersOrdersScope;
 
     private Integer extractUserId(Authentication authentication) {
         Jwt jwtToken = (Jwt) authentication.getPrincipal();
@@ -46,9 +43,11 @@ public class UserPermissionEvaluator implements PermissionEvaluator {
     private boolean hasCreatePermissionOnOrder(Authentication authentication, OrderDTO orderDTO) {
         Integer userId = extractUserId(authentication);
         if (orderDTO.getUserId() == null || orderDTO.getUserId().equals(userId)) {
-            return authentication.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(writeSelfOrdersScope));
+            return authentication.getAuthorities().stream()
+                    .anyMatch(ga -> ga.getAuthority().equals(Scopes.ORDERS_WRITE_SELF));
         } else {
-            return authentication.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(writeOthersOrdersScope));
+            return authentication.getAuthorities().stream()
+                    .anyMatch(ga -> ga.getAuthority().equals(Scopes.ORDERS_WRITE_OTHERS));
         }
     }
 

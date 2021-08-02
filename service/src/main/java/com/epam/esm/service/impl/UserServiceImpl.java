@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -27,29 +30,45 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
     private final PagedResultConverter pagedResultConverter;
     private final PasswordEncoder passwordEncoder;
+    private final ClientRegistrationRepository clientRegistrationRepository;
     @Value("${user.exception.not-found}")
     private String notFoundExceptionTemplate;
-	@Value("${user.exception.already-exists}")
-	private String alreadyExistsExceptionTemplate;
-	@Override
-	public UserDTO getUser(int id) {
-		Optional<User> userOptional;
-		try {
-			userOptional = userRepository.getUserById(id);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		return userOptional.map(userConverter::convert).orElseThrow(() -> {
-			String identifier = "id=" + id;
-			String message = String.format(notFoundExceptionTemplate, identifier);
-			return new InvalidUserException(message, InvalidUserException.Reason.NOT_FOUND, id);
-		});
-	}
+    @Value("${user.exception.already-exists}")
+    private String alreadyExistsExceptionTemplate;
+    @Value("${user.exception.inconsistent-credentials}")
+    private String inconsistentCredentialsTemplate;
+
+    @Override
+    public UserDTO getUser(int id) {
+        Optional<User> userOptional;
+        try {
+            userOptional = userRepository.getUserById(id);
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+        return userOptional.map(userConverter::convert).orElseThrow(() -> {
+            String identifier = "id=" + id;
+            String message = String.format(notFoundExceptionTemplate, identifier);
+            return new InvalidUserException(message, InvalidUserException.Reason.NOT_FOUND, id);
+        });
+    }
 
     @Override
     public Optional<UserDTO> getUser(String name) {
         try {
             return userRepository.getUserByName(name).map(userConverter::convert);
+        } catch (DataAccessException ex) {
+            throw new ServiceException(ex);
+        }
+    }
+
+    @Override
+    public Optional<UserDTO> getUser(String externalId, String externalProvider) {
+        if(!StringUtils.hasLength(externalId) || !StringUtils.hasLength(externalProvider)){
+            return Optional.empty();
+        }
+        try {
+            return userRepository.getUserByExternalInfo(externalId, externalProvider).map(userConverter::convert);
         } catch (DataAccessException ex) {
             throw new ServiceException(ex);
         }
@@ -71,7 +90,12 @@ public class UserServiceImpl implements UserService {
         User user = userConverter.convert(userDto);
         user.setId(null);
         user.setRole(User.Role.USER);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(isRegistrationDirect(user)){
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else if(!isRegistrationProviderBased(user)){
+            String message = String.format(inconsistentCredentialsTemplate, userDto.getUserName());
+            throw new InvalidUserException(message, InvalidUserException.Reason.INCONSISTENT_CREDENTIALS);
+        }
         try {
             User newUser = userRepository.createUser(user);
             return userConverter.convert(newUser);
@@ -81,5 +105,18 @@ public class UserServiceImpl implements UserService {
         } catch (DataAccessException ex) {
             throw new ServiceException(ex);
         }
+    }
+
+    private boolean isRegistrationDirect(User user) {
+        return StringUtils.hasLength(user.getPassword())
+                && user.getExternalId() == null
+                && user.getExternalProvider() == null;
+    }
+
+    private boolean isRegistrationProviderBased(User user) {
+        return StringUtils.hasLength(user.getExternalId())
+                && StringUtils.hasLength(user.getExternalProvider())
+                && clientRegistrationRepository.findByRegistrationId(user.getExternalProvider()) != null
+                && user.getPassword() == null;
     }
 }

@@ -47,6 +47,17 @@ public class JpaUserRepository implements UserRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<User> getUserByExternalInfo(String externalId, String externalProvider) {
+        TriConsumer<CriteriaBuilder, CriteriaQuery, Root<User>> queryConfigurator = (cb, cq, r) -> {
+            cq.select(r).where(cb.equal(r.get(User_.externalId), externalId),
+                               cb.equal(r.get(User_.externalProvider), externalProvider));
+        };
+        Function<TypedQuery<User>, Optional<User>> resultProducer = tq -> tq.getResultStream().findFirst();
+        return fetchQueryHelper.fetch(User.class, entityManager, queryConfigurator, resultProducer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PagedResult<User> getAllUsers(int offset, int limit) {
         TriConsumer<CriteriaBuilder, CriteriaQuery, Root<User>> queryConfigurator = (cb, cq, r) -> {
             cq.select(r);
