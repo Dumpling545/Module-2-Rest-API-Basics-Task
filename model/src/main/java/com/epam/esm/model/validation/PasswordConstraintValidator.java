@@ -12,7 +12,6 @@ import org.passay.PasswordValidator;
 import org.passay.RuleResult;
 import org.passay.WhitespaceRule;
 import org.passay.spring.SpringMessageResolver;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
@@ -25,24 +24,7 @@ import java.util.Arrays;
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
 	private final MessageSource messageSource;
-	@Value("${user.password.min-length}")
-	private int minLength;
-	@Value("${user.password.max-length}")
-	private int maxLength;
-	@Value("${user.password.min-upper-case-occurrences}")
-	private int minimalUpperCaseOccurrences;
-	@Value("${user.password.min-lower-case-occurrences}")
-	private int minimalLowerCaseOccurrences;
-	@Value("${user.password.min-digit-occurrences}")
-	private int minimalDigitOccurrences;
-	@Value("${user.password.min-special-chars-occurrences}")
-	private int minimalSpecialCharsOccurrences;
-	@Value("${user.password.max-alpha-sequence-length}")
-	private int maximalAlphabeticalSequenceLength;
-	@Value("${user.password.max-digit-sequence-length}")
-	private int maximalDigitSequenceLength;
-	@Value("${user.password.max-keyboard-sequence-length}")
-	private int maximalKeyboardSequenceLength;
+	private final PasswordConstraintsHolder constraintsHolder;
 
 	@Override
 	public void initialize(ValidPassword constraintAnnotation) {
@@ -52,14 +34,17 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 	public boolean isValid(String password, ConstraintValidatorContext context) {
 		MessageResolver messageResolver = new SpringMessageResolver(messageSource, LocaleContextHolder.getLocale());
 		PasswordValidator validator = new PasswordValidator(messageResolver, Arrays.asList(
-				new LengthRule(minLength, maxLength),
-				new CharacterRule(EnglishCharacterData.UpperCase, minimalUpperCaseOccurrences),
-				new CharacterRule(EnglishCharacterData.LowerCase, minimalLowerCaseOccurrences),
-				new CharacterRule(EnglishCharacterData.Digit, minimalDigitOccurrences),
-				new CharacterRule(EnglishCharacterData.Special, minimalSpecialCharsOccurrences),
-				new IllegalSequenceRule(EnglishSequenceData.Alphabetical, maximalAlphabeticalSequenceLength, false),
-				new IllegalSequenceRule(EnglishSequenceData.Numerical, maximalDigitSequenceLength, false),
-				new IllegalSequenceRule(EnglishSequenceData.USQwerty, maximalKeyboardSequenceLength, false),
+				new LengthRule(constraintsHolder.minLength(), constraintsHolder.maxLength()),
+				new CharacterRule(EnglishCharacterData.UpperCase, constraintsHolder.minUpperCaseOccurrences()),
+				new CharacterRule(EnglishCharacterData.LowerCase, constraintsHolder.minLowerCaseOccurrences()),
+				new CharacterRule(EnglishCharacterData.Digit, constraintsHolder.minDigitOccurrences()),
+				new CharacterRule(EnglishCharacterData.Special, constraintsHolder.minSpecialCharsOccurrences()),
+				new IllegalSequenceRule(EnglishSequenceData.Alphabetical,
+				                        constraintsHolder.maxAlphaSequenceLength(), false),
+				new IllegalSequenceRule(EnglishSequenceData.Numerical, constraintsHolder.maxDigitSequenceLength(),
+				                        false),
+				new IllegalSequenceRule(EnglishSequenceData.USQwerty, constraintsHolder.maxKeyboardSequenceLength(),
+				                        false),
 				new WhitespaceRule()));
 		RuleResult result = validator.validate(new PasswordData(password));
 		context.disableDefaultConstraintViolation();

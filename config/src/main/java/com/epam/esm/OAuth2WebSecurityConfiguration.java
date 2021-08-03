@@ -1,5 +1,6 @@
 package com.epam.esm;
 
+import com.epam.esm.propertiesholder.OAuth2PropertiesHolder;
 import com.epam.esm.web.ResourcePaths;
 import com.epam.esm.web.auth.authorizationserver.UserAuthenticationProvider;
 import com.epam.esm.web.auth.client.OAuth2AuthenticationSuccessHandler;
@@ -7,10 +8,14 @@ import com.epam.esm.web.auth.common.Scopes;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.crypto.MACSigner;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,6 +37,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
+@RequiredArgsConstructor
 public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	private static final String ANY_GIFT_CERTIFICATES_PATH = ResourcePaths.GIFT_CERTIFICATES + "/**";
@@ -41,15 +47,12 @@ public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 
 	@Autowired
 	private UserAuthenticationProvider userAuthenticationProvider;
-	@Value("${oauth2.resource-server.jwt.key-value}")
-	private String jwtKey;
-	@Value("${oauth2.resource-server.jwt.associated-secret-key-algorithm}")
-	private String secretKeyAlgorithm;
+	private final OAuth2PropertiesHolder propertiesHolder;
 
 	@Bean
 	public JwtDecoder jwtDecoder() {
-		byte[] key = jwtKey.getBytes();
-		SecretKey originalKey = new SecretKeySpec(key, 0, key.length, secretKeyAlgorithm);
+		byte[] key = propertiesHolder.jwtKey().getBytes();
+		SecretKey originalKey = new SecretKeySpec(key, 0, key.length, propertiesHolder.secretKeyAlgorithm());
 		return NimbusJwtDecoder.withSecretKey(originalKey).build();
 	}
 
@@ -80,7 +83,7 @@ public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 
 	@Bean
 	public JWSSigner jwsSigner() throws KeyLengthException {
-		return new MACSigner(jwtKey.getBytes(StandardCharsets.UTF_8));
+		return new MACSigner(propertiesHolder.jwtKey().getBytes(StandardCharsets.UTF_8));
 	}
 
 	@Bean

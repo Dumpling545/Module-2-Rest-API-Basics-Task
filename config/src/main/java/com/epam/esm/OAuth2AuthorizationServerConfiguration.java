@@ -1,14 +1,16 @@
 package com.epam.esm;
 
+import com.epam.esm.propertiesholder.OAuth2PropertiesHolder;
 import com.epam.esm.web.auth.authorizationserver.AuthoritiesToScopeTranslationTokenEnhancer;
 import com.epam.esm.web.auth.authorizationserver.IgnoreAuthoritiesUserAuthenticationConverter;
 import com.epam.esm.web.auth.authorizationserver.InvalidateSessionImplicitTokenGranter;
 import com.epam.esm.web.auth.common.Scopes;
 import com.epam.esm.web.exceptionhandler.AuthorizationServerExceptionHandler;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,12 +35,9 @@ import java.util.List;
  * NOTE: Single in-memory client used since there is no requirement for client management in the task
  */
 @Configuration
+@RequiredArgsConstructor
 @EnableAuthorizationServer
-@ConfigurationProperties(prefix = "oauth2.auth-server")
 public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
-
-	@Value("${oauth2.resource-server.jwt.key-value}")
-	private String jwtKey;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -48,24 +47,16 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
 	private IgnoreAuthoritiesUserAuthenticationConverter ignoreAuthoritiesUserAuthenticationConverter;
 	@Autowired
 	private AuthorizationServerExceptionHandler authorizationServerExceptionHandler;
-
-	@Setter
-	private String inMemoryClientName;
-	@Setter
-	private String inMemoryClientSecret;
-	@Setter
-	private List<String> inMemoryClientGrantTypes;
-	@Setter
-	private String[] inMemoryClientRedirectUris;
+	private final OAuth2PropertiesHolder propertiesHolder;
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
-				.withClient(inMemoryClientName)
-				.secret(inMemoryClientSecret)
-				.authorizedGrantTypes(inMemoryClientGrantTypes.toArray(String[]::new))
+				.withClient(propertiesHolder.inMemoryClientName())
+				.secret(propertiesHolder.inMemoryClientSecret())
+				.authorizedGrantTypes(propertiesHolder.inMemoryClientGrantTypes().toArray(String[]::new))
 				.scopes(Scopes.ADMIN_SCOPES)
-				.redirectUris(inMemoryClientRedirectUris);
+				.redirectUris(propertiesHolder.inMemoryClientRedirectUris());
 	}
 
 	@Override
@@ -104,7 +95,7 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
 		tokenConverter.setUserTokenConverter(ignoreAuthoritiesUserAuthenticationConverter);
 		var converter = new JwtAccessTokenConverter();
 		converter.setAccessTokenConverter(tokenConverter);
-		converter.setSigningKey(jwtKey);
+		converter.setSigningKey(propertiesHolder.jwtKey());
 		return converter;
 	}
 }
