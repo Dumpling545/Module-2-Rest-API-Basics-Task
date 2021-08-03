@@ -17,9 +17,10 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_TAG_NAME_LENGTH;
 @Data
 @Builder
 public class GiftCertificateSearchFilterDTO {
-    private String namePart;
-    private String descriptionPart;
-    private Set<@NotNull(message = "{tag.validation-message.name-not-empty}") @Size(min = MIN_TAG_NAME_LENGTH,
-            max = MAX_TAG_NAME_LENGTH, message = "{tag.validation-message.name-size}") String> tagNames;
-    private String sortBy;
+	private String namePart;
+	private String descriptionPart;
+	private Set<@NotNull(message = "{tag.validation-message.name-not-empty}") @Size(min = MIN_TAG_NAME_LENGTH,
+	                                                                                max = MAX_TAG_NAME_LENGTH,
+	                                                                                message = "{tag.validation-message.name-size}") String>
+			tagNames;
 }

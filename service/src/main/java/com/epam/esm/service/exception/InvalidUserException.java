@@ -8,38 +8,44 @@ import lombok.Getter;
  * InvalidUserException#getReason()}
  */
 public class InvalidUserException extends ServiceException {
-    @Getter
-    private final Reason reason;
-    @Getter
-    private Integer userId;
-    @Getter
-    private String userName;
+	@Getter
+	private final Reason reason;
+	@Getter
+	private Integer userId;
+	@Getter
+	private String userName;
 
-    public InvalidUserException(String message, Reason reason) {
-        super(message);
-        this.reason = reason;
-    }
+	public InvalidUserException(String message, Reason reason) {
+		super(message);
+		this.reason = reason;
+	}
 
-    public InvalidUserException(String message, Reason reason, int userId) {
-        this(message, reason);
-        this.userId = userId;
-    }
+	public InvalidUserException(String message, Reason reason, int userId) {
+		this(message, reason);
+		this.userId = userId;
+	}
 
-    public InvalidUserException(String message, Throwable thr, Reason reason, int userId) {
-        super(message, thr);
-        this.reason = reason;
-        this.userId = userId;
-    }
+	public InvalidUserException(String message, Throwable thr, Reason reason) {
+		super(message, thr);
+		this.reason = reason;
+	}
 
-    public InvalidUserException(String message, Throwable thr, Reason reason, String userName) {
-        super(message, thr);
-        this.reason = reason;
-        this.userName = userName;
-    }
+	public InvalidUserException(String message, Throwable thr, Reason reason, int userId) {
+		super(message, thr);
+		this.reason = reason;
+		this.userId = userId;
+	}
 
-    public enum Reason {
-        NOT_FOUND,
-        ALREADY_EXISTS,
-        INCONSISTENT_CREDENTIALS;
-    }
+	public InvalidUserException(String message, Throwable thr, Reason reason, String userName) {
+		super(message, thr);
+		this.reason = reason;
+		this.userName = userName;
+	}
+
+	public enum Reason {
+		NOT_FOUND,
+		ALREADY_EXISTS,
+		INVALID_SORT_BY,
+		INCONSISTENT_CREDENTIALS;
+	}
 }

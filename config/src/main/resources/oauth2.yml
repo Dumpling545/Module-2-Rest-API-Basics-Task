@@ -3,8 +3,8 @@ oauth2:
     in-memory-client-name: client
     in-memory-client-secret: '{noop}secret'
     in-memory-client-grant-types:
-    - password
-    - implicit
+      - password
+      - implicit
     in-memory-client-redirect-uris: example.com
   claims:
     user-id: user_id

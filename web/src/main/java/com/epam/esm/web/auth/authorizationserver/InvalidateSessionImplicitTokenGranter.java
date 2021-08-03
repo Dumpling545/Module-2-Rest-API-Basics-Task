@@ -33,13 +33,13 @@ public class InvalidateSessionImplicitTokenGranter extends ImplicitTokenGranter 
 
 	@Override
 	public OAuth2AccessToken grant(String grantType, TokenRequest tokenRequest) {
-		OAuth2AccessToken token =  super.grant(grantType, tokenRequest);
+		OAuth2AccessToken token = super.grant(grantType, tokenRequest);
 		RequestAttributes requestAttributes = RequestContextHolder
 				.currentRequestAttributes();
 		ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
 		HttpServletRequest request = attributes.getRequest();
 		HttpSession session = request.getSession(false);
-		if(session != null){
+		if (session != null) {
 			session.invalidate();
 		}
 		return token;

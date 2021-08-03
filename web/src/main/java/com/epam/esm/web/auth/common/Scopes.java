@@ -1,7 +1,9 @@
-	package com.epam.esm.web.auth.common;
+package com.epam.esm.web.auth.common;
 
 public final class Scopes {
-	private Scopes(){}
+	private Scopes() {
+	}
+
 	public static final String GIFT_CERTIFICATES_READ = "gift-certificates:read";
 	public static final String GIFT_CERTIFICATES_WRITE = "gift-certificates:write";
 	public static final String ORDERS_READ = "orders:read";

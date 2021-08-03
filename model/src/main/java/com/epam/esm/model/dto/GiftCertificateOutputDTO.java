@@ -13,11 +13,11 @@ import java.util.Set;
 @Data
 @SuperBuilder
 public class GiftCertificateOutputDTO extends IdentifiableDTO {
-    private String name;
-    private String description;
-    private BigDecimal price;
-    private Integer duration;
-    private LocalDateTime createDate;
-    private LocalDateTime lastUpdateDate;
-    private Set<TagDTO> tags;
+	private String name;
+	private String description;
+	private BigDecimal price;
+	private Integer duration;
+	private LocalDateTime createDate;
+	private LocalDateTime lastUpdateDate;
+	private Set<TagDTO> tags;
 }

@@ -29,38 +29,38 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cert_user")
 public class User {
-    private static final Logger logger = LoggerFactory.getLogger(User.class);
-    @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(name = "user_name", nullable = false, unique = true)
-    private String userName;
-    @Column
-    private String password;
-    @Column(name="external_provider")
-    private String externalProvider;
-    @Column(name="external_id")
-    private String externalId;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+	private static final Logger logger = LoggerFactory.getLogger(User.class);
+	@Id
+	@Column(nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	@Column(name = "user_name", nullable = false, unique = true)
+	private String name;
+	@Column
+	private String password;
+	@Column(name = "external_provider")
+	private String externalProvider;
+	@Column(name = "external_id")
+	private String externalId;
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
-    @PrePersist
-    public void onPrePersist() {
-        logger.info(toString() + " to be persisted");
-    }
+	@PrePersist
+	public void onPrePersist() {
+		logger.info(toString() + " to be persisted");
+	}
 
-    @PreRemove
-    public void onPreRemove() {
-        logger.info(toString() + " to be removed");
-    }
+	@PreRemove
+	public void onPreRemove() {
+		logger.info(toString() + " to be removed");
+	}
 
-    @PreUpdate
-    public void onPreUpdate() {
-        logger.info(toString() + " to be updated");
-    }
+	@PreUpdate
+	public void onPreUpdate() {
+		logger.info(toString() + " to be updated");
+	}
 
-    public enum Role {
-        USER, ADMIN;
-    }
+	public enum Role {
+		USER, ADMIN;
+	}
 }

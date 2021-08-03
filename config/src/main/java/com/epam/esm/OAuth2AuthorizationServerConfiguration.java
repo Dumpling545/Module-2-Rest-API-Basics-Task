@@ -1,8 +1,8 @@
 package com.epam.esm;
 
 import com.epam.esm.web.auth.authorizationserver.AuthoritiesToScopeTranslationTokenEnhancer;
-import com.epam.esm.web.auth.authorizationserver.InvalidateSessionImplicitTokenGranter;
 import com.epam.esm.web.auth.authorizationserver.IgnoreAuthoritiesUserAuthenticationConverter;
+import com.epam.esm.web.auth.authorizationserver.InvalidateSessionImplicitTokenGranter;
 import com.epam.esm.web.auth.common.Scopes;
 import com.epam.esm.web.exceptionhandler.AuthorizationServerExceptionHandler;
 import lombok.Setter;
@@ -70,14 +70,13 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-		endpoints
-				.authenticationManager(authenticationManager)
+		endpoints.authenticationManager(authenticationManager)
 				.tokenStore(tokenStore())
 				.tokenEnhancer(tokenEnhancerChain())
 				.exceptionTranslator(authorizationServerExceptionHandler);
 		var implicitTokenGranter = new InvalidateSessionImplicitTokenGranter(endpoints.getTokenServices(),
-                                                                             endpoints.getClientDetailsService(),
-                                                                             endpoints.getOAuth2RequestFactory());
+		                                                                     endpoints.getClientDetailsService(),
+		                                                                     endpoints.getOAuth2RequestFactory());
 		var passwordOwnerTokenGranter = new ResourceOwnerPasswordTokenGranter(authenticationManager,
 		                                                                      endpoints.getTokenServices(),
 		                                                                      endpoints.getClientDetailsService(),

@@ -33,28 +33,28 @@ import static com.epam.esm.model.dto.ValidationConstraints.MIN_TAG_NAME_LENGTH;
 @Data
 @Builder
 public class GiftCertificateCreateDTO {
-    @NotNull(message = "{cert.validation-message.name-not-empty}")
-    @Size(min = MIN_CERT_NAME_LENGTH, max = MAX_CERT_NAME_LENGTH, message = "{cert.validation-message.name-size}")
-    private String name;
+	@NotNull(message = "{cert.validation-message.name-not-empty}")
+	@Size(min = MIN_CERT_NAME_LENGTH, max = MAX_CERT_NAME_LENGTH, message = "{cert.validation-message.name-size}")
+	private String name;
 
-    @NotNull(message = "{cert.validation-message.description-not-empty}")
-    @Size(min = MIN_CERT_DESC_LENGTH, max = MAX_CERT_DESC_LENGTH,
-            message = "{cert.validation-message.description-size}")
-    private String description;
+	@NotNull(message = "{cert.validation-message.description-not-empty}")
+	@Size(min = MIN_CERT_DESC_LENGTH, max = MAX_CERT_DESC_LENGTH,
+	      message = "{cert.validation-message.description-size}")
+	private String description;
 
-    @NotNull(message = "{cert.validation-message.price-not-empty}")
-    @DecimalMin(value = MIN_CERT_PRICE, message = "{cert.validation-message.price-min}")
-    @DecimalMax(value = MAX_CERT_PRICE, message = "{cert.validation-message.price-max}")
-    @Digits(integer = MAX_CERT_PRICE_INTEGER_PART_SIZE, fraction = MAX_CERT_PRICE_DECIMAL_PART_SIZE,
-            message = "{cert.validation-message.price-digits}")
-    private BigDecimal price;
+	@NotNull(message = "{cert.validation-message.price-not-empty}")
+	@DecimalMin(value = MIN_CERT_PRICE, message = "{cert.validation-message.price-min}")
+	@DecimalMax(value = MAX_CERT_PRICE, message = "{cert.validation-message.price-max}")
+	@Digits(integer = MAX_CERT_PRICE_INTEGER_PART_SIZE, fraction = MAX_CERT_PRICE_DECIMAL_PART_SIZE,
+	        message = "{cert.validation-message.price-digits}")
+	private BigDecimal price;
 
-    @NotNull(message = "{cert.validation-message.duration-not-empty}")
-    @Min(value = MIN_CERT_DURATION, message = "{cert.validation-message.duration-min}")
-    @Max(value = MAX_CERT_DURATION, message = "{cert.validation-message.duration-max}")
-    private Integer duration;
+	@NotNull(message = "{cert.validation-message.duration-not-empty}")
+	@Min(value = MIN_CERT_DURATION, message = "{cert.validation-message.duration-min}")
+	@Max(value = MAX_CERT_DURATION, message = "{cert.validation-message.duration-max}")
+	private Integer duration;
 
-    private Set<@NotNull(message = "{tag.validation-message.name-not-empty}") @Size(min = MIN_TAG_NAME_LENGTH,
+	private Set<@NotNull(message = "{tag.validation-message.name-not-empty}") @Size(min = MIN_TAG_NAME_LENGTH,
 	                                                                                max = MAX_TAG_NAME_LENGTH,
 	                                                                                message = "{tag.validation-message.name-size}") String>
 			tagNames;

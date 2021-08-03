@@ -9,12 +9,12 @@ import java.util.Map;
 
 @Component
 public class IgnoreAuthoritiesUserAuthenticationConverter extends DefaultUserAuthenticationConverter {
-    @Value("${oauth2.claims.user-id}")
-    private String userIdClaim;
+	@Value("${oauth2.claims.user-id}")
+	private String userIdClaim;
 
-    @Override
-    public Map<String, ?> convertUserAuthentication(Authentication authentication) {
-        return Map.of(userIdClaim, authentication.getDetails());
-    }
+	@Override
+	public Map<String, ?> convertUserAuthentication(Authentication authentication) {
+		return Map.of(userIdClaim, authentication.getDetails());
+	}
 }
 

@@ -66,29 +66,29 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 	@Value("${common.error-info.postfix}")
 	private int commonPostfix;
 
-    private int resolvePostfix(Class controllerClass) {
-        int postfix = commonPostfix;
-        if (controllerClass.equals(TagController.class)) {
-            postfix = tagPostfix;
-        } else if (controllerClass.equals(GiftCertificateController.class)) {
-            postfix = certPostfix;
-        } else if (controllerClass.equals(OrderController.class)) {
-            postfix = orderPostfix;
-        } else if (controllerClass.equals(UserController.class)) {
-            postfix = userPostfix;
-        }
-        return postfix;
-    }
+	private int resolvePostfix(Class controllerClass) {
+		int postfix = commonPostfix;
+		if (controllerClass.equals(TagController.class)) {
+			postfix = tagPostfix;
+		} else if (controllerClass.equals(GiftCertificateController.class)) {
+			postfix = certPostfix;
+		} else if (controllerClass.equals(OrderController.class)) {
+			postfix = orderPostfix;
+		} else if (controllerClass.equals(UserController.class)) {
+			postfix = userPostfix;
+		}
+		return postfix;
+	}
 
-    private int resolvePostfix(HandlerMethod handlerMethod) {
-        Class controllerClass = handlerMethod.getMethod().getDeclaringClass();
-        return resolvePostfix(controllerClass);
-    }
+	private int resolvePostfix(HandlerMethod handlerMethod) {
+		Class controllerClass = handlerMethod.getMethod().getDeclaringClass();
+		return resolvePostfix(controllerClass);
+	}
 
-    private int resolvePostfix(Method method) {
-        Class controllerClass = method.getDeclaringClass();
-        return resolvePostfix(controllerClass);
-    }
+	private int resolvePostfix(Method method) {
+		Class controllerClass = method.getDeclaringClass();
+		return resolvePostfix(controllerClass);
+	}
 
 	@ExceptionHandler(ServiceException.class)
 	public ResponseEntity<Object> handleException(ServiceException ex, HandlerMethod handlerMethod, Locale locale) {
@@ -207,14 +207,14 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status,
-                                                                  WebRequest request) {
-        logger.error("Handled in the MethodArgumentNotValidException handler", ex);
-        List<String> messages = ex.getAllErrors().stream().map(ObjectError::getDefaultMessage).toList();
-        return helper.handleUnformatted(status, headers, messages, resolvePostfix(ex.getParameter().getMethod()));
-    }
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+	                                                              HttpHeaders headers, HttpStatus status,
+	                                                              WebRequest request) {
+		logger.error("Handled in the MethodArgumentNotValidException handler", ex);
+		List<String> messages = ex.getAllErrors().stream().map(ObjectError::getDefaultMessage).toList();
+		return helper.handleUnformatted(status, headers, messages, resolvePostfix(ex.getParameter().getMethod()));
+	}
 
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestPart(MissingServletRequestPartException ex,
@@ -254,11 +254,11 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 		return helper.handle(status, headers, message, commonPostfix);
 	}
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-                                                             HttpStatus status, WebRequest request) {
-        logger.error("Handled in the fallback handler", ex);
-        String message = messageSource.getMessage("common.error-message.other", null, request.getLocale());
-        return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR, message, commonPostfix);
-    }
+	@Override
+	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+	                                                         HttpStatus status, WebRequest request) {
+		logger.error("Handled in the fallback handler", ex);
+		String message = messageSource.getMessage("common.error-message.other", null, request.getLocale());
+		return helper.handle(HttpStatus.INTERNAL_SERVER_ERROR, message, commonPostfix);
+	}
 }

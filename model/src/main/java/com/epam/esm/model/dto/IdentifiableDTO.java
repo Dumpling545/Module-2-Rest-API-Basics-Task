@@ -13,6 +13,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public abstract class IdentifiableDTO {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    protected Integer id;
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Integer id;
 }

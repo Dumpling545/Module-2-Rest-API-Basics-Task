@@ -16,49 +16,48 @@ import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserExc
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
 
-    @Value("${auth.exception.password-username-not-found}")
-    private String passwordOrUserNameNotFound;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Value("${auth.exception.password-username-not-found}")
+	private String passwordOrUserNameNotFound;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    private UnauthorizedUserException createPasswordOrUserNameNotFoundException() {
-        return new UnauthorizedUserException(passwordOrUserNameNotFound);
-    }
+	private UnauthorizedUserException createPasswordOrUserNameNotFoundException() {
+		return new UnauthorizedUserException(passwordOrUserNameNotFound);
+	}
 
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        UserDTO userDTO = userService.getUser(token.getName())
-                .orElseThrow(this::createPasswordOrUserNameNotFoundException);
-        if (!passwordEncoder.matches(authentication.getCredentials().toString(), userDTO.getPassword())) {
-            throw createPasswordOrUserNameNotFoundException();
-        }
-        UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(userDTO.getUserName(),
-                null, getScopes(userDTO));
-        result.setDetails(userDTO.getId());
-        return result;
-    }
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
+		UserDTO userDTO = userService.getUser(token.getName())
+				.orElseThrow(this::createPasswordOrUserNameNotFoundException);
+		if (!passwordEncoder.matches(authentication.getCredentials().toString(), userDTO.getPassword())) {
+			throw createPasswordOrUserNameNotFoundException();
+		}
+		UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(userDTO.getName(),
+		                                                                                     null, getScopes(userDTO));
+		result.setDetails(userDTO.getId());
+		return result;
+	}
 
-    private Set<? extends GrantedAuthority> getScopes(UserDTO userDTO) {
-        String[] scopes = switch (userDTO.getRole()) {
-            case USER -> Scopes.USER_SCOPES;
-            case ADMIN -> Scopes.ADMIN_SCOPES;
-            default -> Scopes.GUEST_SCOPES;
-        };
-        return Arrays.stream(scopes).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
-    }
+	private Set<? extends GrantedAuthority> getScopes(UserDTO userDTO) {
+		String[] scopes = switch (userDTO.getRole()) {
+			case USER -> Scopes.USER_SCOPES;
+			case ADMIN -> Scopes.ADMIN_SCOPES;
+			default -> Scopes.GUEST_SCOPES;
+		};
+		return Arrays.stream(scopes).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+	}
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
-    }
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+	}
 }

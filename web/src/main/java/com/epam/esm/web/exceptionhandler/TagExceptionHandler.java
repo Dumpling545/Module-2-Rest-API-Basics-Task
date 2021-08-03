@@ -24,33 +24,37 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @RequiredArgsConstructor
 public class TagExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(TagExceptionHandler.class);
-    private final ExceptionHelper helper;
-    private final MessageSource messageSource;
-    @Value("${tag.error-info.postfix}")
-    private int tagPostfix;
+	private static final Logger logger = LoggerFactory.getLogger(TagExceptionHandler.class);
+	private final ExceptionHelper helper;
+	private final MessageSource messageSource;
+	@Value("${tag.error-info.postfix}")
+	private int tagPostfix;
 
-    @ExceptionHandler(InvalidTagException.class)
-    public ResponseEntity<Object> handleException(InvalidTagException ex, Locale locale) {
-        HttpStatus status;
-        String message;
-        switch (ex.getReason()) {
-            case ALREADY_EXISTS:
-                status = HttpStatus.CONFLICT;
-                message = messageSource.getMessage("tag.error-message.already-exists",
-                        new Object[]{ex.getTagDescription()}, locale);
-                break;
-            case NOT_FOUND:
-                status = HttpStatus.NOT_FOUND;
-                String tagDescription = ex.getTagDescription();
-                message = messageSource.getMessage("tag.error-message.not-found",
-                        new Object[]{tagDescription}, locale);
-                break;
-            default:
-                status = HttpStatus.INTERNAL_SERVER_ERROR;
-                message = messageSource.getMessage("tag.error-message.common", null, locale);
-        }
-        logger.error("Handled in the InvalidTagException handler", ex);
-        return helper.handle(status, message, tagPostfix);
-    }
+	@ExceptionHandler(InvalidTagException.class)
+	public ResponseEntity<Object> handleException(InvalidTagException ex, Locale locale) {
+		HttpStatus status;
+		String message;
+		switch (ex.getReason()) {
+			case ALREADY_EXISTS:
+				status = HttpStatus.CONFLICT;
+				message = messageSource.getMessage("tag.error-message.already-exists",
+				                                   new Object[]{ex.getTagDescription()}, locale);
+				break;
+			case NOT_FOUND:
+				status = HttpStatus.NOT_FOUND;
+				String tagDescription = ex.getTagDescription();
+				message = messageSource.getMessage("tag.error-message.not-found",
+				                                   new Object[]{tagDescription}, locale);
+				break;
+			case INVALID_SORT_BY:
+				status = HttpStatus.BAD_REQUEST;
+				message = messageSource.getMessage("common.error-message.invalid-sort", null, locale);
+				break;
+			default:
+				status = HttpStatus.INTERNAL_SERVER_ERROR;
+				message = messageSource.getMessage("tag.error-message.common", null, locale);
+		}
+		logger.error("Handled in the InvalidTagException handler", ex);
+		return helper.handle(status, message, tagPostfix);
+	}
 }

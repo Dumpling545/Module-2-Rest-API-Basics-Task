@@ -6,10 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,17 +40,18 @@ import java.util.Set;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "gift_certificate")
+@EntityListeners(AuditingEntityListener.class)
 @NamedEntityGraph(
-        name = "full-certificate-entity-graph",
-        attributeNodes = {
-                @NamedAttributeNode(GiftCertificate_.NAME),
-                @NamedAttributeNode(GiftCertificate_.DESCRIPTION),
-                @NamedAttributeNode(GiftCertificate_.PRICE),
-                @NamedAttributeNode(GiftCertificate_.DURATION),
-                @NamedAttributeNode(GiftCertificate_.CREATE_DATE),
-                @NamedAttributeNode(GiftCertificate_.LAST_UPDATE_DATE),
-                @NamedAttributeNode(GiftCertificate_.TAGS)
-        }
+		name = "full-certificate-entity-graph",
+		attributeNodes = {
+				@NamedAttributeNode(GiftCertificate_.NAME),
+				@NamedAttributeNode(GiftCertificate_.DESCRIPTION),
+				@NamedAttributeNode(GiftCertificate_.PRICE),
+				@NamedAttributeNode(GiftCertificate_.DURATION),
+				@NamedAttributeNode(GiftCertificate_.CREATE_DATE),
+				@NamedAttributeNode(GiftCertificate_.LAST_UPDATE_DATE),
+				@NamedAttributeNode(GiftCertificate_.TAGS)
+		}
 )
 public class GiftCertificate {
 	private static final Logger logger = LoggerFactory.getLogger(GiftCertificate.class);
@@ -62,28 +67,30 @@ public class GiftCertificate {
 	private BigDecimal price;
 	@Column(nullable = false)
 	private Integer duration;
+	@CreatedDate
 	@Column(name = "create_date", nullable = false)
 	private LocalDateTime createDate;
+	@LastModifiedDate
 	@Column(name = "last_update_date", nullable = false)
 	private LocalDateTime lastUpdateDate;
-	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE})
 	@JoinTable(name = "tag_gift_certificate",
 	           joinColumns = @JoinColumn(name = "gift_certificate_id"),
 	           inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<Tag> tags;
 
-    @PrePersist
-    public void onPrePersist() {
-        logger.info(toString() + " to be persisted");
-    }
+	@PrePersist
+	public void onPrePersist() {
+		logger.info(toString() + " to be persisted");
+	}
 
-    @PreRemove
-    public void onPreRemove() {
-        logger.info(toString() + " to be removed");
-    }
+	@PreRemove
+	public void onPreRemove() {
+		logger.info(toString() + " to be removed");
+	}
 
-    @PreUpdate
-    public void onPreUpdate() {
-        logger.info(toString() + " to be updated");
-    }
+	@PreUpdate
+	public void onPreUpdate() {
+		logger.info(toString() + " to be updated");
+	}
 }

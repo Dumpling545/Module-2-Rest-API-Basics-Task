@@ -8,32 +8,32 @@ import lombok.Getter;
  * InvalidTagException#getReason()}
  */
 public class InvalidTagException extends ServiceException {
-    @Getter
-    private final Reason reason;
-    @Getter
-    private String tagDescription;
+	@Getter
+	private final Reason reason;
+	@Getter
+	private String tagDescription;
 
-    public InvalidTagException(String message, Reason reason) {
-        super(message);
-        this.reason = reason;
-    }
+	public InvalidTagException(String message, Reason reason) {
+		super(message);
+		this.reason = reason;
+	}
 
-    public InvalidTagException(String message, Reason reason, String tagDescription) {
-        this(message, reason);
-        this.tagDescription = tagDescription;
-    }
+	public InvalidTagException(String message, Reason reason, String tagDescription) {
+		this(message, reason);
+		this.tagDescription = tagDescription;
+	}
 
-    public InvalidTagException(String message, Throwable thr, Reason reason) {
-        super(message, thr);
-        this.reason = reason;
-    }
+	public InvalidTagException(String message, Throwable thr, Reason reason) {
+		super(message, thr);
+		this.reason = reason;
+	}
 
-    public InvalidTagException(String message, Throwable thr, Reason reason, String tagDescription) {
-        this(message, thr, reason);
-        this.tagDescription = tagDescription;
-    }
+	public InvalidTagException(String message, Throwable thr, Reason reason, String tagDescription) {
+		this(message, thr, reason);
+		this.tagDescription = tagDescription;
+	}
 
-    public enum Reason {
-        NOT_FOUND, ALREADY_EXISTS
-    }
+	public enum Reason {
+		NOT_FOUND, ALREADY_EXISTS, INVALID_SORT_BY
+	}
 }

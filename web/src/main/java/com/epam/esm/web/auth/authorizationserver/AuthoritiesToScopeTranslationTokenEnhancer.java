@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 
 @Component
 public class AuthoritiesToScopeTranslationTokenEnhancer implements TokenEnhancer {
-    @Override
-    public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-        var token = new DefaultOAuth2AccessToken(accessToken);
-        var authorities = authentication.getUserAuthentication().getAuthorities();
-        Set<String> scopes = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
-        var requestedScopes = token.getScope();
-        token.setScope(scopes.stream().filter(requestedScopes::contains).collect(Collectors.toSet()));
-        return token;
-    }
+	@Override
+	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+		var token = new DefaultOAuth2AccessToken(accessToken);
+		var authorities = authentication.getUserAuthentication().getAuthorities();
+		Set<String> scopes = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+		var requestedScopes = token.getScope();
+		token.setScope(scopes.stream().filter(requestedScopes::contains).collect(Collectors.toSet()));
+		return token;
+	}
 }

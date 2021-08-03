@@ -32,6 +32,8 @@ public class ExternalUserRegistrar extends DefaultOAuth2UserService {
 	private String nameAttributeKey;
 	private String idAttributeKey;
 
+	private static final Logger logger = LoggerFactory.getLogger(ExternalUserRegistrar.class);
+
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -42,11 +44,12 @@ public class ExternalUserRegistrar extends DefaultOAuth2UserService {
 			UserDTO newUser = UserDTO.builder()
 					.externalId(externalId)
 					.externalProvider(externalProvider)
-					.userName(userName)
+					.name(userName)
 					.build();
 			return userService.registerUser(newUser);
 		});
-		Map<String, Object> attributes = Map.of(nameAttributeKey, userDTO.getUserName(),
+		logger.error(nameAttributeKey + "=" + userDTO.getName() + ", " + idAttributeKey + " = " + userDTO.getId());
+		Map<String, Object> attributes = Map.of(nameAttributeKey, userDTO.getName(),
 		                                        idAttributeKey, userDTO.getId());
 		String[] authorities = switch (userDTO.getRole()) {
 			case USER -> Scopes.USER_SCOPES;

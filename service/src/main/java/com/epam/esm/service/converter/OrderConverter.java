@@ -14,8 +14,8 @@ import java.math.BigDecimal;
  */
 @Mapper(componentModel = "spring")
 public interface OrderConverter {
-    @Mapping(target = "cost", source = "cost")
-    Order convert(OrderDTO dto, BigDecimal cost);
+	@Mapping(target = "cost", source = "cost")
+	Order convert(OrderDTO dto, BigDecimal cost);
 
-    OrderDTO convert(Order order);
+	OrderDTO convert(Order order);
 }
