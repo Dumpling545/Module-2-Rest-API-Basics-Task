@@ -8,9 +8,6 @@ import com.epam.esm.web.auth.common.Scopes;
 import com.epam.esm.web.exceptionhandler.AuthorizationServerExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,6 +36,7 @@ import java.util.List;
 @EnableAuthorizationServer
 public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
+	private final OAuth2PropertiesHolder propertiesHolder;
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	@Autowired
@@ -47,7 +45,6 @@ public class OAuth2AuthorizationServerConfiguration extends AuthorizationServerC
 	private IgnoreAuthoritiesUserAuthenticationConverter ignoreAuthoritiesUserAuthenticationConverter;
 	@Autowired
 	private AuthorizationServerExceptionHandler authorizationServerExceptionHandler;
-	private final OAuth2PropertiesHolder propertiesHolder;
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {

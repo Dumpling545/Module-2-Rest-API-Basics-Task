@@ -154,7 +154,8 @@ public class GiftCertificateServiceImplTest {
 			.builder().build();
 	private static final Slice<GiftCertificate> sliceWithCerts = new SliceImpl<>(List.of(existingCert),
 	                                                                             Pageable.ofSize(1), true);
-	private static final Slice<GiftCertificateOutputDTO> sliceWithCertDtos = new SliceImpl<>(List.of(existingCertOutputDto),
+	private static final Slice<GiftCertificateOutputDTO> sliceWithCertDtos =
+			new SliceImpl<>(List.of(existingCertOutputDto),
 			                sliceWithCerts.getPageable(),
 			                sliceWithCerts.hasNext());
 	private static final Pageable pageable = Pageable.ofSize(5);

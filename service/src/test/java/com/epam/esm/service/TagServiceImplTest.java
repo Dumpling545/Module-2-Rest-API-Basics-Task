@@ -59,10 +59,10 @@ public class TagServiceImplTest {
 	private static final Tag existingTag2 = Tag.builder()
 			.id(existingTagDto2.getId())
 			.name(existingTagDto2.getName()).build();
-	private static final List<TagDTO> allExistingTagDtoList = List.of(existingTagDto1, existingTagDto2);
-	private static final Slice<TagDTO> tagDtoSlice = new SliceImpl<>(allExistingTagDtoList);
 	private static final List<Tag> allExistingTagList = List.of(existingTag1, existingTag2);
 	private static final Slice<Tag> tagSlice = new SliceImpl<>(allExistingTagList);
+	private static final List<TagDTO> allExistingTagDtoList = List.of(existingTagDto1, existingTagDto2);
+	private static final Slice<TagDTO> tagDtoSlice = new SliceImpl<>(allExistingTagDtoList);
 	private static final TagDTO nonExistingTagDto = TagDTO.builder()
 			.id(-10)
 			.name("non existent").build();

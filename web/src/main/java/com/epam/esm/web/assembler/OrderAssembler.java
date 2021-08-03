@@ -1,6 +1,5 @@
 package com.epam.esm.web.assembler;
 
-import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.web.OrderController;
 import org.springframework.data.web.PagedResourcesAssembler;

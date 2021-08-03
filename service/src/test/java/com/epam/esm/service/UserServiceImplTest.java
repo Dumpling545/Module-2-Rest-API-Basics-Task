@@ -52,6 +52,8 @@ public class UserServiceImplTest {
 	private static final User existingUser2 = User.builder()
 			.id(existingUserDto2.getId())
 			.name(existingUserDto2.getName()).build();
+	private static final List<User> allExistingUserList = List.of(existingUser1, existingUser2);
+	private static final Slice<User> sliceWithUsers = new SliceImpl<>(allExistingUserList);
 	private static final UserDTO newPasswordBasedUserDto = UserDTO.builder()
 			.id(12)
 			.name("user3")
@@ -85,8 +87,6 @@ public class UserServiceImplTest {
 	private static final Pageable existingPageable = Pageable.ofSize(10);
 	private static final List<UserDTO> allExistingUserDtoList = List.of(existingUserDto1, existingUserDto2);
 	private static final Slice<UserDTO> sliceWithUserDTOs = new SliceImpl<>(allExistingUserDtoList);
-	private static final List<User> allExistingUserList = List.of(existingUser1, existingUser2);
-	private static final Slice<User> sliceWithUsers = new SliceImpl<>(allExistingUserList);
 	private static final UserDTO nonExistingUserDto = UserDTO.builder()
 			.id(-10)
 			.name("non existent").build();
@@ -101,7 +101,8 @@ public class UserServiceImplTest {
 	private static final int NON_EXISTING_CERT_ID = 1;
 	private static final UserConverter userConverter = Mappers.getMapper(UserConverter.class);
 	private static final PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
-	private static final ClientRegistrationRepository clientRepository = Mockito.mock(ClientRegistrationRepository.class);
+	private static final ClientRegistrationRepository clientRepository =
+			Mockito.mock(ClientRegistrationRepository.class);
 
 	@BeforeAll
 	public static void init() {

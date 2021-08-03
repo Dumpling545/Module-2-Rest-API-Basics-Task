@@ -17,7 +17,6 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -38,10 +37,11 @@ public class AuthorizationServerExceptionHandler extends DefaultWebResponseExcep
 	private static final Logger logger = LoggerFactory.getLogger(AuthorizationServerExceptionHandler.class);
 	private final MessageSource messageSource;
 
-	private String getErrorDescription(String relativeKey){
+	private String getErrorDescription(String relativeKey) {
 		return messageSource.getMessage("auth-server.error-message." + relativeKey,
 		                                null, LocaleContextHolder.getLocale());
 	}
+
 	@Override
 	public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
 		logger.error("Handled in the AuthorizationServerExceptionHandler", e);

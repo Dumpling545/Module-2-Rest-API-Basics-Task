@@ -31,13 +31,12 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "oauth2.client")
 public class ExternalUserRegistrar extends DefaultOAuth2UserService {
 
+	private static final Logger logger = LoggerFactory.getLogger(ExternalUserRegistrar.class);
 	private final UserService userService;
 	private Map<String, String> providerToIdKeyMap;
 	private Map<String, String> providerToUserNameKeyMap;
 	private String nameAttributeKey;
 	private String idAttributeKey;
-
-	private static final Logger logger = LoggerFactory.getLogger(ExternalUserRegistrar.class);
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

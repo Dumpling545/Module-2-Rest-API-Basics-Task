@@ -12,10 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -44,10 +40,10 @@ public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 	private static final String ANY_TAGS_PATH = ResourcePaths.TAGS + "/**";
 	private static final String ANY_ORDERS_PATH = ResourcePaths.ORDERS + "/**";
 	private static final String ANY_USERS_PATH = ResourcePaths.USERS + "/**";
-
+	private static final Logger logger = LoggerFactory.getLogger(OAuth2WebSecurityConfiguration.class);
+	private final OAuth2PropertiesHolder propertiesHolder;
 	@Autowired
 	private UserAuthenticationProvider userAuthenticationProvider;
-	private final OAuth2PropertiesHolder propertiesHolder;
 
 	@Bean
 	public JwtDecoder jwtDecoder() {
@@ -55,8 +51,6 @@ public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 		SecretKey originalKey = new SecretKeySpec(key, 0, key.length, propertiesHolder.secretKeyAlgorithm());
 		return NimbusJwtDecoder.withSecretKey(originalKey).build();
 	}
-
-	private static final Logger logger = LoggerFactory.getLogger(OAuth2WebSecurityConfiguration.class);
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {

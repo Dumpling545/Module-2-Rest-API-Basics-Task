@@ -1,7 +1,6 @@
 package com.epam.esm.web.assembler;
 
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
-import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.web.GiftCertificateController;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.IanaLinkRelations;

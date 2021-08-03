@@ -70,10 +70,10 @@ public class OrderServiceImplTest {
 			.cost(existingOrderDto2.getCost())
 			.purchaseDate(existingOrderDto2.getPurchaseDate())
 			.build();
-	private static final List<OrderDTO> allExistingOrderDtoList = List.of(existingOrderDto1, existingOrderDto2);
-	private static final Slice<OrderDTO> orderDtoSlice = new SliceImpl<>(allExistingOrderDtoList);
 	private static final List<Order> allExistingOrderList = List.of(existingOrder1, existingOrder2);
 	private static final Slice<Order> orderSlice = new SliceImpl<>(allExistingOrderList);
+	private static final List<OrderDTO> allExistingOrderDtoList = List.of(existingOrderDto1, existingOrderDto2);
+	private static final Slice<OrderDTO> orderDtoSlice = new SliceImpl<>(allExistingOrderDtoList);
 	private static final OrderDTO nonExistingOrderDto = OrderDTO.builder()
 			.id(-10)
 			.userId(2)

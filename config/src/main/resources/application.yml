@@ -5,7 +5,7 @@ spring:
         registration:
           github:
             client-id: f00b9327d1d8d58afeb3
-            client-secret: [sensitive]
+            client-secret: [ sensitive ]
   profiles:
     default: development
   config:

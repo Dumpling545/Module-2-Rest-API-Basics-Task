@@ -33,10 +33,10 @@ import static com.epam.esm.web.ResourcePaths.ORDERS;
 @RequestMapping(ORDERS)
 @RequiredArgsConstructor
 public class OrderController {
-	@Value("${oauth2.claims.user-id}")
-	private String userIdClaimName;
 	private final OrderService orderService;
 	private final ExtendedRepresentationModelAssembler<OrderDTO> assembler;
+	@Value("${oauth2.claims.user-id}")
+	private String userIdClaimName;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<EntityModel> getOrder(@PathVariable("id") Integer id) {
