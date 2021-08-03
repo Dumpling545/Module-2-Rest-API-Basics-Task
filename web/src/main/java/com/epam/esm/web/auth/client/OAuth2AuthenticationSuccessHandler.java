@@ -19,6 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * Handler invoked on success of external provider authentication flow (application as client).
+ * Since external provider authentication flow will be internally used in implicit flow
+ * (application as authorization server), this handler translates {@link Authentication} to
+ * type, appropriate for deprecated Spring Security OAuth implicit flow support. Moreover,
+ * it redirects to url to oauth/authorize endpoint saved in session after initial failed
+ * authorization attempt.
+ */
 @Setter
 @Component
 @RequiredArgsConstructor

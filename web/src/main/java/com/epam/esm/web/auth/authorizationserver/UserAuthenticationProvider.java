@@ -19,6 +19,9 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Class responsible for password-based authentication
+ */
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
 

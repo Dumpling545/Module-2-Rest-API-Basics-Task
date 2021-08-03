@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * Extension of {@link DefaultUserAuthenticationConverter} that overrides logic about
+ * what kind of user information is going to be inside converted jwt token (application as authorization server).
+ */
 @Component
 public class IgnoreAuthoritiesUserAuthenticationConverter extends DefaultUserAuthenticationConverter {
 	@Value("${oauth2.claims.user-id}")

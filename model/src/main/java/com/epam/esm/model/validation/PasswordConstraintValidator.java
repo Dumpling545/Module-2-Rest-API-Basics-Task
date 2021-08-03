@@ -20,6 +20,12 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 
 
+/**
+ * Constraint validator for {@link ValidPassword} annotation. Uses Passay library for
+ * actual password validation.
+ *
+ * @see <a href="http://www.passay.org/">Passay library</a>
+ */
 @RequiredArgsConstructor
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 

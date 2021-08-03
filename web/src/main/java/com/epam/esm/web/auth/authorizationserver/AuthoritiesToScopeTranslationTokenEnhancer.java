@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Token enhancer that includes {@link GrantedAuthority} objects bound to current authorization
+ * request (application as authorization server) inside 'scopes' claim of JWT token.
+ */
 @Component
 public class AuthoritiesToScopeTranslationTokenEnhancer implements TokenEnhancer {
 	@Override

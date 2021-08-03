@@ -46,7 +46,7 @@ public abstract class ExtendedRepresentationModelAssembler<T extends Identifiabl
 	}
 
 	/**
-	 * Links to add at the root of EntityModels created by {@link this#toSliceModel(Slice)} (IdentifiableDTO)}
+	 * Links to add at the root of EntityModels created inside {@link this#toSliceModel(Slice)} (IdentifiableDTO)}
 	 *
 	 * @return List of links
 	 */
@@ -62,6 +62,17 @@ public abstract class ExtendedRepresentationModelAssembler<T extends Identifiabl
 		return model;
 	}
 
+	/**
+	 * Creates {@link CollectionModel} based on provided {@link Slice}
+	 *
+	 * @param slice source for Collection model
+	 * @return Collection model representing provided {@link Slice}
+	 *
+	 * @implNote Since Spring currently does not provide any special assembler
+	 *  for {@link Slice} (unlike {@link Page}), this method simply creates model via
+	 *  {@link PagedResourcesAssembler} and removes {@link IanaLinkRelations#LAST}
+	 *  afterwards (because 'last' does not make any sense for Slice).
+	 */
 	public CollectionModel<EntityModel<T>> toSliceModel(Slice<T> slice) {
 		Page<T> page = new PageImpl<T>(slice.getContent(), slice.getPageable(), Integer.MAX_VALUE);
 		var model = pagedResourcesAssembler.toModel(page);

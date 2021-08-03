@@ -1,6 +1,7 @@
 package com.epam.esm.web.auth.client;
 
 import com.epam.esm.model.dto.UserDTO;
+import com.epam.esm.model.entity.User;
 import com.epam.esm.service.UserService;
 import com.epam.esm.web.auth.common.Scopes;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class used to find (or create) {@link User} object based on received information
+ * from external OAuth 2.0 provider after successful authentication (application as client).
+ */
 @Setter
 @Component
 @RequiredArgsConstructor

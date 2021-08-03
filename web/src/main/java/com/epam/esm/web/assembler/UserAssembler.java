@@ -12,6 +12,10 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * Non-abstract {@link ExtendedRepresentationModelAssembler} implementation
+ * for {@link UserDTO}-based models creation
+ */
 @Component
 public class UserAssembler extends ExtendedRepresentationModelAssembler<UserDTO> {
 

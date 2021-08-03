@@ -1,5 +1,8 @@
 package com.epam.esm.web;
 
+/**
+ * Class holding paths to all resource endpoints
+ */
 public final class ResourcePaths {
 	public static final String ROOT = "/";
 	public static final String GIFT_CERTIFICATES = "/gift-certificates";

@@ -38,7 +38,7 @@ public interface GiftCertificateRepository extends Repository<GiftCertificate, I
 	 * Returns whether certificate with the given id exists.
 	 *
 	 * @param integer must not be {@literal null}.
-	 * @return {@literal true} if an entity with the given id exists, {@literal false} otherwise.
+	 * @return {@literal true} if an certificate with the given id exists, {@literal false} otherwise.
 	 * @throws IllegalArgumentException if {@literal id} is {@literal null}.
 	 */
 	boolean existsById(Integer integer);

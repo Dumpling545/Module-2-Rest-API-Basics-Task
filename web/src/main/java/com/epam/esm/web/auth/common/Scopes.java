@@ -1,5 +1,8 @@
 package com.epam.esm.web.auth.common;
 
+/**
+ * Class-container for all OAuth2 scopes and their distribution among user roles
+ */
 public final class Scopes {
 	private Scopes() {
 	}

@@ -1,5 +1,6 @@
 package com.epam.esm.web.assembler;
 
+import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.web.TagController;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -12,6 +13,10 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * Non-abstract {@link ExtendedRepresentationModelAssembler} implementation
+ * for {@link TagDTO}-based models creation
+ */
 @Component
 public class TagAssembler extends ExtendedRepresentationModelAssembler<TagDTO> {
 

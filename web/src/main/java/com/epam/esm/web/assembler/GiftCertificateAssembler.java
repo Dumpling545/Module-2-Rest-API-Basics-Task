@@ -1,6 +1,7 @@
 package com.epam.esm.web.assembler;
 
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
+import com.epam.esm.model.dto.UserDTO;
 import com.epam.esm.web.GiftCertificateController;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -12,6 +13,10 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * Non-abstract {@link ExtendedRepresentationModelAssembler} implementation
+ * for {@link GiftCertificateOutputDTO}-based models creation
+ */
 @Component
 public class GiftCertificateAssembler extends
                                       ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO> {

@@ -4,12 +4,16 @@ import com.epam.esm.model.dto.OrderDTO;
 import com.epam.esm.web.auth.common.Scopes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
+/**
+ * Class evaluating permissions for {@link PreAuthorize}-annotated methods
+ */
 @Component
 public class UserPermissionEvaluator implements PermissionEvaluator {
 	@Value("${oauth2.permissions.create}")
