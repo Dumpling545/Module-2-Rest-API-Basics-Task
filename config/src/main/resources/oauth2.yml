@@ -1,11 +1,13 @@
 oauth2:
-  auth-server:
+  configuration:
     in-memory-client-name: client
     in-memory-client-secret: '{noop}secret'
     in-memory-client-grant-types:
       - password
       - implicit
     in-memory-client-redirect-uris: example.com
+    jwt-key: <Q<W~"?MZu3pJYzKM1.;S<fOPHkBaW`8y;e,w1kFSV9anRDfk=W|;G.hv0D%
+    secret-key-algorithm: AES
   claims:
     user-id: user_id
     scopes: scopes
@@ -18,7 +20,3 @@ oauth2:
     id-attribute-key: 'id'
   permissions:
     create: CREATE
-  resource-server:
-    jwt:
-      associated-secret-key-algorithm: AES
-      key-value: <Q<W~"?MZu3pJYzKM1.;S<fOPHkBaW`8y;e,w1kFSV9anRDfk=W|;G.hv0D%

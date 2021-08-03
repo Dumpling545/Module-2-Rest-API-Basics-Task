@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 public class OrderDTO extends IdentifiableDTO {
-	//@NotNull(message = "{order.validation-message.user-id-not-empty}")
 	private Integer userId;
 	@NotNull(message = "{order.validation-message.gift-certificate-id-not-empty}")
 	private Integer giftCertificateId;

@@ -38,32 +38,28 @@ public class AuthorizationServerExceptionHandler extends DefaultWebResponseExcep
 	private static final Logger logger = LoggerFactory.getLogger(AuthorizationServerExceptionHandler.class);
 	private final MessageSource messageSource;
 
+	private String getErrorDescription(String relativeKey){
+		return messageSource.getMessage("auth-server.error-message." + relativeKey,
+		                                null, LocaleContextHolder.getLocale());
+	}
 	@Override
 	public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
 		logger.error("Handled in the AuthorizationServerExceptionHandler", e);
-		Locale locale = LocaleContextHolder.getLocale();
 		String errorDescription = null;
 		if (e instanceof UnauthorizedUserException) {
-			errorDescription = messageSource.getMessage("auth-server.error-message.bad-credentials",
-			                                            null, locale);
+			errorDescription = getErrorDescription("bad-credentials");
 		} else if (e instanceof ClientAuthenticationException) {
-			errorDescription = messageSource.getMessage("auth-server.error-message.client-authentication",
-			                                            null, locale);
+			errorDescription = getErrorDescription("client-authentication");
 		} else if (e instanceof InvalidScopeException) {
-			errorDescription = messageSource.getMessage("auth-server.error-message.invalid-scope",
-			                                            null, locale);
+			errorDescription = getErrorDescription("invalid-scope");
 		} else if (e instanceof UnsupportedGrantTypeException) {
-			errorDescription = messageSource.getMessage("auth-server.error-message.unsupported-grant-type",
-			                                            null, locale);
+			errorDescription = getErrorDescription("unsupported-grant-type");
 		} else if (e instanceof UnsupportedResponseTypeException) {
-			errorDescription = messageSource.getMessage("auth-server.error-message.unsupported-response-type",
-			                                            null, locale);
+			errorDescription = getErrorDescription("unsupported-response-type");
 		} else if (e instanceof UserDeniedAuthorizationException) {
-			errorDescription = messageSource.getMessage("auth-server.error-message.user-denied-authorization",
-			                                            null, locale);
+			errorDescription = getErrorDescription("user-denied-authorization");
 		} else {
-			errorDescription = messageSource.getMessage("auth-server.error-message.common",
-			                                            null, locale);
+			errorDescription = getErrorDescription("common");
 		}
 		if (e instanceof OAuth2Exception oe) {
 			e = new OAuth2ExceptionWrapper(errorDescription, oe);
