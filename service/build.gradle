@@ -11,6 +11,8 @@ dependencies {
     implementation 'org.springframework:spring-tx'
     implementation 'org.mapstruct:mapstruct:' + mapStructVersion
     implementation project(':model')
+
+    testImplementation 'org.mockito:mockito-inline'
 }
 bootJar {
     enabled = false

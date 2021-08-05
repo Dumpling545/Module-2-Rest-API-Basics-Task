@@ -6,15 +6,11 @@ import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.model.entity.GiftCertificate;
-import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.converter.GiftCertificateConverter;
 import com.epam.esm.service.converter.GiftCertificateSearchFilterConverter;
-import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidCertificateException;
 import com.epam.esm.service.impl.GiftCertificateServiceImpl;
@@ -25,6 +21,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.data.util.TypeInformation;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
@@ -35,6 +37,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.EMPTY_SET;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -149,22 +152,18 @@ public class GiftCertificateServiceImplTest {
 	private static final long NEW_TAGS_FROM_CERT_CREATE_DTO_WITH_TWO_EXISTING_AND_TWO_NEW_TAGS = 2;
 	private static final GiftCertificateSearchFilterDTO giftCertificateSearchFilterDTO = GiftCertificateSearchFilterDTO
 			.builder().build();
-	private static final PagedResult<GiftCertificate> pagedResult = PagedResult.<GiftCertificate>builder()
-			.page(List.of(existingCert))
-			.first(false)
-			.last(true).build();
-	private static final PagedResultDTO<GiftCertificateOutputDTO> pagedResultDto =
-			PagedResultDTO.<GiftCertificateOutputDTO>builder()
-					.page(List.of(existingCertOutputDto))
-					.first(pagedResult.isFirst())
-					.last(pagedResult.isLast()).build();
-	private static final PageDTO pageDTO = PageDTO.builder().pageNumber(1).pageSize(5).build();
-	private final GiftCertificateConverter giftCertificateConverter =
-			Mappers.getMapper(GiftCertificateConverter.class);
+	private static final Slice<GiftCertificate> sliceWithCerts = new SliceImpl<>(List.of(existingCert),
+	                                                                             Pageable.ofSize(1), true);
+	private static final Slice<GiftCertificateOutputDTO> sliceWithCertDtos =
+			new SliceImpl<>(List.of(existingCertOutputDto),
+			                sliceWithCerts.getPageable(),
+			                sliceWithCerts.hasNext());
+	private static final Pageable pageable = Pageable.ofSize(5);
+	private static final String INVALID_FIELD_TOKEN_TEMPLATE_FIELD_NAME = "invalidFieldTokenTemplate";
+	private final GiftCertificateConverter giftCertificateConverter = Mappers.getMapper(GiftCertificateConverter.class);
 	private final GiftCertificateSearchFilterConverter filterConverter =
 			Mappers.getMapper(GiftCertificateSearchFilterConverter.class);
 	private final TagConverter tagConverter = Mappers.getMapper(TagConverter.class);
-	private final PagedResultConverter pagedResultConverter = Mappers.getMapper(PagedResultConverter.class);
 
 	{
 		ReflectionTestUtils.setField(giftCertificateConverter, "tagConverter", tagConverter, TagConverter.class);
@@ -175,6 +174,8 @@ public class GiftCertificateServiceImplTest {
 		TagService tagServiceReturningTwoExistingTagsSet = Mockito.mock(TagService.class);
 		Mockito.when(tagServiceReturningTwoExistingTagsSet.getTagsFromNameSet(Mockito.anySet()))
 				.thenReturn(Set.of(existingTagDTO1, existingTagDTO2));
+		Mockito.when(tagServiceWithEmptyNameSet.createTags(Mockito.anySet())).then(a -> a.getArgument(0));
+		Mockito.when(tagServiceReturningTwoExistingTagsSet.createTags(Mockito.anySet())).then(a -> a.getArgument(0));
 		return Stream.<Arguments>of(Arguments.of(tagServiceWithEmptyNameSet,
 		                                         certCreateDtoWithoutTags,
 		                                         EXISTING_TAGS_FROM_CERT_CREATE_DTO_WITHOUT_TAGS,
@@ -218,7 +219,7 @@ public class GiftCertificateServiceImplTest {
 	                                                                         long expectedExistingTagsAdded,
 	                                                                         long expectedNewTagsAdded) {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
-		Mockito.when(gcRepository.createCertificate(Mockito.any())).then(answer -> {
+		Mockito.when(gcRepository.save(Mockito.any())).then(answer -> {
 			GiftCertificate newCert = answer.getArgument(0);
 			Random random = new Random();
 			return GiftCertificate.builder()
@@ -231,8 +232,7 @@ public class GiftCertificateServiceImplTest {
 		});
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		assertDoesNotThrow(() -> {
 			GiftCertificateOutputDTO outputDTO = service.createCertificate(dto);
 			if (dto.getTagNames() != null) {
@@ -251,7 +251,7 @@ public class GiftCertificateServiceImplTest {
 	                                                                         long expectedExistingTagsAdded,
 	                                                                         long expectedNewTagsAdded) {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
-		Mockito.when(gcRepository.getCertificateById(Mockito.eq(existingCert.getId())))
+		Mockito.when(gcRepository.findById(Mockito.eq(existingCert.getId())))
 				.thenReturn(Optional.of(existingCert));
 		Mockito.doAnswer(ans -> {
 			GiftCertificate gc = ans.getArgument(0);
@@ -260,11 +260,10 @@ public class GiftCertificateServiceImplTest {
 			assertEquals(expectedExistingTagsAdded, actualExistingTagsAdded);
 			assertEquals(expectedNewTagsAdded, actualNewTagsAdded);
 			return null;
-		}).when(gcRepository).updateCertificate(Mockito.any());
+		}).when(gcRepository).save(Mockito.any());
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		ReflectionTestUtils.setField(service, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		assertDoesNotThrow(() -> {
 			service.updateCertificate(existingCert.getId(), dto);
@@ -275,11 +274,10 @@ public class GiftCertificateServiceImplTest {
 	public void updateCertificateShouldThrowExceptionWhenPassedNonExistingId() {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
 		TagService tagService = Mockito.mock(TagService.class);
-		Mockito.when(gcRepository.getCertificateById(Mockito.eq(NON_EXISTING_ID))).thenReturn(Optional.empty());
+		Mockito.when(gcRepository.findById(Mockito.eq(NON_EXISTING_ID))).thenReturn(Optional.empty());
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		ReflectionTestUtils.setField(service, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
 		                                              () -> service.updateCertificate(NON_EXISTING_ID, certUpdateDto));
@@ -290,12 +288,11 @@ public class GiftCertificateServiceImplTest {
 	public void getCertificateShouldReturnDtoWhenPassedExistingId() {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
 		TagService tagService = Mockito.mock(TagService.class);
-		Mockito.when(gcRepository.getCertificateById(Mockito.eq(existingCert.getId())))
+		Mockito.when(gcRepository.findById(Mockito.eq(existingCert.getId())))
 				.thenReturn(Optional.of(existingCert));
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		assertDoesNotThrow(() -> {
 			GiftCertificateOutputDTO outputDTO = service.getCertificate(existingCert.getId());
 			assertEquals(existingCertOutputDto, outputDTO);
@@ -306,11 +303,10 @@ public class GiftCertificateServiceImplTest {
 	public void getCertificateShouldThrowExceptionWhenPassedNonExistingId() {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
 		TagService tagService = Mockito.mock(TagService.class);
-		Mockito.when(gcRepository.getCertificateById(Mockito.eq(NON_EXISTING_ID))).thenReturn(Optional.empty());
+		Mockito.when(gcRepository.findById(Mockito.eq(NON_EXISTING_ID))).thenReturn(Optional.empty());
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		ReflectionTestUtils.setField(service, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
 		                                              () -> service.getCertificate(NON_EXISTING_ID));
@@ -321,23 +317,20 @@ public class GiftCertificateServiceImplTest {
 	public void deleteCertificateShouldNotThrowExceptionWhenPassedExistingId() {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
 		TagService tagService = Mockito.mock(TagService.class);
-		Mockito.when(gcRepository.deleteCertificate(Mockito.eq(existingCert.getId()))).thenReturn(true);
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		assertDoesNotThrow(() -> service.deleteCertificate(existingCert.getId()));
 	}
 
 	@Test
-	public void deleteCertificateShouldThrowExceptionWhenPassedNonExistingId() {
+	public void deleteCertificateShouldThrowInvalidGCExceptionWhenInnerEmptyResultDataAccessExceptionIsThrown() {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
 		TagService tagService = Mockito.mock(TagService.class);
-		Mockito.when(gcRepository.deleteCertificate(Mockito.eq(NON_EXISTING_ID))).thenReturn(false);
+		Mockito.doThrow(EmptyResultDataAccessException.class).when(gcRepository).deleteById(Mockito.anyInt());
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		ReflectionTestUtils.setField(service, NOT_FOUND_MESSAGE_FIELD_NAME, MOCK_EX_MESSAGE, String.class);
 		InvalidCertificateException ex = assertThrows(InvalidCertificateException.class,
 		                                              () -> service.deleteCertificate(NON_EXISTING_ID));
@@ -345,19 +338,36 @@ public class GiftCertificateServiceImplTest {
 	}
 
 	@Test
-	public void getCertificatesShouldReturnPagedResultWhenPassedCorrectFilter() {
+	public void getCertificatesShouldReturnSliceWhenPassedCorrectFilter() {
 		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
 		TagService tagService = Mockito.mock(TagService.class);
-		Mockito.when(gcRepository.getCertificatesByFilter(Mockito.any(), Mockito.anyInt(), Mockito.anyInt()))
-				.thenReturn(pagedResult);
+		Mockito.when(gcRepository.getCertificatesByFilter(Mockito.any(), Mockito.any()))
+				.thenReturn(sliceWithCerts);
 		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
 		                                                                gcRepository, giftCertificateConverter,
-		                                                                tagConverter, filterConverter,
-		                                                                pagedResultConverter);
+		                                                                tagConverter, filterConverter);
 		assertDoesNotThrow(() -> {
-			PagedResultDTO<GiftCertificateOutputDTO> outputDTO = service.getCertificates(giftCertificateSearchFilterDTO,
-			                                                                             pageDTO);
-			assertEquals(pagedResultDto, outputDTO);
+			Slice<GiftCertificateOutputDTO> outputDTO = service.getCertificates(giftCertificateSearchFilterDTO,
+			                                                                    pageable);
+			assertEquals(sliceWithCertDtos, outputDTO);
 		});
+	}
+
+	@Test
+	public void getCertificatesShouldThrowInvalidGCExceptionWhenInnerPropertyReferenceExceptionIsThrown() {
+		GiftCertificateRepository gcRepository = Mockito.mock(GiftCertificateRepository.class);
+		TagService tagService = Mockito.mock(TagService.class);
+		TypeInformation typeInformation = Mockito.mock(TypeInformation.class);
+		PropertyReferenceException pre = new PropertyReferenceException(MOCK_EX_MESSAGE, typeInformation, EMPTY_LIST);
+		Mockito.when(gcRepository.getCertificatesByFilter(Mockito.any(), Mockito.any())).thenThrow(pre);
+		GiftCertificateService service = new GiftCertificateServiceImpl(tagService,
+		                                                                gcRepository, giftCertificateConverter,
+		                                                                tagConverter, filterConverter);
+		ReflectionTestUtils.setField(service, INVALID_FIELD_TOKEN_TEMPLATE_FIELD_NAME, MOCK_EX_MESSAGE,
+		                             String.class);
+		InvalidCertificateException ice = assertThrows(InvalidCertificateException.class,
+		                                               () -> service.getCertificates(giftCertificateSearchFilterDTO,
+		                                                                             pageable));
+		assertEquals(InvalidCertificateException.Reason.INVALID_SORT_BY, ice.getReason());
 	}
 }

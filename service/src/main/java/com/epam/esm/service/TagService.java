@@ -1,11 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +20,14 @@ public interface TagService {
 	 * @return dto representing created tag
 	 */
 	TagDTO createTag(TagDTO tag);
+
+	/**
+	 * Creates tag objects from set
+	 *
+	 * @param tags set of dtos representing tags to be created, id is ignored
+	 * @return dto representing created tag
+	 */
+	Set<TagDTO> createTags(Set<TagDTO> tags);
 
 	/**
 	 * Retrieves tag object by given id
@@ -48,10 +55,10 @@ public interface TagService {
 	/**
 	 * Retrieves all existing tags from database
 	 *
-	 * @param page paging info
+	 * @param pageable paging info
 	 * @return paged list of tags
 	 */
-	PagedResultDTO<TagDTO> getAllTags(@Valid PageDTO page);
+	Slice<TagDTO> getAllTags(Pageable pageable);
 
 	/**
 	 * Retrieves all tags which names included in provided set from database

@@ -1,0 +1,25 @@
+oauth2:
+  configuration:
+    in-memory-client-name: client
+    in-memory-client-secret: '{noop}secret'
+    in-memory-client-grant-types:
+      - password
+      - implicit
+    in-memory-client-redirect-uris: example.com
+    jwt-key: <Q<W~"?MZu3pJYzKM1.;S<fOPHkBaW`8y;e,w1kFSV9anRDfk=W|;G.hv0D%
+    secret-key-algorithm: AES
+    approved-path-patterns-for-session:
+      - /login/**
+      - /oauth/**
+  claims:
+    user-id: user_id
+    scopes: scopes
+  client:
+    provider-to-id-key-map:
+      github: 'id'
+    provider-to-user-name-key-map:
+      github: 'login'
+    name-attribute-key: 'name'
+    id-attribute-key: 'id'
+  permissions:
+    create: CREATE

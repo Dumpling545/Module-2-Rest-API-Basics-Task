@@ -1,11 +1,9 @@
 package com.epam.esm.service;
 
 import com.epam.esm.model.dto.OrderDTO;
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
 
 /**
  * Interface of service for manipulating Order DTO objects
@@ -31,17 +29,17 @@ public interface OrderService {
 	/**
 	 * Retrieves all existing orders from database
 	 *
-	 * @param page paging info
+	 * @param pageable paging info
 	 * @return paged list of orders
 	 */
-	PagedResultDTO<OrderDTO> getAllOrders(@Valid PageDTO page);
+	Slice<OrderDTO> getAllOrders(Pageable pageable);
 
 	/**
 	 * Retrieves all existing orders purchased by specified user
 	 *
-	 * @param userId user's id
-	 * @param page   paging info
+	 * @param userId   user's id
+	 * @param pageable paging info
 	 * @return paged list of orders
 	 */
-	PagedResultDTO<OrderDTO> getOrdersByUser(int userId, @Valid PageDTO page);
+	Slice<OrderDTO> getOrdersByUser(int userId, Pageable pageable);
 }

@@ -34,6 +34,6 @@ public class InvalidTagException extends ServiceException {
 	}
 
 	public enum Reason {
-		NOT_FOUND, ALREADY_EXISTS
+		NOT_FOUND, ALREADY_EXISTS, INVALID_SORT_BY
 	}
 }

@@ -1,7 +1,8 @@
 dependencies {
+    api 'org.springframework.boot:spring-boot-starter-web'
     api project(':service')
+
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation project(':model')
 }
 bootJar {

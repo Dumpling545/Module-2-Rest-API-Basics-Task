@@ -6,9 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +31,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "cert_order")
 public class Order {
 	private static final Logger logger = LoggerFactory.getLogger(Order.class);
@@ -41,6 +45,7 @@ public class Order {
 	private Integer giftCertificateId;
 	@Column(nullable = false)
 	private BigDecimal cost;
+	@CreatedDate
 	@Column(name = "purchase_date", nullable = false)
 	private LocalDateTime purchaseDate;
 

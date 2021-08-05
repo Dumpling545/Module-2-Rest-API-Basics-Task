@@ -41,7 +41,7 @@ public class GiftCertificateExceptionHandler {
 				break;
 			case INVALID_SORT_BY:
 				status = HttpStatus.BAD_REQUEST;
-				message = messageSource.getMessage("cert.error-message.invalid-sort", null, locale);
+				message = messageSource.getMessage("common.error-message.invalid-sort", null, locale);
 				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;

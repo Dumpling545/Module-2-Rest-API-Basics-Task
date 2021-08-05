@@ -1,13 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.db.TagRepository;
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
-import com.epam.esm.model.entity.PagedResult;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.converter.PagedResultConverter;
 import com.epam.esm.service.converter.TagConverter;
 import com.epam.esm.service.exception.InvalidTagException;
 import com.epam.esm.service.exception.ServiceException;
@@ -15,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -24,28 +24,51 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toSet;
+
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 
 	private final TagRepository tagRepository;
 	private final TagConverter tagConverter;
-	private final PagedResultConverter pagedResultConverter;
 	@Value("${tag.exception.already-exists}")
 	private String alreadyExistsExceptionTemplate;
 	@Value("${tag.exception.not-found}")
 	private String notFoundExceptionTemplate;
+	@Value("${tag.exception.sort-by.invalid-field}")
+	private String invalidFieldTokenTemplate;
 
 	@Override
 	public TagDTO createTag(TagDTO tagDto) {
 		Tag tag = tagConverter.convert(tagDto);
 		tag.setId(null);
 		try {
-			Tag newTag = tagRepository.createTag(tag);
+			Tag newTag = tagRepository.save(tag);
 			return tagConverter.convert(newTag);
 		} catch (DataIntegrityViolationException ex) {
 			String message = String.format(alreadyExistsExceptionTemplate, tagDto.getName());
 			throw new InvalidTagException(message, ex, InvalidTagException.Reason.ALREADY_EXISTS, tagDto.getName());
+		} catch (DataAccessException ex) {
+			throw new ServiceException(ex);
+		}
+	}
+
+	@Override
+	public Set<TagDTO> createTags(Set<TagDTO> tagDtos) {
+		Set<Tag> tags = tagDtos.stream()
+				.map(tagConverter::convert)
+				.peek(t -> t.setId(null))
+				.collect(toSet());
+		try {
+			Set<Tag> newTags = tagRepository.saveAll(tags);
+			return newTags.stream().map(tagConverter::convert).collect(toSet());
+		} catch (DataIntegrityViolationException ex) {
+			String names = tags.stream()
+					.map(Tag::getName)
+					.collect(Collectors.joining(",", "{", "}"));
+			String message = String.format(alreadyExistsExceptionTemplate, names);
+			throw new InvalidTagException(message, ex, InvalidTagException.Reason.ALREADY_EXISTS, names);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
@@ -67,7 +90,7 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public TagDTO getTag(int id) {
-		return getSingleTag(() -> tagRepository.getTagById(id), () -> "id=" + id);
+		return getSingleTag(() -> tagRepository.findById(id), () -> "id=" + id);
 	}
 
 	@Override
@@ -83,28 +106,29 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public void deleteTag(int id) {
-		boolean deleted = false;
 		try {
-			deleted = tagRepository.deleteTag(id);
-		} catch (DataAccessException ex) {
-			throw new ServiceException(ex);
-		}
-		if (!deleted) {
+			tagRepository.deleteById(id);
+		} catch (EmptyResultDataAccessException ex) {
 			String identifier = "id=" + id;
 			String message = String.format(notFoundExceptionTemplate, identifier);
-			throw new InvalidTagException(message, InvalidTagException.Reason.NOT_FOUND, identifier);
+			throw new InvalidTagException(message, ex, InvalidTagException.Reason.NOT_FOUND, identifier);
+		} catch (DataAccessException ex) {
+			throw new ServiceException(ex);
 		}
 	}
 
 	@Override
-	public PagedResultDTO<TagDTO> getAllTags(PageDTO pageDTO) {
-		PagedResult<Tag> pagedResult;
+	public Slice<TagDTO> getAllTags(Pageable pageable) {
+		Slice<Tag> slice;
 		try {
-			pagedResult = tagRepository.getAllTags(pageDTO.getOffset(), pageDTO.getPageSize());
+			slice = tagRepository.getAllTagsBy(pageable);
+		} catch (PropertyReferenceException ex) {
+			String message = String.format(invalidFieldTokenTemplate, ex.getPropertyName());
+			throw new InvalidTagException(message, ex, InvalidTagException.Reason.INVALID_SORT_BY);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}
-		return pagedResultConverter.convertToTagPage(pagedResult);
+		return slice.map(tagConverter::convert);
 	}
 
 	@Override
@@ -114,7 +138,7 @@ public class TagServiceImpl implements TagService {
 		}
 		List<Tag> tagList;
 		try {
-			tagList = tagRepository.getTagsFromNameSet(tagNames);
+			tagList = tagRepository.getTagsByNameIn(tagNames);
 		} catch (DataAccessException ex) {
 			throw new ServiceException(ex);
 		}

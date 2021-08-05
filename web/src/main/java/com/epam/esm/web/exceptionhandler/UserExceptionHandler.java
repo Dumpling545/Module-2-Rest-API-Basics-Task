@@ -40,6 +40,15 @@ public class UserExceptionHandler {
 				message = messageSource.getMessage("user.error-message.not-found",
 				                                   new Object[]{identifier}, locale);
 				break;
+			case ALREADY_EXISTS:
+				status = HttpStatus.CONFLICT;
+				message = messageSource.getMessage("user.error-message.already-exists",
+				                                   new Object[]{ex.getUserName()}, locale);
+				break;
+			case INVALID_SORT_BY:
+				status = HttpStatus.BAD_REQUEST;
+				message = messageSource.getMessage("common.error-message.invalid-sort", null, locale);
+				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;
 				message = messageSource.getMessage("user.error-message.common", null, locale);

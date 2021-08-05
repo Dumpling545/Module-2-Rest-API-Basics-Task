@@ -1,22 +1,28 @@
 package com.epam.esm.db;
 
+import com.epam.esm.db.fragment.FilteredGiftCertificateRepository;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.GiftCertificateSearchFilter;
-import com.epam.esm.model.entity.PagedResult;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
+import org.springframework.data.repository.Repository;
 
 import java.util.Optional;
 
 /**
  * Interface for managing GiftCertificate objects in database
  */
-public interface GiftCertificateRepository {
+public interface GiftCertificateRepository extends Repository<GiftCertificate, Integer>,
+                                                   FilteredGiftCertificateRepository {
 	/**
-	 * Creates new certificate in database
+	 * Creates new certificate in database or certificate with given {@link GiftCertificate#getId()} value (if exists)
 	 *
 	 * @param certificate object containing sources for new certificate, id and date properties are ignored.
 	 * @return created certificate
 	 */
-	GiftCertificate createCertificate(GiftCertificate certificate);
+	GiftCertificate save(GiftCertificate certificate);
 
 	/**
 	 * Retrieves certificate with given id
@@ -25,26 +31,28 @@ public interface GiftCertificateRepository {
 	 * @return {@link Optional} of certificate containing corresponding certificate object, if * certificate with such
 	 * id exists in database; empty {@link Optional} otherwise
 	 */
-	Optional<GiftCertificate> getCertificateById(int id);
+	@EntityGraph(value = "full-certificate-entity-graph", type = EntityGraphType.LOAD)
+	Optional<GiftCertificate> findById(Integer id);
+
+	/**
+	 * Returns whether certificate with the given id exists.
+	 *
+	 * @param integer must not be {@literal null}.
+	 * @return {@literal true} if an certificate with the given id exists, {@literal false} otherwise.
+	 * @throws IllegalArgumentException if {@literal id} is {@literal null}.
+	 */
+	boolean existsById(Integer integer);
 
 	/**
 	 * Retrieves all certificates filtered by provided filter object
 	 *
 	 * @param giftCertificateSearchFilter filter object used for filtering
-	 * @param offset                      how many elements to skip
-	 * @param limit                       how many elements to retrieve
+	 * @param pageable                    paging info
 	 * @return filtered and paged list of certificates
 	 */
-	PagedResult<GiftCertificate> getCertificatesByFilter(GiftCertificateSearchFilter giftCertificateSearchFilter,
-	                                                     int offset, int limit);
+	Slice<GiftCertificate> getCertificatesByFilter(GiftCertificateSearchFilter giftCertificateSearchFilter,
+	                                               Pageable pageable);
 
-	/**
-	 * Updates certificate with given {@link GiftCertificate#getId()} value
-	 *
-	 * @param certificate object that used as filter through {@link GiftCertificate#getId()} property and as update source through other
-	 *                    properties (dates are ignored).
-	 */
-	void updateCertificate(GiftCertificate certificate);
 
 	/**
 	 * Deletes certificate with given id from database
@@ -53,5 +61,5 @@ public interface GiftCertificateRepository {
 	 * @return true if certificate with given id successfully deleted; false if certificate with such id does not exist
 	 * in database by the time of method invocation
 	 */
-	boolean deleteCertificate(int id);
+	void deleteById(Integer id);
 }

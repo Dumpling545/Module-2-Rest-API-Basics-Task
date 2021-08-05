@@ -23,5 +23,4 @@ public class GiftCertificateSearchFilterDTO {
 	                                                                                max = MAX_TAG_NAME_LENGTH,
 	                                                                                message = "{tag.validation-message.name-size}") String>
 			tagNames;
-	private String sortBy;
 }

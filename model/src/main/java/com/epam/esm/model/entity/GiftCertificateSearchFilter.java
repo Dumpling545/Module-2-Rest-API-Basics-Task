@@ -15,5 +15,4 @@ public class GiftCertificateSearchFilter {
 	private String namePart;
 	private String descriptionPart;
 	private Set<String> tagNames;
-	private SortOption sortBy;
 }

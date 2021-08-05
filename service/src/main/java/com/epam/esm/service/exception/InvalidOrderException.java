@@ -18,12 +18,17 @@ public class InvalidOrderException extends ServiceException {
 		this.reason = reason;
 	}
 
+	public InvalidOrderException(String message, Throwable thr, Reason reason) {
+		super(message, thr);
+		this.reason = reason;
+	}
+
 	public InvalidOrderException(String message, Reason reason, int id) {
 		this(message, reason);
 		this.id = id;
 	}
 
 	public enum Reason {
-		NOT_FOUND
+		NOT_FOUND, INVALID_SORT_BY
 	}
 }

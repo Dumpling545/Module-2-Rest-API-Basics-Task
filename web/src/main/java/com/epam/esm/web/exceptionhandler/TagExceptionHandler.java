@@ -46,6 +46,10 @@ public class TagExceptionHandler {
 				message = messageSource.getMessage("tag.error-message.not-found",
 				                                   new Object[]{tagDescription}, locale);
 				break;
+			case INVALID_SORT_BY:
+				status = HttpStatus.BAD_REQUEST;
+				message = messageSource.getMessage("common.error-message.invalid-sort", null, locale);
+				break;
 			default:
 				status = HttpStatus.INTERNAL_SERVER_ERROR;
 				message = messageSource.getMessage("tag.error-message.common", null, locale);

@@ -1,11 +1,11 @@
 package com.epam.esm.web;
 
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.model.dto.TagDTO;
 import com.epam.esm.service.TagService;
 import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +22,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 
-import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
-import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
+import static com.epam.esm.web.ResourcePaths.TAGS;
 
 /**
  * Controller handling requests to 'tag' resource
  */
 @RestController
-@RequestMapping("/tags")
+@RequestMapping(TAGS)
 @RequiredArgsConstructor
 public class TagController {
 	private final TagService tagService;
-	private final ExtendedRepresentationModelAssembler<TagDTO, TagController> assembler;
+	private final ExtendedRepresentationModelAssembler<TagDTO> assembler;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<EntityModel> getTag(@PathVariable("id") Integer id) {
@@ -48,26 +47,16 @@ public class TagController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CollectionModel> allTags(
-			@RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
-					Integer pageNumber,
-			@RequestParam(defaultValue = MIN_PAGE_SIZE + "")
-					Integer pageSize) {
-		PageDTO pageDTO = PageDTO.builder()
-				.pageNumber(pageNumber)
-				.pageSize(pageSize)
-				.build();
-		PagedResultDTO pagedResultDTO = tagService.getAllTags(pageDTO);
-		CollectionModel<EntityModel<TagDTO>> model =
-				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-				                                 (c, p) -> c.allTags(p, pageSize));
+	public ResponseEntity<CollectionModel> allTags(Pageable pageable) {
+		Slice<TagDTO> slice = tagService.getAllTags(pageable);
+		CollectionModel<EntityModel<TagDTO>> model = assembler.toSliceModel(slice);
 		return ResponseEntity.ok(model);
 	}
 
 	@PostMapping
 	public ResponseEntity createTag(@RequestBody @Valid TagDTO tagDTO, UriComponentsBuilder ucb) {
 		TagDTO dto = tagService.createTag(tagDTO);
-		URI locationUri = ucb.path("/tags/").path(String.valueOf(dto.getId())).build().toUri();
+		URI locationUri = ucb.path(TAGS + "/").path(String.valueOf(dto.getId())).build().toUri();
 		return ResponseEntity.created(locationUri).build();
 	}
 

@@ -4,8 +4,8 @@ import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -51,10 +51,10 @@ public interface GiftCertificateService {
 	/**
 	 * Retrieves list of certificates that match given filter
 	 *
-	 * @param filter object that will be used to filter certificates. Null fields does not participate in filtering
-	 * @param page   paging info
+	 * @param filter   object that will be used to filter certificates. Null fields does not participate in filtering
+	 * @param pageable paging info
 	 * @return list of filtered and paged certificate DTOs
 	 */
-	PagedResultDTO<GiftCertificateOutputDTO> getCertificates(@Valid GiftCertificateSearchFilterDTO filter,
-	                                                         @Valid PageDTO page);
+	Slice<GiftCertificateOutputDTO> getCertificates(@Valid GiftCertificateSearchFilterDTO filter,
+	                                                         Pageable pageable);
 }

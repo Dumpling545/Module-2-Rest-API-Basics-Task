@@ -3,26 +3,30 @@ package com.epam.esm.db;
 import com.epam.esm.GiftCertificateSystemApplication;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.GiftCertificateSearchFilter;
-import com.epam.esm.model.entity.SortOption;
 import com.epam.esm.model.entity.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith({SpringExtension.class})
@@ -40,8 +44,6 @@ public class GiftCertificateRepositoryTest {
 	private static final Tag existingTag8 = new Tag(8, "tag8");
 	private static final Tag existingTag9 = new Tag(9, "tag9");
 	private static final Tag existingTag10 = new Tag(10, "tag10");
-	private static final Tag nonExistingTagToBeCreated1 = new Tag(null, "tag100");
-	private static final Tag nonExistingTagToBeCreated2 = new Tag(null, "tag200");
 
 	private static final GiftCertificate certToBeCreated = GiftCertificate.builder()
 			.id(null)
@@ -49,7 +51,7 @@ public class GiftCertificateRepositoryTest {
 			.description("description8")
 			.duration(10)
 			.price(BigDecimal.valueOf(123.42))
-			.tags(Set.of(existingTag1, existingTag2, nonExistingTagToBeCreated1))
+			.tags(Set.of(existingTag1, existingTag2))
 			.build();
 	private static final GiftCertificate existingCert1 = GiftCertificate.builder()
 			.id(1)
@@ -75,22 +77,19 @@ public class GiftCertificateRepositoryTest {
 			.duration(234)
 			.createDate(LocalDate.parse("2021-01-02").atStartOfDay())
 			.price(BigDecimal.valueOf(1.23))
-			.tags(Set.of(existingTag4, existingTag6, nonExistingTagToBeCreated2))
+			.tags(Set.of(existingTag4, existingTag6))
 			.build();
 	private static final int EXISTING_ID_3 = 3;
 	private static final GiftCertificateSearchFilter CONDITIONS_THAT_SOME_DATA_MEET =
 			GiftCertificateSearchFilter.builder()
 					.namePart("ertif")
 					.descriptionPart("escriptio")
-					.tagNames(Set.of("tag8"))
-					.sortBy(new SortOption(SortOption.Field.NAME, SortOption.Direction.DESC)).build();
+					.tagNames(Set.of("tag8")).build();
 	private static final GiftCertificateSearchFilter CONDITIONS_THAT_NO_DATA_MEET =
 			GiftCertificateSearchFilter.builder()
 					.tagNames(Set.of("non existent")).build();
-	private static final int EXISTING_OFFSET = 0;
-	private static final int EXISTING_LIMIT = 10;
-	private static final int NON_EXISTING_OFFSET = 100;
-	private static final int NON_EXISTING_LIMIT = 10;
+	private static final Pageable existingPageable = PageRequest.of(0, 10);
+	private static final Pageable unexistingPageable = PageRequest.of(10, 10);
 
 	@Autowired
 	GiftCertificateRepository giftCertificateRepository;
@@ -114,17 +113,17 @@ public class GiftCertificateRepositoryTest {
 
 	@Test
 	public void createCertificateShouldReturnNewEntityWhenPassedCorrectInput() {
-		GiftCertificate created = giftCertificateRepository.createCertificate(certToBeCreated);
+		GiftCertificate created = giftCertificateRepository.save(certToBeCreated);
 		assertNotNull(created.getCreateDate());
 		assertNotNull(created.getLastUpdateDate());
-		Optional<GiftCertificate> fetchedAfter = giftCertificateRepository.getCertificateById(created.getId());
+		Optional<GiftCertificate> fetchedAfter = giftCertificateRepository.findById(created.getId());
 		assertTrue(fetchedAfter.isPresent());
 		assertCertificatesEqual(fetchedAfter.get(), created);
 	}
 
 	@Test
 	public void getCertificateShouldReturnOptionalWithEntityWhenPassedExistingId() {
-		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(existingCert1.getId());
+		Optional<GiftCertificate> optional = giftCertificateRepository.findById(existingCert1.getId());
 		assertTrue(optional.isPresent());
 		GiftCertificate fetched = optional.get();
 		assertCertificatesEqual(existingCert1, fetched);
@@ -132,46 +131,42 @@ public class GiftCertificateRepositoryTest {
 
 	@Test
 	public void getCertificateShouldReturnEmptyOptionalWhenPassedNonExistingId() {
-		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(NON_EXISTING_ID);
+		Optional<GiftCertificate> optional = giftCertificateRepository.findById(NON_EXISTING_ID);
 		assertTrue(optional.isEmpty());
 	}
 
 	@Test
 	public void filterCertificatesShouldReturnListWhenPassedConditionsMetByAnyDataInDatabase() {
-		List<GiftCertificate> giftCertificates =
-				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_SOME_DATA_MEET,
-				                                                  EXISTING_OFFSET, EXISTING_LIMIT).getPage();
+		Slice<GiftCertificate> giftCertificates =
+				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_SOME_DATA_MEET, existingPageable);
 		assertFalse(giftCertificates.isEmpty());
 	}
 
 	@Test
 	public void filterCertificatesShouldReturnEmptyListWhenPassedConditionsMetByNoDataInDatabase() {
-		List<GiftCertificate> giftCertificates =
-				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_NO_DATA_MEET,
-				                                                  EXISTING_OFFSET, EXISTING_LIMIT).getPage();
+		Slice<GiftCertificate> giftCertificates =
+				giftCertificateRepository.getCertificatesByFilter(CONDITIONS_THAT_NO_DATA_MEET, existingPageable);
 		assertTrue(giftCertificates.isEmpty());
 	}
 
 	@Test
 	public void updateCertificateShouldReturnTrueWhenPassedCorrectInput() {
-		giftCertificateRepository.updateCertificate(updatedCert2);
-		Optional<GiftCertificate> fetchAfter = giftCertificateRepository.getCertificateById(updatedCert2.getId());
+		giftCertificateRepository.save(updatedCert2);
+		Optional<GiftCertificate> fetchAfter = giftCertificateRepository.findById(updatedCert2.getId());
 		assertTrue(fetchAfter.isPresent());
 		assertEquals(updatedCert2.getTags().stream().map(Tag::getName).collect(Collectors.toSet()),
 		             fetchAfter.get().getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 	}
 
 	@Test
-	public void deleteTagShouldReturnTrueWhenPassedExistingId() {
-		boolean deleted = giftCertificateRepository.deleteCertificate(EXISTING_ID_3);
-		assertTrue(deleted);
-		Optional<GiftCertificate> optional = giftCertificateRepository.getCertificateById(EXISTING_ID_3);
+	public void deleteTagShouldNotThrowExceptionWhenPassedExistingId() {
+		assertDoesNotThrow(() -> giftCertificateRepository.deleteById(EXISTING_ID_3));
+		Optional<GiftCertificate> optional = giftCertificateRepository.findById(EXISTING_ID_3);
 		assertTrue(optional.isEmpty());
 	}
 
 	@Test
-	public void deleteTagShouldReturnFalseWhenPassedNonExistingId() {
-		boolean deleted = giftCertificateRepository.deleteCertificate(NON_EXISTING_ID);
-		assertFalse(deleted);
+	public void deleteTagShouldThrowExceptionWhenPassedNonExistingId() {
+		assertThrows(EmptyResultDataAccessException.class, () -> giftCertificateRepository.deleteById(NON_EXISTING_ID));
 	}
 }

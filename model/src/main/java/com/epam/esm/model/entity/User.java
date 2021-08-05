@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +35,15 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@Column(name = "user_name", nullable = false, unique = true)
-	private String userName;
+	private String name;
+	@Column
+	private String password;
+	@Column(name = "external_provider")
+	private String externalProvider;
+	@Column(name = "external_id")
+	private String externalId;
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
 	@PrePersist
 	public void onPrePersist() {
@@ -50,4 +60,7 @@ public class User {
 		logger.info(toString() + " to be updated");
 	}
 
+	public enum Role {
+		USER, ADMIN;
+	}
 }

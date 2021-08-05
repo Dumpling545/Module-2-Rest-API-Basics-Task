@@ -1,0 +1,37 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: f00b9327d1d8d58afeb3
+            client-secret: [ sensitive ]
+  profiles:
+    default: development
+  config:
+    import:
+      - classpath:web-error-info.properties
+      - classpath:service-exception.properties
+      - classpath:web-exception.properties
+      - classpath:password.properties
+      - classpath:oauth2.yml
+  datasource:
+    hikari:
+      password: gift-cert-sys-db-user-pw
+      username: gift-cert-sys-db-user
+    url: 'jdbc:postgresql://localhost:5432/gift-cert-sys-db'
+  jackson:
+    serialization:
+      write-dates-as-timestamps: 'false'
+  messages:
+    basename: error-messages
+  mvc:
+    throw-exception-if-no-handler-found: 'true'
+  resources:
+    add-mappings: 'false'
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 100
+        one-indexed-parameters: true

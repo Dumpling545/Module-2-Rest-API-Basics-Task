@@ -4,11 +4,11 @@ import com.epam.esm.model.dto.GiftCertificateCreateDTO;
 import com.epam.esm.model.dto.GiftCertificateOutputDTO;
 import com.epam.esm.model.dto.GiftCertificateSearchFilterDTO;
 import com.epam.esm.model.dto.GiftCertificateUpdateDTO;
-import com.epam.esm.model.dto.PageDTO;
-import com.epam.esm.model.dto.PagedResultDTO;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.web.assembler.ExtendedRepresentationModelAssembler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -27,19 +27,17 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Set;
 
-import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_NUMBER;
-import static com.epam.esm.model.dto.ValidationConstraints.MIN_PAGE_SIZE;
+import static com.epam.esm.web.ResourcePaths.GIFT_CERTIFICATES;
 
 /**
  * Controller handling requests to 'gift certificate' resource
  */
 @RestController
-@RequestMapping("/gift-certificates")
+@RequestMapping(GIFT_CERTIFICATES)
 @RequiredArgsConstructor
 public class GiftCertificateController {
 	private final GiftCertificateService certService;
-	private final ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO, GiftCertificateController>
-			assembler;
+	private final ExtendedRepresentationModelAssembler<GiftCertificateOutputDTO> assembler;
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<EntityModel> getCertificate(@PathVariable("id") Integer id) {
@@ -50,26 +48,14 @@ public class GiftCertificateController {
 	public ResponseEntity<CollectionModel> filteredCertificates(@RequestParam(required = false) String namePart,
 	                                                            @RequestParam(required = false) String descriptionPart,
 	                                                            @RequestParam(required = false) Set<String> tagNames,
-	                                                            @RequestParam(required = false) String sortOption,
-	                                                            @RequestParam(defaultValue = MIN_PAGE_NUMBER + "")
-			                                                            Integer pageNumber,
-	                                                            @RequestParam(defaultValue = MIN_PAGE_SIZE + "")
-			                                                            Integer pageSize) {
+	                                                            Pageable pageable) {
 		GiftCertificateSearchFilterDTO giftCertificateSearchFilterDTO = GiftCertificateSearchFilterDTO.builder()
 				.namePart(namePart)
 				.descriptionPart(descriptionPart)
-				.tagNames(tagNames)
-				.sortBy(sortOption).build();
-		PageDTO pageDTO = PageDTO.builder()
-				.pageNumber(pageNumber)
-				.pageSize(pageSize)
-				.build();
-		PagedResultDTO<GiftCertificateOutputDTO> pagedResultDTO = certService.getCertificates(
-				giftCertificateSearchFilterDTO, pageDTO);
-		CollectionModel<EntityModel<GiftCertificateOutputDTO>> model =
-				assembler.toPagedCollectionModel(pageNumber, pagedResultDTO,
-				                                 (c, p) -> c.filteredCertificates(namePart, descriptionPart, tagNames,
-				                                                                  sortOption, p, pageSize));
+				.tagNames(tagNames).build();
+		Slice<GiftCertificateOutputDTO> slice = certService.getCertificates(giftCertificateSearchFilterDTO,
+		                                                                    pageable);
+		CollectionModel<EntityModel<GiftCertificateOutputDTO>> model = assembler.toSliceModel(slice);
 		return ResponseEntity.ok(model);
 	}
 

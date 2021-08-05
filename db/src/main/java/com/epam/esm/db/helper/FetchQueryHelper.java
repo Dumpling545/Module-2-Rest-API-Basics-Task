@@ -1,6 +1,8 @@
 package com.epam.esm.db.helper;
 
-import com.epam.esm.model.entity.PagedResult;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityGraph;
@@ -57,57 +59,55 @@ public class FetchQueryHelper {
 		return result;
 	}
 
-	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
-	                                              EntityManager entityManager,
-	                                              TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
-	                                              Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
-	                                              int offset, int limit, boolean clearContext) {
+	public <Q, R> Slice<Q> fetchSlice(Class<Q> queryClass, Class<R> rootClass,
+	                                  EntityManager entityManager,
+	                                  TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
+	                                  Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
+	                                  Pageable pageable, boolean clearContext) {
 		List<Q> result = fetch(queryClass, rootClass, entityManager, queryConfigurator, entityGraphProducer,
-		                       (tq) -> tq.setFirstResult(offset).setMaxResults(limit + 1).getResultList(), false);
-		return PagedResult.<Q>builder()
-				.first(offset == 0)
-				.last(result.size() <= limit)
-				.page(result.subList(0, Math.min(limit, result.size()))).build();
+		                       (tq) -> tq.setFirstResult((int) pageable.getOffset())
+				                       .setMaxResults(pageable.getPageSize() + 1).getResultList(), false);
+		return new SliceImpl<>(result.subList(0, Math.min(pageable.getPageSize(), result.size())),
+		                       pageable, result.size() > pageable.getPageSize());
 	}
 
-	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
-	                                              EntityManager entityManager,
-	                                              TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
-	                                              Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
-	                                              int offset, int limit) {
-		return fetchPagedResult(queryClass, rootClass, entityManager, queryConfigurator, entityGraphProducer,
-		                        offset, limit, true);
+	public <Q, R> Slice<Q> fetchSlice(Class<Q> queryClass, Class<R> rootClass,
+	                                  EntityManager entityManager,
+	                                  TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
+	                                  Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
+	                                  Pageable pageable) {
+		return fetchSlice(queryClass, rootClass, entityManager, queryConfigurator, entityGraphProducer,
+		                  pageable, true);
 	}
 
-	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
-	                                              EntityManager entityManager,
-	                                              TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
-	                                              int offset, int limit, boolean clearContext) {
-		return fetchPagedResult(queryClass, rootClass, entityManager, queryConfigurator, null,
-		                        offset, limit, clearContext);
+	public <Q, R> Slice<Q> fetchSlice(Class<Q> queryClass, Class<R> rootClass,
+	                                  EntityManager entityManager,
+	                                  TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
+	                                  Pageable pageable, boolean clearContext) {
+		return fetchSlice(queryClass, rootClass, entityManager, queryConfigurator, null,
+		                  pageable, clearContext);
 	}
 
-	public <Q, R> PagedResult<Q> fetchPagedResult(Class<Q> queryClass, Class<R> rootClass,
-	                                              EntityManager entityManager,
-	                                              TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
-	                                              int offset, int limit) {
-		return fetchPagedResult(queryClass, rootClass, entityManager, queryConfigurator, offset, limit, true);
+	public <Q, R> Slice<Q> fetchSlice(Class<Q> queryClass, Class<R> rootClass,
+	                                  EntityManager entityManager,
+	                                  TriConsumer<CriteriaBuilder, CriteriaQuery, Root<R>> queryConfigurator,
+	                                  Pageable pageable) {
+		return fetchSlice(queryClass, rootClass, entityManager, queryConfigurator, pageable, true);
 	}
 
 
-	public <Q> PagedResult<Q> fetchPagedResult(Class<Q> rootClass,
-	                                           EntityManager entityManager,
-	                                           TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
-	                                           Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
-	                                           int offset, int limit) {
-		return fetchPagedResult(rootClass, rootClass, entityManager, queryConfigurator, entityGraphProducer, offset,
-		                        limit);
+	public <Q> Slice<Q> fetchSlice(Class<Q> rootClass,
+	                               EntityManager entityManager,
+	                               TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
+	                               Function<EntityManager, EntityGraph<Q>> entityGraphProducer,
+	                               Pageable pageable) {
+		return fetchSlice(rootClass, rootClass, entityManager, queryConfigurator, entityGraphProducer, pageable);
 	}
 
-	public <Q> PagedResult<Q> fetchPagedResult(Class<Q> queryClass,
-	                                           EntityManager entityManager,
-	                                           TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
-	                                           int offset, int limit) {
-		return fetchPagedResult(queryClass, queryClass, entityManager, queryConfigurator, offset, limit, true);
+	public <Q> Slice<Q> fetchSlice(Class<Q> queryClass,
+	                               EntityManager entityManager,
+	                               TriConsumer<CriteriaBuilder, CriteriaQuery, Root<Q>> queryConfigurator,
+	                               Pageable pageable) {
+		return fetchSlice(queryClass, queryClass, entityManager, queryConfigurator, pageable, true);
 	}
 }

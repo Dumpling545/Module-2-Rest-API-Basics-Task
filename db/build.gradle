@@ -1,7 +1,7 @@
 dependencies {
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'org.postgresql:postgresql'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation project(':model')
 
     testImplementation 'com.h2database:h2'
