@@ -5,6 +5,7 @@ import com.epam.esm.web.ResourcePaths;
 import com.epam.esm.web.auth.authorizationserver.UserAuthenticationProvider;
 import com.epam.esm.web.auth.client.OAuth2AuthenticationSuccessHandler;
 import com.epam.esm.web.auth.common.Scopes;
+import com.epam.esm.web.auth.resourceserver.InvalidateSessionFilter;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -27,6 +28,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -59,6 +61,8 @@ public class OAuth2WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 		http.csrf().disable();
 		http.anonymous().authorities(Scopes.GUEST_SCOPES);
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+		http.addFilterBefore(new InvalidateSessionFilter(propertiesHolder.approvedPathPatternsForSession()),
+		                     SessionManagementFilter.class);
 		http.authorizeRequests()
 				.mvcMatchers(ResourcePaths.ROOT).hasAuthority(Scopes.ROOT_READ)
 				.mvcMatchers("/oauth/token").permitAll()

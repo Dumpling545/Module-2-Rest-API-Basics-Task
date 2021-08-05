@@ -8,6 +8,9 @@ oauth2:
     in-memory-client-redirect-uris: example.com
     jwt-key: <Q<W~"?MZu3pJYzKM1.;S<fOPHkBaW`8y;e,w1kFSV9anRDfk=W|;G.hv0D%
     secret-key-algorithm: AES
+    approved-path-patterns-for-session:
+      - /login/**
+      - /oauth/**
   claims:
     user-id: user_id
     scopes: scopes

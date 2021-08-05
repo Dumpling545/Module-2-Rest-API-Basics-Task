@@ -12,5 +12,6 @@ public record OAuth2PropertiesHolder(
 		String secretKeyAlgorithm,
 		String inMemoryClientName, String inMemoryClientSecret,
 		List<String> inMemoryClientGrantTypes,
-		String[] inMemoryClientRedirectUris) {
+		String[] inMemoryClientRedirectUris,
+		List<String> approvedPathPatternsForSession) {
 }
