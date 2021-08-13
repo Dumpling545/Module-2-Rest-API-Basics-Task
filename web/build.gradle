@@ -4,6 +4,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation project(':model')
+
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }
 bootJar {
     enabled = false
